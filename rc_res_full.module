@@ -731,7 +731,7 @@ function rc_res_full_form_page_five($form, &$form_state) {
 
   $demos0 = array();
 
-  if (!empty($rows)) {
+  if (empty($rows)) {
   $demos0 = array(
     $form['description'] = array
     (
