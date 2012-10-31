@@ -732,6 +732,9 @@ function rc_res_full_form_page_five($form, &$form_state) {
   $demos0 = array();
 
   if (!empty($rows)) {
+
+print_r("NOT EMPTY");
+
   $demos0 = array(
     $form['description'] = array
     (
@@ -758,6 +761,9 @@ function rc_res_full_form_page_five($form, &$form_state) {
   );
   }
   else {
+
+print_r("EMPTY");
+
   $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
 
