@@ -693,6 +693,9 @@ function rc_res_full_form_page_five($form, &$form_state) {
 
   $rows = rc_res_full_get_resources_for_period($form, $form_state);
 
+
+//krumo($rows);
+
 //  rc_res_full_set_user_reservations($working_uid);
   //rc_res_full_get_open_resources();
 
@@ -712,28 +715,31 @@ function rc_res_full_form_page_five($form, &$form_state) {
   // Next, loop through the $users array
   $lcnt = 0;
 
-  if (!empty($rows)) {
+  if ($rows != "Not Found") {
   foreach($rows as $row)
-  {
-    $lcnt += 1;
-    $o_index = $row['resources'][0]['id'].':::'.$row['start'].':::'.$row['end'].':::'.$row['resources'][0]['capacity'];
-    $options_form[$o_index] = array // each element of the array is keyed with the PID
-    (
-      'start' => $row['start'], // 'start_date' was the key used in the header
-      'end' => $row['end'], // 'start_date' was the key used in the header
-      'id' => $row['resources'][0]['id'], // 'start_date' was the key used in the header
-      'description' => $row['resources'][0]['description'], // 'start_date' was the key used in the header
-      'capacity' => $row['resources'][0]['capacity'], // 'start_time' was the key used in the header
-      'title' => $row['resources'][0]['title'], // 'start_date' was the key used in the header
-    );
-  }
+    {
+      $lcnt += 1;
+      $o_index = $row['resources'][0]['id'].':::'.$row['start'].':::'.$row['end'].':::'.$row['resources'][0]['capacity'];
+      $options_form[$o_index] = array // each element of the array is keyed with the PID
+      (
+	'start' => $row['start'], // 'start_date' was the key used in the header
+	'end' => $row['end'], // 'start_date' was the key used in the header
+	'id' => $row['resources'][0]['id'], // 'start_date' was the key used in the header
+	'description' => $row['resources'][0]['description'], // 'start_date' was the key used in the header
+	'capacity' => $row['resources'][0]['capacity'], // 'start_time' was the key used in the header
+	'title' => $row['resources'][0]['title'], // 'start_date' was the key used in the header
+      );
+    }
   }
 
   $demos0 = array();
 
-  if (!empty($rows)) {
 
-print_r("NOT EMPTY");
+//krumo($rows);
+
+  if ($rows != "Not Found") {
+
+//print_r("NOT EMPTY");
 
   $demos0 = array(
     $form['description'] = array
@@ -762,7 +768,7 @@ print_r("NOT EMPTY");
   }
   else {
 
-print_r("EMPTY");
+//print_r("EMPTY");
 
   $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
@@ -1675,11 +1681,15 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
 
 //krumo($response_voy);
 
-  $patron_reservations = $response_voy->data;
-  $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
+  if ($response_voy->status_message == "Not Found" ) {
+    return $response_voy->status_message;
+  } else {
+    $patron_reservations = $response_voy->data;
+    $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
 
-//dsm($patron_status);
-  return $patron_reservations_array;
+  //dsm($patron_status);
+    return $patron_reservations_array;
+  }
 }
 
 /**
