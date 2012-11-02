@@ -959,7 +959,7 @@ $working_uid = variable_get('working_uid');
     'uid' => '502673598',
   );
 
-krumo($form_state['page_values'][5]['table']);
+//krumo($form_state['page_values'][5]['table']);
 
   $delimiter = ':::';
   $string = $form_state['page_values'][5]['table'];
@@ -968,7 +968,7 @@ krumo($form_state['page_values'][5]['table']);
   $rstart = $sub_array[1];
   $rend_oem = $sub_array[2]; // use later to compare $rend with $rstart+$res_length???
 
-krumo($form_state['page_values']);
+//krumo($form_state['page_values']);
 
   $res_length = $form_state['page_values'][6]['res_length'];
   if ( $res_length == 60 ) {
@@ -1179,7 +1179,7 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   // The Forms API rebuilds the form.
 
 
-krumo($form_state['values']);
+//krumo($form_state['values']);
   $form_state['page_values'][4] = $form_state['values'];
 
   if (!empty($form_state['page_values'][5])) {
@@ -1253,7 +1253,7 @@ function rc_res_full_form_page_fiveb_handler_submit($form, &$form_state) {
   // to carry forward to subsequent pages in the form.
   // The Forms API rebuilds the form.
 
-krumo($form_state['values']);
+//krumo($form_state['values']);
 
   $form_state['page_values'][5] = $form_state['values'];
 
@@ -1265,7 +1265,7 @@ krumo($form_state['values']);
   $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
 
-krumo($form_state['values']);
+//krumo($form_state['values']);
 
  }
 
@@ -1826,7 +1826,7 @@ $request_retry = 3;
 // Send the request.
 $response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
 
-krumo($response_voy);
+//krumo($response_voy);
 
   if ($response_voy->data == "[]" ) {
     return "Not Found";
@@ -1869,8 +1869,8 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
  */
 function rc_res_full_set_user_reservations($rrid, $str_create1) {
 
-krumo($str_create1);
-krumo($rrid);
+//krumo($str_create1);
+//krumo($rrid);
 
   $params = array();
   $params = json_encode($str_create1);
@@ -1886,7 +1886,7 @@ krumo($rrid);
 
 //  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/1', $headers = array('Content-Type' => 'application/json'), $method = 'POST', $data = $params, $retry = 3);
 
-krumo($response);
+//krumo($response);
 
 }
 
