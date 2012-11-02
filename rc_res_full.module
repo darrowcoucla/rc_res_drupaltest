@@ -267,7 +267,7 @@ function rc_res_full_menu() {
   $items = array();
   global $rc_res_full_get_user_category;
   $items['examples/rc_res_full'] = array(
-    'title' => 'RC-Res Reservations111',
+    'title' => 'RC-Res Reservations',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('rc_res_full_form_page_one'),
     'access callback' => TRUE,
@@ -630,10 +630,17 @@ function rc_res_full_form_page_four($form, &$form_state) {
 // drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
 // drupal_set_message(t("User ID: " . variable_get('working_uid') ));
 
-  $form = array();
+//krumo($form_state['page_values']);
 
-  $default_date_time = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
-  $default_date_time = preg_replace( '/\d\d:\d\d:\d\d/', '08:00:00', $default_date_time );
+  if (!empty($form_state['page_values'][4])) {
+    $form_state['values'] = $form_state['page_values'][4];
+    $default_date_time = $form_state['values']['date'];
+  } else {
+    $default_date_time = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
+    $default_date_time = preg_replace( '/\d\d:\d\d:\d\d/', '08:00:00', $default_date_time );
+  }
+
+  $form = array();
 
   $form['date'] = array(
     '#type' => 'date_popup', // Provided by the date_popup module
@@ -665,6 +672,12 @@ function rc_res_full_form_page_four($form, &$form_state) {
 //    ),
 //  );
 
+  $form['back3'] = array(
+    '#type'  => 'submit',
+    '#value' => t('Back'),
+    '#submit' => array('rc_res_full_form_page_fourb_handler_submit'),
+  );
+
   $form['submit'] = array(
     '#type'  => 'submit',
     '#value' => t('Next'),
@@ -685,6 +698,14 @@ function rc_res_full_form_page_five($form, &$form_state) {
 
 // drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
 // drupal_set_message(t("User ID: " . variable_get('working_uid') ));
+
+//krumo($form_state['values']);
+
+  if (!empty($form_state['page_values'][5])) {
+    $form_state['values'] = $form_state['page_values'][5];
+  }
+
+//krumo($form_state['values']);
 
   $form = array();
 
@@ -756,6 +777,13 @@ function rc_res_full_form_page_five($form, &$form_state) {
       '#options' => $options_form,
       '#multiple' => FALSE,
       '#empty' => t('No available resources found'),
+      '#default_value' => isset($form_state['values']['table']) ? $form_state['values']['table'] : NULL,
+    ),
+
+    $form['back4'] = array(
+      '#type'  => 'submit',
+      '#value' => t('Back'),
+      '#submit' => array('rc_res_full_form_page_fiveb_handler_submit'),
     ),
 
     $form['submit'] = array
@@ -790,6 +818,12 @@ function rc_res_full_form_page_five($form, &$form_state) {
       '#empty' => t('No available resources found'),
     ),
 
+    $form['back4'] = array(
+      '#type'  => 'submit',
+      '#value' => t('Back'),
+      '#submit' => array('rc_res_full_form_page_fiveb_handler_submit'),
+    ),
+
     $form['submit0'] = array
     (
       '#type' => 'submit',
@@ -811,10 +845,8 @@ function rc_res_full_form_page_five($form, &$form_state) {
       '#submit' => array('rc_res_full_form_page_five_empty_handler_submit'),
     ),
 
-
   );
   }
-
   return $form;
 }
 
@@ -828,6 +860,14 @@ function rc_res_full_form_page_six($form, &$form_state) {
 // drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
 // drupal_set_message(t("User ID: " . variable_get('working_uid') ));
 
+//krumo($form_state['values']);
+
+  if (!empty($form_state['page_values'][6])) {
+    $form_state['values'] = $form_state['page_values'][6];
+  }
+
+//krumo($form_state['values']);
+
   $form = array();
 
   $form['description'] = array(
@@ -839,6 +879,7 @@ function rc_res_full_form_page_six($form, &$form_state) {
     '#type'  => 'textfield',
     '#title' => t('Email'),
     '#size'  => 15,
+    '#default_value' => isset($form_state['values']['user_email']) ? $form_state['values']['user_email'] : NULL,
   );
 
  $form['pnumber'] = array(
@@ -853,12 +894,30 @@ function rc_res_full_form_page_six($form, &$form_state) {
       7 => t('7'),
       8 => t('8'),
     ),
+    '#default_value' => isset($form_state['values']['pnumber']) ? $form_state['values']['pnumber'] : NULL,
+  );
+
+  $form['res_length'] = array(
+    '#title' => t('Duration'),
+    '#type' => 'select',
+    '#options' => array(
+      60 => t('1 hour'),
+      90 => t('1 1/2 hours'),
+      120 => t('2 hours'),
+    ),
   );
 
   $form['user_dept'] = array(
     '#type'  => 'textfield',
     '#title' => t('Department / Major'),
     '#size'  => 40,
+    '#default_value' => isset($form_state['values']['user_dept']) ? $form_state['values']['user_dept'] : NULL,
+  );
+
+  $form['back5'] = array(
+    '#type'  => 'submit',
+    '#value' => t('Back'),
+    '#submit' => array('rc_res_full_form_page_sixb_handler_submit'),
   );
 
   $form['submit'] = array(
@@ -866,6 +925,7 @@ function rc_res_full_form_page_six($form, &$form_state) {
     '#value' => t('confirm'),
     '#submit' => array('rc_res_full_form_page_six_handler_submit'),
   );
+
   return $form;
 }
 
@@ -899,7 +959,7 @@ $working_uid = variable_get('working_uid');
     'uid' => '502673598',
   );
 
-//krumo($form_state);
+krumo($form_state['page_values'][5]['table']);
 
   $delimiter = ':::';
   $string = $form_state['page_values'][5]['table'];
@@ -908,7 +968,9 @@ $working_uid = variable_get('working_uid');
   $rstart = $sub_array[1];
   $rend_oem = $sub_array[2]; // use later to compare $rend with $rstart+$res_length???
 
-  $res_length = $form_state['page_values'][4]['res_length'];
+krumo($form_state['page_values']);
+
+  $res_length = $form_state['page_values'][6]['res_length'];
   if ( $res_length == 60 ) {
     $res_length = 3600;
   } else if ( $res_length == 90 ) {
@@ -921,6 +983,7 @@ $working_uid = variable_get('working_uid');
 
   $rend = date('Y-m-d h:i A', strtotime($rstart)+$res_length);
   $rcap = $sub_array[3];
+  $rcap = $form_state['page_values'][6]['pnumber'];
   $ufname = $form_state['page_values'][1]['user_name'];
   $ulname = $form_state['page_values'][1]['user_pwd'];
   $uemail = $form_state['page_values'][6]['user_email'];
@@ -1077,6 +1140,8 @@ function rc_res_full_form_page_three_handler_submit($form, &$form_state) {
   // The Forms API rebuilds the form.
   $form_state['page_values'][3] = $form_state['values'];
 
+//krumo($form_state);
+
   if (!empty($form_state['page_values'][4])) {
     $form_state['values'] = $form_state['page_values'][4];
   }
@@ -1097,6 +1162,7 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
   // The Forms API rebuilds the form.
   $form_state['page_values'][3] = $form_state['values'];
 
+
   // When form rebuilds in n+2 or so, use this to determine which page to build.
   $form_state['page_num'] = 3;
   $form_state['rebuild'] = TRUE;
@@ -1112,8 +1178,8 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   // to carry forward to subsequent pages in the form.
   // The Forms API rebuilds the form.
 
-//krumo($form_state);
 
+krumo($form_state['values']);
   $form_state['page_values'][4] = $form_state['values'];
 
   if (!empty($form_state['page_values'][5])) {
@@ -1123,6 +1189,32 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   // When form rebuilds in n+2 or so, use this to determine which page to build.
   $form_state['page_num'] = 5;
   $form_state['rebuild'] = TRUE;
+ }
+
+/**
+ * Page 4 back submit handler.
+ *
+ * Save the vals from page two for a later final submit.
+ */
+function rc_res_full_form_page_fourb_handler_submit($form, &$form_state) {
+  // Values are saved for each page.
+  // to carry forward to subsequent pages in the form.
+  // The Forms API rebuilds the form.
+
+//krumo($form_state['values']);
+
+  $form_state['page_values'][4] = $form_state['values'];
+
+  if (!empty($form_state['page_values'][3])) {
+    $form_state['values'] = $form_state['page_values'][3];
+  }
+
+  // When form rebuilds in n+2 or so, use this to determine which page to build.
+  $form_state['page_num'] = 3;
+  $form_state['rebuild'] = TRUE;
+
+//krumo($form_state['values']);
+
  }
 
 /**
@@ -1137,13 +1229,44 @@ function rc_res_full_form_page_five_handler_submit($form, &$form_state) {
 
   $form_state['page_values'][5] = $form_state['values'];
 
-  if (!empty($form_state['page_values'][6])) {
-    $form_state['values'] = $form_state['page_values'][6];
+  if (!empty($form_state['page_values'][5]['table'])) {
+    if (!empty($form_state['page_values'][6])) {
+      $form_state['values'] = $form_state['page_values'][6];
+    }
+
+    // When form rebuilds in n+2 or so, use this to determine which page to build.
+    $form_state['page_num'] = 6;
+    $form_state['rebuild'] = TRUE;
+  } else {
+    $form_state['page_num'] = 5;
+    $form_state['rebuild'] = TRUE;
+  }
+ }
+
+/**
+ * Page 5 back submit handler.
+ *
+ * Save the vals from page two for a later final submit.
+ */
+function rc_res_full_form_page_fiveb_handler_submit($form, &$form_state) {
+  // Values are saved for each page.
+  // to carry forward to subsequent pages in the form.
+  // The Forms API rebuilds the form.
+
+krumo($form_state['values']);
+
+  $form_state['page_values'][5] = $form_state['values'];
+
+  if (!empty($form_state['page_values'][4])) {
+    $form_state['values'] = $form_state['page_values'][4];
   }
 
   // When form rebuilds in n+2 or so, use this to determine which page to build.
-  $form_state['page_num'] = 6;
+  $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
+
+krumo($form_state['values']);
+
  }
 
 /**
@@ -1185,6 +1308,29 @@ function rc_res_full_form_page_six_handler_submit($form, &$form_state) {
 
   // When form rebuilds in n+2 or so, use this to determine which page to build.
   $form_state['page_num'] = 7;
+  $form_state['rebuild'] = TRUE;
+ }
+
+/**
+ * Page 6 back submit handler.
+ *
+ * Save the vals from page two for a later final submit.
+ */
+function rc_res_full_form_page_sixb_handler_submit($form, &$form_state) {
+  // Values are saved for each page.
+  // to carry forward to subsequent pages in the form.
+  // The Forms API rebuilds the form.
+
+  $form_state['page_values'][6] = $form_state['values'];
+
+//krumo($form_state);
+
+  if (!empty($form_state['page_values'][5])) {
+    $form_state['values'] = $form_state['page_values'][5];
+  }
+
+  // When form rebuilds in n+2 or so, use this to determine which page to build.
+  $form_state['page_num'] = 5;
   $form_state['rebuild'] = TRUE;
  }
 
@@ -1660,8 +1806,8 @@ function rc_res_full_get_resources_for_period($form, $form_state) {
   $rtime12m = date("i", strtotime($rtime));
   $rtime12a = date("a", strtotime($rtime));
 
-  $rlength = 1;
-//  $rlength = $form_state['page_values'][4]['res_length'];
+  $rlength = 30; // temp, get from rules
+//  $rlength = $form_state['page_values'][4]['res_length']; ===> now, 6: $rlength = $form_state['page_values'][6]['res_length'];
   $rlength =   $rlength/30;
 
 //krumo($rdate);
@@ -1670,7 +1816,8 @@ function rc_res_full_get_resources_for_period($form, $form_state) {
 //krumo($rtime12a);
 //krumo($rlength);
 
-$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
+$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
+//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
 $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
 $request_method = 'POST';
@@ -1679,10 +1826,10 @@ $request_retry = 3;
 // Send the request.
 $response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
 
-//krumo($response_voy);
+krumo($response_voy);
 
-  if ($response_voy->status_message == "Not Found" ) {
-    return $response_voy->status_message;
+  if ($response_voy->data == "[]" ) {
+    return "Not Found";
   } else {
     $patron_reservations = $response_voy->data;
     $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
@@ -1722,8 +1869,8 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
  */
 function rc_res_full_set_user_reservations($rrid, $str_create1) {
 
-//krumo($str_create1);
-//krumo($rrid);
+krumo($str_create1);
+krumo($rrid);
 
   $params = array();
   $params = json_encode($str_create1);
@@ -1739,7 +1886,7 @@ function rc_res_full_set_user_reservations($rrid, $str_create1) {
 
 //  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/1', $headers = array('Content-Type' => 'application/json'), $method = 'POST', $data = $params, $retry = 3);
 
-//krumo($response);
+krumo($response);
 
 }
 
