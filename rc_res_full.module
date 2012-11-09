@@ -776,32 +776,24 @@ function rc_res_full_form_page_five($form, &$form_state) {
   if ($rows != "Not Found") {
 
 //print_r("NOT EMPTY");
-
-
-//  $default_date_time = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
-
-
-
-  $dtimedate = $rows[0]['start'];
-  $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear );
-//  $utimedate = $matches[0];
-  $dtime = preg_match( '/-\d\d-/', $dtimedate, $tmonth );
+  $dtimedate = $rows[0]['start']; // get start time from value(s) returned from the web service call
+  $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear ); // extract the numerical year
+  $dtime = preg_match( '/-\d\d-/', $dtimedate, $tmonth ); // extract the numerical month
   $dtime = preg_match( '/\d\d/', $tmonth[0], $tmonth );
-  $dtime = preg_match( '/-\d\d /', $dtimedate, $tday );
+  $dtime = preg_match( '/-\d\d /', $dtimedate, $tday ); // extract the numerical day
   $dtime = preg_match( '/\d\d/', $tday[0], $tday );
-  $dddate = date("l", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));
+  $ddyear = date("Y", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of year. "Y" yields 2012
+  $ddmonth = date("M", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of month. "M" yields Jan through Dec
+  $ddday = date("j", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of day. "j" yields 1 through 31 with no leading 0
+  $dddow = date("l", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of Day of Week. "D" Monday through Sunday
 
-
-krumo($dddate);
-
-$ddtime = preg_replace( '/\d\d\d\d-\d\d-\d\d/', '', $dtimedate );
-//  $ddate = preg_replace( '/\d\d:\d\d [AM][PM]/', '', $dtimedate );
+  $ddtime = preg_replace( '/\d\d\d\d-\d\d-\d\d/', '', $dtimedate );  // extract start time from value(s) returned from the web service call
 
   $demos0 = array(
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#title' => t('Available Resources at ').$ddtime.t(' on $ddate'),
+      '#title' => t('Available Resources at ').$ddtime.t(' on '.$dddow.', '.$ddmonth.' '.$ddday),
     ),
 
     $form['table'] = array
@@ -1898,7 +1890,7 @@ function rc_res_full_form_page_five_empty_handler_submit_x($form, $form_state) {
 //  $rlength = $form_state['page_values'][4]['res_length']; ===> now, 6: $rlength = $form_state['page_values'][6]['res_length'];
   $rlength =   $rlength/30;
 
-krumo($rdate);
+//krumo($rdate);
 //krumo($rtime12h);
 //krumo($rtime12m);
 //krumo($rtime12a);
