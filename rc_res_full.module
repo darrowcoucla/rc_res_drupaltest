@@ -637,7 +637,21 @@ function rc_res_full_form_page_four($form, &$form_state) {
     $default_date_time = $form_state['values']['date'];
   } else {
     $default_date_time = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
-//    $default_date_time = preg_replace( '/\d\d:\d\d:\d\d/', '08:00:00', $default_date_time ); // use this to set a default start time e.g. 8:00am
+    $default_date_time_min = date("i", $_SERVER['REQUEST_TIME']);
+    $default_date_time_min = (int)$default_date_time_min;
+    if($default_date_time_min <= 15 ){
+      $default_date_time_min = 29;
+      $string = $default_date_time;
+      $pattern = '/:\d\d:/';
+      $replacement = ':'.$default_date_time_min.':';
+      $default_date_time = preg_replace($pattern, $replacement, $string);
+    } else if($default_date_time_min >= 30 && $default_date_time_min <= 45){
+      $default_date_time_min = 59;
+      $string = $default_date_time;
+      $pattern = '/:\d\d:/';
+      $replacement = ':'.$default_date_time_min.':';
+      $default_date_time = preg_replace($pattern, $replacement, $string);
+    }
   }
 
   $form = array();
@@ -759,18 +773,35 @@ function rc_res_full_form_page_five($form, &$form_state) {
 
   $demos0 = array();
 
-
-//krumo($rows);
-
   if ($rows != "Not Found") {
 
 //print_r("NOT EMPTY");
+
+
+//  $default_date_time = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
+
+
+
+  $dtimedate = $rows[0]['start'];
+  $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear );
+//  $utimedate = $matches[0];
+  $dtime = preg_match( '/-\d\d-/', $dtimedate, $tmonth );
+  $dtime = preg_match( '/\d\d/', $tmonth[0], $tmonth );
+  $dtime = preg_match( '/-\d\d /', $dtimedate, $tday );
+  $dtime = preg_match( '/\d\d/', $tday[0], $tday );
+  $dddate = date("l", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));
+
+
+krumo($dddate);
+
+$ddtime = preg_replace( '/\d\d\d\d-\d\d-\d\d/', '', $dtimedate );
+//  $ddate = preg_replace( '/\d\d:\d\d [AM][PM]/', '', $dtimedate );
 
   $demos0 = array(
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#title' => t('Available Resources:'),
+      '#title' => t('Available Resources at ').$ddtime.t(' on $ddate'),
     ),
 
     $form['table'] = array
