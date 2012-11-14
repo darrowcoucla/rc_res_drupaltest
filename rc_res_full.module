@@ -1152,9 +1152,9 @@ function rc_res_full_form_page_one_handler_submit($form, &$form_state) {
       $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
       variable_set('rc_res_full_get_user_category', $rc_res_full_get_user_category);
 
-      // get category rules here
-      $rc_res_full_get_user_rules = rc_res_full_get_user_rules($rc_res_full_get_user_category);
-      variable_set('rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
+// dhc wed      // get category rules here
+// dhc wed      $rc_res_full_get_user_rules = rc_res_full_get_user_rules($rc_res_full_get_user_category);
+// dhc wed      variable_set('rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
 
 //$my_kvar = variable_get('rc_res_full_get_user_rules');
 //$my_kvar = $my_kvar[0]['time_unit'];
@@ -1964,10 +1964,10 @@ function rc_res_full_get_resources_for_period_complete($form, $form_state) {
 
 
 
-  $my_kvar = variable_get('rc_res_full_get_user_rules');
-  $my_kvar = $my_kvar[0]['pod_lim'];
-  $rlength = $my_kvar/30;
-
+// dhc wed  $my_kvar = variable_get('rc_res_full_get_user_rules');
+// dhc wed  $my_kvar = $my_kvar[0]['pod_lim'];
+// dhc wed  $rlength = $my_kvar/30;
+$rlength = 2; //// dhc wed
 
 
 
