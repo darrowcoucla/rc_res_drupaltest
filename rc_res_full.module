@@ -732,7 +732,7 @@ function rc_res_full_form_page_five($form, &$form_state) {
   // read reervations given an UID (currently simulated in drupal)
   $rows = array();
 
-  $rows = rc_res_full_get_resources_for_period($form, $form_state);
+  $rows = rc_res_full_get_resources_for_period_complete($form, $form_state);
 
 
 //krumo($rows);
@@ -777,23 +777,36 @@ function rc_res_full_form_page_five($form, &$form_state) {
 
 //print_r("NOT EMPTY");
   $dtimedate = $rows[0]['start']; // get start time from value(s) returned from the web service call
+
   $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear ); // extract the numerical year
   $dtime = preg_match( '/-\d\d-/', $dtimedate, $tmonth ); // extract the numerical month
   $dtime = preg_match( '/\d\d/', $tmonth[0], $tmonth );
   $dtime = preg_match( '/-\d\d /', $dtimedate, $tday ); // extract the numerical day
   $dtime = preg_match( '/\d\d/', $tday[0], $tday );
+  $dtime = preg_match( '/\d\d:/', $dtimedate, $thour ); // extract the numerical hour
+  $dtime = preg_match( '/\d\d/', $thour[0], $thour );
+  $dtime = preg_match( '/:\d\d/', $dtimedate, $tminute ); // extract the numerical minute
+  $dtime = preg_match( '/\d\d/', $tminute[0], $tminute );
   $ddyear = date("Y", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of year. "Y" yields 2012
   $ddmonth = date("M", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of month. "M" yields Jan through Dec
   $ddday = date("j", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of day. "j" yields 1 through 31 with no leading 0
   $dddow = date("l", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of Day of Week. "D" Monday through Sunday
+  $ddhourmin = date("g:ia", mktime($thour[0], $tminute[0], 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of Day of Week. "D" Monday through Sunday
 
   $ddtime = preg_replace( '/\d\d\d\d-\d\d-\d\d/', '', $dtimedate );  // extract start time from value(s) returned from the web service call
 
   $demos0 = array(
+
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#title' => t('Available Resources at ').$ddtime.t(' on '.$dddow.', '.$ddmonth.' '.$ddday),
+      '#markup' => t('Your Reservations > Date&Time > <B>Available Resources</B> > Details > Submit'),
+    ),
+
+    $form['description2'] = array
+    (
+      '#type'  => 'item',
+      '#title' => t('Available Resources at ').$ddhourmin.t(' on '.$dddow.', '.$ddmonth.' '.$ddday),
     ),
 
     $form['table'] = array
@@ -897,9 +910,10 @@ function rc_res_full_form_page_six($form, &$form_state) {
 
   $form = array();
 
-  $form['description'] = array(
+  $form['description'] = array
+  (
     '#type'  => 'item',
-    '#title' => t('Reservation Details'),
+    '#markup' => t('Your Reservations > Date&Time > Available Resources > <B>Details</B> > Submit'),
   );
 
   $form['user_email'] = array(
@@ -1049,7 +1063,13 @@ $working_uid = variable_get('working_uid');
 
   $form = array();
 
-  $form['description'] = array(
+  $form['description'] = array
+  (
+    '#type'  => 'item',
+    '#markup' => t('Your Reservations > Date&Time > Available Resources > Details > <B>Submit</B>'),
+  );
+
+  $form['description2'] = array(
     '#type'  => 'item',
     '#title' => t('Success'),
   );
@@ -1125,12 +1145,22 @@ function rc_res_full_form_page_one_handler_submit($form, &$form_state) {
     }
   }
   else {
-    // else go to page 2
+    // else go forward to page 2
     $working_uid = $uid_from_shib;
     variable_set('working_uid', $working_uid);
-    // get user category here
+      // get user category here
       $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
       variable_set('rc_res_full_get_user_category', $rc_res_full_get_user_category);
+
+      // get category rules here
+      $rc_res_full_get_user_rules = rc_res_full_get_user_rules($rc_res_full_get_user_category);
+      variable_set('rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
+
+//$my_kvar = variable_get('rc_res_full_get_user_rules');
+//$my_kvar = $my_kvar[0]['time_unit'];
+//krumo( $my_kvar );
+
+
     $form_state['page_num'] = 3;
   }
   $form_state['rebuild'] = TRUE;
@@ -1759,6 +1789,52 @@ function rc_res_full_get_user_category($working_uid) {
 }
 
 /**
+ * get user rules from rules table
+ */
+function rc_res_full_get_user_rules($user_category) {
+global $user;
+  $uid_from_drupal = 0;
+  // read reervations given an UID (currently simulated in drupal)
+  $entries = array();
+  // select table
+  $select = db_select('rc_res', 'e');
+  // fields to read
+  $select->addField('e', 'cls_lim');
+  $select->addField('e', 'gsr_lim');
+  $select->addField('e', 'pod_lim');
+  $select->addField('e', 'cls_adv');
+  $select->addField('e', 'gsr_adv');
+  $select->addField('e', 'pod_adv');
+  $select->addField('e', 'multi_res');
+  $select->addField('e', 'time_per');
+  $select->addField('e', 'time_unit');
+  $select->addField('e', 'group_verify');
+    // read in only records that match te he current users uid
+  $select->condition('e.user_group', $user_category);
+  // Now, loop all these entries and show them in a table. Note that there is no
+  // db_fetch_* object or array function being called here. Also note that the
+  // following line could have been written as
+  // $entries = $select->execute()->fetchAll() which would return each selected
+  // record as an object instead of an array.
+  $entries = $select->execute()->fetchAll(PDO::FETCH_ASSOC);
+
+  if (!empty($entries)) {
+    $user_rules = $entries;
+  }
+  else {
+    $user_rules = -1;
+  }
+  return $user_rules;
+
+}
+
+
+
+
+
+
+
+/**
  * get list of user reservations
  */
 function rc_res_full_get_user_reservations($working_uid) {
@@ -1844,6 +1920,68 @@ function rc_res_full_get_resources_for_period($form, $form_state) {
 //krumo($rlength);
 
 $request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
+//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
+//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
+$request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
+$request_method = 'POST';
+$data = '';
+$request_retry = 3;
+// Send the request.
+$response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
+
+//krumo($response_voy);
+
+  if ($response_voy->data == "[]" ) {
+    return "Not Found";
+  } else {
+    $patron_reservations = $response_voy->data;
+    $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
+
+  //dsm($patron_status);
+    return $patron_reservations_array;
+  }
+}
+
+/**
+ * get list of available resources at starting time given start date/time
+ */
+function rc_res_full_get_resources_for_period_complete($form, $form_state) {
+
+// Set some parameters for sending request.
+
+// test and setup string
+//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2013-01-17+07%3a00+PM/until/96/length/1';
+
+  $delimiter = ' ';
+  $string = $form_state['page_values'][4]['date'];
+  $sub_array = explode ( $delimiter, $string );
+  $rdate = $sub_array[0];
+
+  $rtime = $sub_array[1];
+  $rtime12h = date("h", strtotime($rtime));
+  $rtime12m = date("i", strtotime($rtime));
+  $rtime12a = date("a", strtotime($rtime));
+
+
+
+  $my_kvar = variable_get('rc_res_full_get_user_rules');
+  $my_kvar = $my_kvar[0]['pod_lim'];
+  $rlength = $my_kvar/30;
+
+
+
+
+//  $rlength = 120; // temp, get from rules
+//  $rlength = $form_state['page_values'][4]['res_length']; ===> now, 6: $rlength = $form_state['page_values'][6]['res_length'];
+//  $rlength =   $rlength/30;
+
+//krumo($rdate);
+//krumo($rtime12h);
+//krumo($rtime12m);
+//krumo($rtime12a);
+//krumo($rlength);
+
+$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
 $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
