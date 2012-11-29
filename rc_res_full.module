@@ -491,6 +491,13 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // read reervations given an UID (currently simulated in drupal)
   $rows = array();
   $rows = rc_res_full_get_user_reservations($working_uid);
+//  $rules = 
+
+
+//  rc_res_full_set_user_reservations($working_uid);
+  //rc_res_full_get_open_resources();
+
+
   $header = array
   (
     'roomName' => t('Room Name'),
@@ -519,11 +526,15 @@ function rc_res_full_form_page_three($form, &$form_state) {
   }
   }
 
+krumo($options_form);
+
   if(!$options_form){
     $sub_delete = FALSE;
   } else {
     $sub_delete = TRUE;
   }
+
+
 
   $demos0 = array();
   $demos0 = array(
@@ -2307,3 +2318,17 @@ function rc_res_block_info() {
 //     )
 //  [#empty] => No existing reservations
 //  ) 
+
+
+
+... (Array, 2 elements)
+
+    -1999918871 (Array, 3 elements)
+        roomName (String, 31 characters ) media:scape R21 - Single Screen
+        startDate (String, 21 characters ) 2012-11-30 09:00:00.0
+        endDate (String, 21 characters ) 2012-11-30 10:00:00.0
+    -1999918829 (Array, 3 elements)
+        roomName (String, 28 characters ) RC Group Study Room 11630xxx
+        startDate (String, 21 characters ) 2012-11-28 19:30:00.0
+        endDate (String, 21 characters ) 2012-11-28 20:30:00.0
+
