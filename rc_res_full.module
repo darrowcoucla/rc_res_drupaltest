@@ -490,14 +490,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   // read reervations given an UID (currently simulated in drupal)
   $rows = array();
-
   $rows = rc_res_full_get_user_reservations($working_uid);
-
-
-//  rc_res_full_set_user_reservations($working_uid);
-  //rc_res_full_get_open_resources();
-
-
   $header = array
   (
     'roomName' => t('Room Name'),
@@ -513,6 +506,8 @@ function rc_res_full_form_page_three($form, &$form_state) {
   if (!empty($rows)) {
   foreach($rows['reservation'] as $row)
   {
+
+//  if ($row['startDate']) {} // dhc: detect old reservation and gray out
 
     $lcnt += 1;
     $options_form[$row['schedID']] = array // each element of the array is keyed with the PID
@@ -544,6 +539,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
       '#type' => 'tableselect',
       '#header' => $header,
       '#options' => $options_form,
+//      '#disabled' => true,
       '#empty' => t('No existing reservations'),
     ),
 
@@ -556,8 +552,16 @@ function rc_res_full_form_page_three($form, &$form_state) {
     ),
   );
 
+//$form['table'][-1999919132]['#disabled'] = true;
+//foreach( $options_form as $key => $value )
+//  {
+//  krumo($key);
+//  $form['table']['#options']['-1999919132']['#disable'] = TRUE;
+//  }
+//$form['table'][0]['#disabled'] = true;
+
   $demos1 = array();
-  if( $lcnt >= 4 ){
+  if( $lcnt >= 3 ){
   $demos1 = array(
     // future: if too many existing reservations, gray this out
     $form['description'] = array
@@ -570,7 +574,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
 
   $demos2 = array();
-  if( $lcnt >= 4 ){
+  if( $lcnt >= 3 ){
   $demos2 = array(
     $form['submit'] = array
     (
@@ -744,8 +748,9 @@ function rc_res_full_form_page_five($form, &$form_state) {
   $header = array
   (
     'title' => t('Title'),
-    'start' => t('Start'),
-    'end' => t('End'),
+//    'start' => t('Start'),
+//    'end' => t('End'),
+    'duration' => t('Max number of hours available'),
     'capacity' => t('Capacity'),
     'description' => t('Additional Info'),
   );
@@ -763,8 +768,9 @@ function rc_res_full_form_page_five($form, &$form_state) {
       $options_form[$o_index] = array // each element of the array is keyed with the PID
       (
 	'title' => $row['resources'][0]['title'], // 'start_date' was the key used in the header
-	'start' => $row['start'], // 'start_date' was the key used in the header
-	'end' => $row['end'], // 'start_date' was the key used in the header
+//	'start' => $row['start'], // 'start_date' was the key used in the header
+//	'end' => $row['end'], // 'start_date' was the key used in the header
+	'duration' => $row['duration'], // duration during which the resource is available
 	'capacity' => $row['resources'][0]['capacity'], // 'start_time' was the key used in the header
 	'description' => $row['resources'][0]['description'], // 'start_date' was the key used in the header
       );
@@ -1152,9 +1158,9 @@ function rc_res_full_form_page_one_handler_submit($form, &$form_state) {
       $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
       variable_set('rc_res_full_get_user_category', $rc_res_full_get_user_category);
 
-// dhc wed      // get category rules here
-// dhc wed      $rc_res_full_get_user_rules = rc_res_full_get_user_rules($rc_res_full_get_user_category);
-// dhc wed      variable_set('rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
+      // get category rules here
+      $rc_res_full_get_user_rules = rc_res_full_get_user_rules($rc_res_full_get_user_category);
+      variable_set('rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
 
 //$my_kvar = variable_get('rc_res_full_get_user_rules');
 //$my_kvar = $my_kvar[0]['time_unit'];
@@ -1829,6 +1835,42 @@ global $user;
 }
 
 
+// /**
+//  * Read from the database using a filter array.
+//  *
+//  */
+// function rc_res_entry_load($entry = array()) {
+//   // Read all fields from the rc_res table.
+//   $select = db_select('rc_res', 'example');
+//   $select->condition('user_group', 'Graduate');
+//   $select->fields('example');
+// 
+//   // Add each field and value as a condition to this query.
+//   foreach ($entry as $field => $value) {
+//     $select->condition($field, $value);
+//   }
+//   // Return the result in object format.
+//   return $select->execute()->fetchAll();
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1964,10 +2006,13 @@ function rc_res_full_get_resources_for_period_complete($form, $form_state) {
 
 
 
-// dhc wed  $my_kvar = variable_get('rc_res_full_get_user_rules');
-// dhc wed  $my_kvar = $my_kvar[0]['pod_lim'];
-// dhc wed  $rlength = $my_kvar/30;
-$rlength = 2; //// dhc wed
+  $my_kvar = variable_get('rc_res_full_get_user_rules');
+
+krumo($my_kvar);
+
+  $my_kvar = $my_kvar[0]['pod_lim'];
+  $rlength = $my_kvar/30;
+
 
 
 
@@ -2242,3 +2287,23 @@ function rc_res_block_info() {
 // 203806377           UCLA Graduate
 
 
+// Array (
+//  [#id] => formformform
+//  [#type] => tableselect
+//  [#header] =>
+//   Array (
+//     [roomName] => Room Name
+//     [startDate] => Start
+//     [endDate] => End
+//     )
+//  [#options] =>
+//   Array (
+//     [0] =>
+//       Array (
+// 	[roomName] => media:scape R22 - Single Screen
+// 	[startDate] => 2012-11-26 12:00:00.0
+// 	[endDate] => 2012-11-26 13:00:00.0
+// 	)
+//     )
+//  [#empty] => No existing reservations
+//  ) 
