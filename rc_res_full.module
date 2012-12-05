@@ -455,6 +455,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   // get the current date/time of the DrupalTest server
   $nowDate = new DateTime("now");
+  $startDatePast = array();
+  $startDateLatest = array();
+  $earliest_new_resservation = array();
 
   global $user;
 
@@ -494,13 +497,11 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // check to verify that at least on row was obtained
   if (!empty($rows['reservation'])) {
 
-    // yes, at least one row was returned, now loop through each row
+    // if at least one row was returned, loop through each row
+
+
+    // start of foreach
     foreach($rows['reservation'] as $row) {
-//    if ($row['startDate']) {} // dhc: detect old reservation and gray out
-
-      // count number of rows
-      $lcnt += 1;
-
       // each element of the array is keyed with the PID
       $options_form[$row['schedID']] = array
       (
@@ -508,10 +509,27 @@ function rc_res_full_form_page_three($form, &$form_state) {
 	'startDate' => $row['startDate'],
 	'endDate' => $row['endDate'],
       );
+
+      // count number of rows
+      $lcnt += 1;
+
+      // save any expired reservation; only one should exist and it should be within the last 24 hours (set in web services call)
+      $curRowDate = new DateTime($row['startDate']);
+      if( $curRowDate < $nowDate){
+	$startDatePast = $curRowDate;
+      }else{
+	$startDateLatest = $curRowDate; // dhc: next, compare all dates while going thru the foreach to determine legal/illegal periods
+      }
     }
+    // end of foreach
+
+  }
+
+  // check to find if there any existing reservations set in the future
+  if (!empty($startDateLatest)) {
 
     // calculate the time that is 24hrs later than the start date/time of the latest existing reservation
-    $earliest_new_resservation = new DateTime($row['startDate']);
+    $earliest_new_resservation = $startDateLatest;
 
     ////////////////////////dhc use val from table in  place of 24h
     $earliest_new_resservation->add( new DateInterval('PT24H'));
@@ -524,7 +542,17 @@ function rc_res_full_form_page_three($form, &$form_state) {
 //krumo('poipoi');
 //}
 
-    }
+  }
+
+
+
+
+
+
+
+
+
+
 
   // ??
   if(!$options_form){
@@ -533,17 +561,21 @@ function rc_res_full_form_page_three($form, &$form_state) {
     $sub_delete = TRUE;
   }
 
-  $form_p3 = array();
-  $form_p3 = array(
+  // build the main part of the form
+  $form_p3_main = array();
+  $form_p3_main = array(
+
+    // breadcrumbs (hardcoded for now)
     $form['description'] = array
     (
       '#type'  => 'item',
       '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'),
     ),
 
+    // main array
     $form['table'] = array
     (
-      '#id' => 'formformform',
+      '#id' => 'form_p3',
       '#type' => 'tableselect',
       '#header' => $header,
       '#options' => $options_form,
@@ -551,6 +583,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
       '#empty' => t('No existing reservations'),
     ),
 
+    // delete button
     $form['submit'] = array
     (
       '#type' => 'submit',
@@ -560,68 +593,57 @@ function rc_res_full_form_page_three($form, &$form_state) {
     ),
   );
 
-//$form['table'][-1999919132]['#disabled'] = true;
-//foreach( $options_form as $key => $value )
-//  {
-//  krumo($key);
-//  $form['table']['#options']['-1999919132']['#disable'] = TRUE;
-//  }
-//$form['table'][0]['#disabled'] = true;
-
-  $demos1 = array();
-  if( $lcnt >= 3 ){
-  $demos1 = array(
-    // future: if too many existing reservations, gray this out
-    $form['description'] = array
-    (
-      '#type'  => 'item',
-      '#title' => t('Reservations maxed out - please try again after the oldest reservation has passed (or delete one or more reservations right now) before making a new reservation.'),
-    ),
-  );
+  // check for maxed out reservations, add a "reservations are at a max" message to the form if necessary
+  $form_p3_maxed = array();
+  if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
+    $form_p3_maxed = array(
+      $form['description'] = array
+      (
+	'#type'  => 'item',
+	'#title' => t('Reservations maxed out - please try again after the oldest reservation has passed (or delete one or more reservations right now) before making a new reservation.'),
+      ),
+    );
   }
 
+  // add the submit button, disable if reservations are at a max
+  $form_p3_submit = array();
 
-  $demos2 = array();
-  if( $lcnt >= 3 ){
-  $demos2 = array(
-    $form['submit'] = array
-    (
-      '#type' => 'submit',
-      '#value' => t('Create a new reservation'),
-      '#submit' => array('rc_res_full_form_page_three_handler_submit'),
-      '#disabled' => TRUE,
-    ),
-  );
-  }
-  else{
-  $demos2 = array(
-    $form['description'] = array
-    (
-      '#type'  => 'item',
-      '#title' => t('Please click on the button to create a new reservation'),
-    ),
+    // disable the submit button if this test is true
+    if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
+      $form_p3_submit = array(
+	$form['submit'] = array(
+	  '#type' => 'submit',
+	  '#value' => t('Create a new reservation'),
+	  '#submit' => array('rc_res_full_form_page_three_handler_submit'),
+	  '#disabled' => TRUE,
+	),
+      );
+    }else{
+      $form_p3_submit = array(
+	$form['description'] = array(
+	  '#type'  => 'item',
+	  '#title' => t('Please click on the button to create a new reservation'),
+	),
 
-    $form['submit'] = array
-    (
-      '#type' => 'submit',
-      '#value' => t('Create a new reservation'),
-      '#submit' => array('rc_res_full_form_page_three_handler_submit'),
-      '#disabled' => FALSE,
-    ),
-  );
-}
+	$form['submit'] = array(
+	  '#type' => 'submit',
+	  '#value' => t('Create a new reservation'),
+	  '#submit' => array('rc_res_full_form_page_three_handler_submit'),
+	  '#disabled' => FALSE,
+	),
+      );
+    }
 
-//krumo($form);
-
-$demos = array();
-$demos = $form_p3;
-$demos[] = $demos1;
-$demos[] = $demos2;
+  // assemble the various for arrays into one array
+  $form_p3 = array();
+  $form_p3 = $form_p3_main;
+  $form_p3[] = $form_p3_maxed;
+  $form_p3[] = $form_p3_submit;
 
   // The rest of this function just places the above arrays in a context where
   // they can be rendered (hopefully attractively and usefully) on the page.
   $page_array = array();
-  foreach ($demos as $key => $item) {
+  foreach ($form_p3 as $key => $item) {
     $page_array[$key]['#description'] = $key;
 //    $page_array[$key]['hr'] = array('#markup' => '<hr/>');
     $page_array[$key]['rendered'] = array($item);
