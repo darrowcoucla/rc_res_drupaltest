@@ -544,16 +544,6 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   }
 
-
-
-
-
-
-
-
-
-
-
   // ??
   if(!$options_form){
     $sub_delete = FALSE;
@@ -693,7 +683,7 @@ function rc_res_full_form_page_four($form, &$form_state) {
 $myDate = new DateTime($earliest_new_resservation);
 $myDate -> add(new DateInterval('P1D'));
 
-krumo($myDate -> format('l'));
+//krumo($myDate -> format('l'));
 
   $form = array();
   $form['description'] = array
@@ -821,8 +811,8 @@ function rc_res_full_form_page_five($form, &$form_state) {
 //print_r("NOT EMPTY");
   $dtimedate = $rows[0]['start']; // get start time from value(s) returned from the web service call
 
-krumo($dtimedate);
-krumo($form_state['page_values'][4]['date']);
+//krumo($dtimedate);
+//krumo($form_state['page_values'][4]['date']);
 
 
   $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear ); // extract the numerical year
@@ -2060,7 +2050,7 @@ function rc_res_full_get_resources_for_period_complete($form, $form_state) {
 
   $my_kvar = variable_get('rc_res_full_get_user_rules');
 
-krumo($my_kvar);
+//krumo($my_kvar);
 
   $my_kvar = $my_kvar[0]['pod_lim'];
   $rlength = $my_kvar/30;
