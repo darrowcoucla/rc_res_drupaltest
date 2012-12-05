@@ -399,7 +399,6 @@ $GLOBALS['conf']['cache']=FALSE;
     '#value' => t('Sign in'),
     '#submit' => array('rc_res_full_form_page_one_handler_submit'),
   );
-dsm("debug1");
   return $form;
 }
 
