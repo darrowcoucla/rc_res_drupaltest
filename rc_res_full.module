@@ -657,8 +657,6 @@ function rc_res_full_form_page_four($form, &$form_state) {
 
   $earliest_new_resservation = variable_get('earliest_new_resservation');
 
-$myDate = new DateTime($earliest_new_resservation);
-$myDate -> add(new DateInterval('P1D'));
 
 //krumo($myDate -> format('l'));
 
