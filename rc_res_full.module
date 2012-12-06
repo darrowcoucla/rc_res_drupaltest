@@ -1250,7 +1250,7 @@ function rc_res_full_form_page_three_handler_submit($form, &$form_state) {
   }
 
   // When form rebuilds in n+2 or so, use this to determine which page to build.
-  $form_state['page_num'] = 4;
+  $form_state['page_num'] = 3;
   $form_state['rebuild'] = TRUE;
 }
 
