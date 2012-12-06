@@ -684,12 +684,6 @@ $myDate -> add(new DateInterval('P1D'));
 //krumo($myDate -> format('l'));
 
   $form = array();
-  $form['description'] = array
-  (
-    '#type'  => 'item',
-    '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<BR>
-		    weqwe '.$earliest_new_resservation),
-  );
 
 
 //  $form['reservation_type'] = array(
@@ -712,17 +706,6 @@ $myDate -> add(new DateInterval('P1D'));
 //    ),
 //  );
 
-  $form['back3'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Back'),
-    '#submit' => array('rc_res_full_form_page_fourb_handler_submit'),
-  );
-
-  $form['submit'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Next'),
-    '#submit' => array('rc_res_full_form_page_four_handler_submit'),
-  );
   return $form;
 }
 
