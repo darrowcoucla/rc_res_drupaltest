@@ -654,6 +654,8 @@ function rc_res_full_form_page_four($form, &$form_state) {
 
 //krumo($form_state['page_values']);
 
+dsm("debug1");
+
   if (!empty($form_state['page_values'][4])) {
     $form_state['values'] = $form_state['page_values'][4];
     $default_date_time = $form_state['values']['date'];
