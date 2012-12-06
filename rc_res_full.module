@@ -542,16 +542,6 @@ function rc_res_full_form_page_three($form, &$form_state) {
 //}
   }
 
-
-
-
-
-
-
-
-
-
-
   // ??
   if(!$options_form){
     $sub_delete = FALSE;
@@ -691,7 +681,7 @@ function rc_res_full_form_page_four($form, &$form_state) {
 $myDate = new DateTime($earliest_new_resservation);
 $myDate -> add(new DateInterval('P1D'));
 
-krumo($myDate -> format('l'));
+//krumo($myDate -> format('l'));
 
   $form = array();
   $form['description'] = array
