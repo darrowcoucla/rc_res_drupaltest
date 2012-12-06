@@ -654,27 +654,6 @@ function rc_res_full_form_page_four($form, &$form_state) {
 
 //krumo($form_state['page_values']);
 
-  if (!empty($form_state['page_values'][4])) {
-    $form_state['values'] = $form_state['page_values'][4];
-    $default_date_time = $form_state['values']['date'];
-  } else {
-    $default_date_time = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
-    $default_date_time_min = date("i", $_SERVER['REQUEST_TIME']);
-    $default_date_time_min = (int)$default_date_time_min;
-    if($default_date_time_min <= 15 ){
-      $default_date_time_min = 29;
-      $string = $default_date_time;
-      $pattern = '/:\d\d:/';
-      $replacement = ':'.$default_date_time_min.':';
-      $default_date_time = preg_replace($pattern, $replacement, $string);
-    } else if($default_date_time_min >= 30 && $default_date_time_min <= 45){
-      $default_date_time_min = 59;
-      $string = $default_date_time;
-      $pattern = '/:\d\d:/';
-      $replacement = ':'.$default_date_time_min.':';
-      $default_date_time = preg_replace($pattern, $replacement, $string);
-    }
-  }
 
   $earliest_new_resservation = variable_get('earliest_new_resservation');
 
@@ -1250,8 +1229,7 @@ function rc_res_full_form_page_three_handler_submit($form, &$form_state) {
   }
 
   // When form rebuilds in n+2 or so, use this to determine which page to build.
-  $form_state['page_num'] = 3; // 3 for test
-//  $form_state['page_num'] = 4;
+  $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
 }
 
