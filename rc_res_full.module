@@ -654,8 +654,6 @@ function rc_res_full_form_page_four($form, &$form_state) {
 
 //krumo($form_state['page_values']);
 
-dsm("debug1");
-
   if (!empty($form_state['page_values'][4])) {
     $form_state['values'] = $form_state['page_values'][4];
     $default_date_time = $form_state['values']['date'];
@@ -1252,7 +1250,8 @@ function rc_res_full_form_page_three_handler_submit($form, &$form_state) {
   }
 
   // When form rebuilds in n+2 or so, use this to determine which page to build.
-  $form_state['page_num'] = 4;
+  $form_state['page_num'] = 3; // 3 for test
+//  $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
 }
 
