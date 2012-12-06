@@ -651,7 +651,7 @@ function rc_res_full_form_page_four($form, &$form_state) {
   (
     '#type'  => 'item',
     '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<BR>
-		    weqwe '),
+		    weqwe '.$earliest_new_resservation),
   );
 
   return $form;
