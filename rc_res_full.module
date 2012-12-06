@@ -645,6 +645,43 @@ function rc_res_full_form_page_three($form, &$form_state) {
  * page 4 ......................................................................................................................
  */
 function rc_res_full_form_page_four($form, &$form_state) {
+  // Build page 4.
+  // Build page 4.
+  // Build page 4.
+
+// drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
+// drupal_set_message(t("User ID: " . variable_get('working_uid') ));
+
+//krumo($form_state['page_values']);
+
+  if (!empty($form_state['page_values'][4])) {
+    $form_state['values'] = $form_state['page_values'][4];
+    $default_date_time = $form_state['values']['date'];
+  } else {
+    $default_date_time = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
+    $default_date_time_min = date("i", $_SERVER['REQUEST_TIME']);
+    $default_date_time_min = (int)$default_date_time_min;
+    if($default_date_time_min <= 15 ){
+      $default_date_time_min = 29;
+      $string = $default_date_time;
+      $pattern = '/:\d\d:/';
+      $replacement = ':'.$default_date_time_min.':';
+      $default_date_time = preg_replace($pattern, $replacement, $string);
+    } else if($default_date_time_min >= 30 && $default_date_time_min <= 45){
+      $default_date_time_min = 59;
+      $string = $default_date_time;
+      $pattern = '/:\d\d:/';
+      $replacement = ':'.$default_date_time_min.':';
+      $default_date_time = preg_replace($pattern, $replacement, $string);
+    }
+  }
+
+  $earliest_new_resservation = variable_get('earliest_new_resservation');
+
+$myDate = new DateTime($earliest_new_resservation);
+$myDate -> add(new DateInterval('P1D'));
+
+//krumo($myDate -> format('l'));
 
   $form = array();
   $form['description'] = array
@@ -654,6 +691,47 @@ function rc_res_full_form_page_four($form, &$form_state) {
 		    weqwe '.$earliest_new_resservation),
   );
 
+  $form['date'] = array(
+    '#type' => 'date_popup', // Provided by the date_popup module
+    '#default_value' => $default_date_time,
+    '#date_format' => 'Y-m-d h:i A', // Uses the PHP date() format - http://php.net/manual/en/function.date.php
+    '#date_year_range' => '0:+2', // Limits the year range to the next two upcoming years
+    '#date_increment' => 30,
+    '#required' => TRUE,
+    '#date_label_position' => 'above',
+  );
+
+//  $form['reservation_type'] = array(
+//    '#type' => 'radios',
+//    '#options' => array(
+//      '60'   => t('1 hour.'),
+//      '90'   => t('1-1/2 hours.'),
+//      '120'   => t('2 hours.'),
+//    ),
+//    '#title' => t('Select Reservation Length'),
+//  );
+
+// $form['res_length'] = array(
+//    '#title' => t('Duration'),
+//    '#type' => 'select',
+//    '#options' => array(
+//      60 => t('1 hour'),
+//      90 => t('1 1/2 hours'),
+//      120 => t('2 hours'),
+//    ),
+//  );
+
+  $form['back3'] = array(
+    '#type'  => 'submit',
+    '#value' => t('Back'),
+    '#submit' => array('rc_res_full_form_page_fourb_handler_submit'),
+  );
+
+  $form['submit'] = array(
+    '#type'  => 'submit',
+    '#value' => t('Next'),
+    '#submit' => array('rc_res_full_form_page_four_handler_submit'),
+  );
   return $form;
 }
 
