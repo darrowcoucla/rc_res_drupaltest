@@ -453,7 +453,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
   $my_fresv_max = $my_advance/$my_delta;
 
   // get the current date/time of the DrupalTest server
-  //$nowDate = new DateTime("now"); 
+  $nowDate = new DateTime("now");
   $startDatePast = array();
   $startDateLatest = array();
   $earliest_new_resservation = array();
@@ -514,8 +514,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
       // save any expired reservation; only one should exist and it should be within the last 24 hours (set in web services call)
       $curRowDate = new DateTime($row['startDate']);
-      if( $curRowDate){
-//      if( $curRowDate < $nowDate){
+      if( $curRowDate < $nowDate){
 	$startDatePast = $curRowDate;
       }else{
 	$startDateLatest = $curRowDate; // dhc: next, compare all dates while going thru the foreach to determine legal/illegal periods
@@ -584,8 +583,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   // check for maxed out reservations, add a "reservations are at a max" message to the form if necessary
   $form_p3_maxed = array();
-  if( $lcnt >= $my_fresv_max ){
-//  if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
+  if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
     $form_p3_maxed = array(
       $form['description'] = array
       (
@@ -599,8 +597,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
   $form_p3_submit = array();
 
     // disable the submit button if this test is true
-    if( $lcnt >= $my_fresv_max ){
-//    if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
+    if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
       $form_p3_submit = array(
 	$form['submit'] = array(
 	  '#type' => 'submit',

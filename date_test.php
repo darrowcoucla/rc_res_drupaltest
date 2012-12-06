@@ -1,4 +1,5 @@
 <?php
+$nowDate = new DateTime("now");
 $d1=new DateTime("2012-07-08 11:14:15.638276");
 $d2=new DateTime("2012-07-08 11:14:15.889342");
 $diff=$d2->diff($d1);
