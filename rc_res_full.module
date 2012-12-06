@@ -809,8 +809,8 @@ function rc_res_full_form_page_five($form, &$form_state) {
 //print_r("NOT EMPTY");
   $dtimedate = $rows[0]['start']; // get start time from value(s) returned from the web service call
 
-krumo($dtimedate);
-krumo($form_state['page_values'][4]['date']);
+//krumo($dtimedate);
+//krumo($form_state['page_values'][4]['date']);
 
 
   $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear ); // extract the numerical year
@@ -2048,7 +2048,7 @@ function rc_res_full_get_resources_for_period_complete($form, $form_state) {
 
   $my_kvar = variable_get('rc_res_full_get_user_rules');
 
-krumo($my_kvar);
+//krumo($my_kvar);
 
   $my_kvar = $my_kvar[0]['pod_lim'];
   $rlength = $my_kvar/30;
