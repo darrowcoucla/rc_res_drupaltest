@@ -517,6 +517,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
       if( $curRowDate < $nowDate){
 	$startDatePast = $curRowDate;
       }else{
+	$curRowDate = new DateTime($row['startDate'].' +1 day');
 	$startDateLatest = $curRowDate; // dhc: next, compare all dates while going thru the foreach to determine legal/illegal periods
       }
     }
@@ -531,7 +532,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
     $earliest_new_resservation = $startDateLatest;
 
     ////////////////////////dhc use val from table in  place of 24h
-    $earliest_new_resservation->add( new DateInterval('PT24H'));
+//    $earliest_new_resservation2->add( new DateInterval('PT24H')); // does not work in php 5.2.6
+
+//krumo($earliest_new_resservation);
 
     // save for later pages
     variable_set('earliest_new_resservation', $row['startDate']);
