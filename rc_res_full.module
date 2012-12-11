@@ -529,19 +529,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
       }else if(!empty($startDatePast)){
 	$earliest_new_resservation = new DateTime($row['startDate'].' +1 day');
 	if( $earliest_new_resservation > $nowDate){
-
-print_r($earliest_new_resservation);
-
-	  $earliest_new_resservation - $nowDate;
 	  $waitFlag = 1;
 	}
       }
-
-
-
-
-
-
 
 //  dhc: ver1 //      if( $curRowDate < $nowDate){
 //	$startDatePast = $curRowDate;
@@ -627,7 +617,7 @@ print_r($earliest_new_resservation);
       $form['description'] = array
       (
 	'#type'  => 'item',
-	'#title' => t('Only 1 Reservation per 24 hours is allowed - please try again after '. $earliest_new_resservation->format('Y-m-d')),
+	'#title' => t('Only 1 Reservation per 24 hours is allowed - please try again after '. $earliest_new_resservation->format('g:ia \o\n l jS F Y')),
       ),
     );
   }
