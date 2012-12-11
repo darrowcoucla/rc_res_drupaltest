@@ -447,14 +447,17 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // retrieve the policy rules previously saved in the rules table
   $my_kvar = variable_get('rc_res_full_get_user_rules');
 
-  // calculate how many items the current category of user may have reserved into the future - typically either 1 or 3
+  // get the number of items the current category of user is allowed to reserve into the future - typically either 1 or 3
   $my_advance = $my_kvar[0]['cls_adv'];
   $my_delta = $my_kvar[0]['time_per'];
-  $my_fresv_max = $my_advance/$my_delta;
+  $my_fresv_max = $my_delta;
+//  $my_fresv_max = $my_advance/$my_delta;
 
   // get the current date/time of the DrupalTest server
   $nowDate = new DateTime("now");
+  $earliest_new_resservation = $nowDate; // set to nowdate initially, update below if needed
   $startDatePast = array();
+  $startDateFuture = array();
   $startDateLatest = array();
   $earliest_new_resservation = array();
 
@@ -477,7 +480,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
     }
   }
 
-  // read reervations given an UID (currently simulated in drupal)
+  // read reervations given a UID (currently simulated in drupal)
   $rows = array();
   $rows = rc_res_full_get_user_reservations($working_uid);
 
@@ -494,8 +497,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
   $lcnt = 0;
 
   // check to verify that at least on row was obtained
+  $deleteFlag = 0;
+  $waitFlag = 0;
   if (!empty($rows['reservation'])) {
-
     // if at least one row was returned, loop through each row
 
 
@@ -512,24 +516,53 @@ function rc_res_full_form_page_three($form, &$form_state) {
       // count number of rows
       $lcnt += 1;
 
-      // save any expired reservation; only one should exist and it should be within the last 24 hours (set in web services call)
+      // save any expired reservation; only one should exist and it should be within the last 24 hours (detection of expired reservation and period in which to detect is set in web services call)
       $curRowDate = new DateTime($row['startDate']);
       if( $curRowDate < $nowDate){
 	$startDatePast = $curRowDate;
       }else{
-	$curRowDate = new DateTime($row['startDate'].' +1 day');
-	$startDateLatest = $curRowDate; // dhc: next, compare all dates while going thru the foreach to determine legal/illegal periods
+	$startDateFuture = $curRowDate;
       }
+
+      if (!empty($startDateFuture)) {
+	$deleteFlag = 1;
+      }else if(!empty($startDatePast)){
+	$earliest_new_resservation = new DateTime($row['startDate'].' +1 day');
+	if( $earliest_new_resservation > $nowDate){
+
+$interval = $earliest_new_resservation->diff($nowDate);
+
+
+print_r($interval);
+//krumo($interval);
+//krumo($nowDate);
+
+	  $earliest_new_resservation - $nowDate;
+	  $waitFlag = 1;
+	}
+      }
+
+
+
+
+
+
+
+//  dhc: ver1 //      if( $curRowDate < $nowDate){
+//	$startDatePast = $curRowDate;
+//      }else{
+//	$curRowDate = new DateTime($row['startDate'].' +1 day');
+//	$startDateLatest = $curRowDate; // dhc: next, compare all dates while going thru the foreach to determine legal/illegal periods
+//      }
     }
     // end of foreach
-
   }
 
   // check to find if there any existing reservations set in the future
-  if (!empty($startDateLatest)) {
+//  if (!empty($startDateLatest)) {
 
     // calculate the time that is 24hrs later than the start date/time of the latest existing reservation
-    $earliest_new_resservation = $startDateLatest;
+//    $earliest_new_resservation = $startDateLatest;
 
     ////////////////////////dhc use val from table in  place of 24h
 //    $earliest_new_resservation2->add( new DateInterval('PT24H')); // does not work in php 5.2.6
@@ -537,13 +570,13 @@ function rc_res_full_form_page_three($form, &$form_state) {
 //krumo($earliest_new_resservation);
 
     // save for later pages
-    variable_set('earliest_new_resservation', $row['startDate']);
+//    variable_set('earliest_new_resservation', $row['startDate']);
 
 //
 //if( $myDate > $nowDate){
 //krumo('poipoi');
 //}
-  }
+//  }
 
   // ??
   if(!$options_form){
@@ -586,7 +619,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   // check for maxed out reservations, add a "reservations are at a max" message to the form if necessary
   $form_p3_maxed = array();
-  if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
+  if( $deleteFlag ){
     $form_p3_maxed = array(
       $form['description'] = array
       (
@@ -594,13 +627,33 @@ function rc_res_full_form_page_three($form, &$form_state) {
 	'#title' => t('Reservations maxed out - please try again after the oldest reservation has passed (or delete one or more reservations right now) before making a new reservation.'),
       ),
     );
+  }else  if( $waitFlag ){
+    $form_p3_maxed = array(
+      $form['description'] = array
+      (
+	'#type'  => 'item',
+	'#title' => t('Only 1 Reservation per 24 hours is allowed - please try again after '. $earliest_new_resservation->format('Y-m-d')),
+      ),
+    );
   }
+
+// dhc: ver1  // check for maxed out reservations, add a "reservations are at a max" message to the form if necessary
+//  $form_p3_maxed = array();
+//  if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
+//    $form_p3_maxed = array(
+//      $form['description'] = array
+//      (
+//	'#type'  => 'item',
+//	'#title' => t('Reservations maxed out - please try again after the oldest reservation has passed (or delete one or more reservations right now) before making a new reservation.'),
+//      ),
+//    );
+//  }
 
   // add the submit button, disable if reservations are at a max
   $form_p3_submit = array();
 
     // disable the submit button if this test is true
-    if( $lcnt >= $my_fresv_max || $startDateLatest > $nowDate ){
+    if( $deleteFlag || $waitFlag ){
       $form_p3_submit = array(
 	$form['submit'] = array(
 	  '#type' => 'submit',
