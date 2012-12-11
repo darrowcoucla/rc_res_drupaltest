@@ -530,12 +530,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 	$earliest_new_resservation = new DateTime($row['startDate'].' +1 day');
 	if( $earliest_new_resservation > $nowDate){
 
-//$interval = $earliest_new_resservation->diff($nowDate);
-
-
-//print_r($interval);
-//krumo($interval);
-//krumo($nowDate);
+print_r($earliest_new_resservation);
 
 	  $earliest_new_resservation - $nowDate;
 	  $waitFlag = 1;
