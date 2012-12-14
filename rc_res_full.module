@@ -555,9 +555,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
     ////////////////////////dhc use val from table in  place of 24h
 //    $earliest_new_reservation2->add( new DateInterval('PT24H')); // does not work in php 5.2.6
 
-//krumo($earliest_new_reservation);
+//krumo($earliest_new_reservation); 
 
-    // save for later pages
+    // save for later pages; may not be needed at this point 
 //    variable_set('earliest_new_reservation', $row['startDate']);
 
 //
