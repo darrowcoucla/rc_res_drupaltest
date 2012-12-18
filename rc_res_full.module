@@ -454,11 +454,20 @@ function rc_res_full_form_page_three($form, &$form_state) {
 //  $my_fresv_max = $my_advance/$my_delta;
 
   // get the current date/time of the DrupalTest server
-  $nowDate = new DateTime("now");
-  $earliest_new_reservation = new DateTime("now".' +1 day');
+  $nowDate = strtotime("now");
+  $earliest_new_reservation = strtotime("now".' +1 day');
   $startDatePast = array();
   $startDateFuture = array();
   $startDateLatest = array();
+
+
+//  // get the current date/time of the DrupalTest server
+//  $nowDate = new DateTime("now");
+//  $earliest_new_reservation = new DateTime("now".' +1 day');
+//  $startDatePast = array();
+//  $startDateFuture = array();
+//  $startDateLatest = array();
+
 
   global $user;
 
@@ -479,7 +488,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
     }
   }
 
-  // read reervations given a UID (currently simulated in drupal)
+  // read reservations given a UID (currently simulated in drupal)
   $rows = array();
   $rows = rc_res_full_get_user_reservations($working_uid);
 
@@ -515,8 +524,8 @@ function rc_res_full_form_page_three($form, &$form_state) {
       // count number of rows
       $lcnt += 1;
 
-      // save any expired reservation; only one should exist and it should be within the last 24 hours (detection of expired reservation and period in which to detect is set in web services call)
-      $curRowDate = new DateTime($row['startDate']);
+      // save any expired reservation; only one should exist and it should be within the last 24 hours (detection of expired reservation and period in which to detect is set in the web services call)
+      $curRowDate = strtotime($row['startDate']);
       if( $curRowDate < $nowDate){
 	$startDatePast = $curRowDate;
       }else{
@@ -526,7 +535,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
       if (!empty($startDateFuture)) {
 	$deleteFlag = 1;
       }else if(!empty($startDatePast)){
-	$earliest_new_reservation = new DateTime($row['startDate'].' +1 day');
+	$earliest_new_reservation = strtotime($row['startDate'].' +1 day');
 	if( $earliest_new_reservation > $nowDate){
 	  $waitFlag = 1;
 	}
@@ -728,15 +737,13 @@ function rc_res_full_form_page_four($form, &$form_state) {
 //krumo($earliest_new_reservation);
 
   // convert to old style to work under php 5.2.x
-  $old_date_timestamp = strtotime($earliest_new_reservation->date);
+  $old_date_timestamp = strtotime($earliest_new_reservation);
   $earliest_new_reservation_time = date('g:ia \o\n l jS F Y', $old_date_timestamp);
 
 //krumo($old_date_timestamp);
 //krumo($earliest_new_reservation);
 //krumo($earliest_new_reservation_time);
 
-echo '===>';
-print_r($old_date_timestamp);
 //print_r($earliest_new_reservation_time);
 
   if( $userDateTime && $userDateTime > $earliest_new_reservation){
@@ -1353,7 +1360,7 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   }
 
   // get the user's selection
-  $userDate = new DateTime($form_state['page_values'][4]['date']);
+  $userDate = strtotime($form_state['page_values'][4]['date']);
 
   // get the earliest legal reservation time
   $earliest_new_reservation = variable_get('earliest_new_reservation');
@@ -1361,7 +1368,7 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   // is the user's selection time for a new reservation more that 24 hours into the future?
   if( $userDate > $earliest_new_reservation){
   // save the user's selection time before looping back and asking for a new selection
-//    variable_set('userDate', $userDate);
+    variable_set('userDate', $userDate);
     $form_state['page_num'] = 4;
     $form_state['rebuild'] = TRUE;
   }else{
