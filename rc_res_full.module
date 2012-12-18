@@ -731,6 +731,7 @@ function rc_res_full_form_page_four($form, &$form_state) {
   $old_date_timestamp = strtotime($earliest_new_reservation->date);
   $earliest_new_reservation_time = date('g:ia \o\n l jS F Y', $old_date_timestamp);
 
+//krumo($old_date_timestamp);
 //krumo($earliest_new_reservation);
 //krumo($earliest_new_reservation_time);
 
