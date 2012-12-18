@@ -734,6 +734,7 @@ function rc_res_full_form_page_four($form, &$form_state) {
 //krumo($earliest_new_reservation);
 //krumo($earliest_new_reservation_time);
 
+echo '===>';
 print_r($old_date_timestamp);
 //print_r($earliest_new_reservation_time);
 
