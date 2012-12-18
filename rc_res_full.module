@@ -798,7 +798,7 @@ print_r($old_date_timestamp);
     '#submit' => array('rc_res_full_form_page_four_handler_submit'),
   );
   return $form;
-}
+} 
 
 /**
  * page 5 ......................................................................................................................
