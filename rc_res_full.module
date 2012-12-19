@@ -738,7 +738,7 @@ function rc_res_full_form_page_four($form, &$form_state) {
 
   // convert to old style to work under php 5.2.x
   $old_date_timestamp = strtotime($earliest_new_reservation);
-  $earliest_new_reservation_time = date('g:ia \o\n l jS F Y', $old_date_timestamp);
+  $earliest_new_reservation_time = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
 
 //krumo($old_date_timestamp);
 //krumo($earliest_new_reservation);
@@ -881,9 +881,7 @@ function rc_res_full_form_page_five($form, &$form_state) {
 //print_r("NOT EMPTY");
   $dtimedate = $rows[0]['start']; // get start time from value(s) returned from the web service call
 
-//krumo($dtimedate);
 //krumo($form_state['page_values'][4]['date']);
-
 
   $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear ); // extract the numerical year
   $dtime = preg_match( '/-\d\d-/', $dtimedate, $tmonth ); // extract the numerical month
@@ -894,6 +892,14 @@ function rc_res_full_form_page_five($form, &$form_state) {
   $dtime = preg_match( '/\d\d/', $thour[0], $thour );
   $dtime = preg_match( '/:\d\d/', $dtimedate, $tminute ); // extract the numerical minute
   $dtime = preg_match( '/\d\d/', $tminute[0], $tminute );
+  $dtime = preg_match( '/.M/', $dtimedate, $apm ); // extract AM or PM
+
+  // Convert to 24hr time for the date()
+  $apms = strtolower($apm[0]);
+  if( $apms == 'pm'){
+    $thour[0] = $thour[0] + 12;
+  }
+  
   $ddyear = date("Y", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of year. "Y" yields 2012
   $ddmonth = date("M", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of month. "M" yields Jan through Dec
   $ddday = date("j", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of day. "j" yields 1 through 31 with no leading 0
