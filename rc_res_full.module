@@ -441,6 +441,16 @@ else
 /* Radiobox only */
 $default_value = '0';
 }
+
+
+global $user;
+print_r($user->uid);
+krumo($user);
+
+
+
+
+
   return $form;
 }
 
