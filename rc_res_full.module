@@ -264,13 +264,14 @@ function rc_res_full_menu() {
 
 //    rc_res_custom_menu();
 
+  global $user;
   $items = array();
   global $rc_res_full_get_user_category;
   $items['libraries/researchlibrary/research-commons-reservation'] = array(
 //  $items['examples/rc_res_full'] = array(
     'title' => 'RC-Res Reservations',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('rc_res_full_form_page_one'),
+    'page arguments' => array('rc_res_full_form_page_three'),
     'access callback' => TRUE,
     'menu_name' => 'navigation',
   );
@@ -442,6 +443,14 @@ else
 $default_value = '0';
 }
 
+
+global $user;
+print_r($user);
+
+
+
+
+
   return $form;
 }
 
@@ -483,17 +492,19 @@ function rc_res_full_form_page_two($form, &$form_state) {
  * page 3 ......................................................................................................................
  */
 function rc_res_full_form_page_three($form, &$form_state) {
+
   global $user;
 
-print_r($user->name);
-
-  // retrieve the UID from the global user
+  // retrieve the UCLA UID (not drupal uid)
   $working_uid = $user->name;
 
+  // get user category here
+  $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
+  variable_set('rc_res_full_get_user_category', $rc_res_full_get_user_category);
 
-
-//  // retrieve the previously saved UID
-//  $working_uid = variable_get('working_uid');
+  // get category rules here
+  $rc_res_full_get_user_rules = rc_res_full_get_user_rules($rc_res_full_get_user_category);
+  variable_set('rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
 
   // retrieve the policy rules previously saved in the rules table
   $my_kvar = variable_get('rc_res_full_get_user_rules');
@@ -541,6 +552,7 @@ print_r($user->name);
 
   // read reservations given a UID (currently simulated in drupal)
   $rows = array();
+
   $rows = rc_res_full_get_user_reservations($working_uid);
 
   // header for the form
@@ -688,9 +700,6 @@ print_r($user->name);
 
 
 
-krumo($options);
-
-
     // main array
     $form['myselector11'] = array
     (
@@ -708,8 +717,6 @@ krumo($options);
 
 
 //krumo($form_p3_main11);
-krumo($form['myselector11']);
-krumo($options);
 /* Using foreach: */
 //foreach( $options as $key => $value )
 //{
@@ -1331,82 +1338,12 @@ function rc_res_full_form_page_one_handler_submit($form, &$form_state) {
 
   $form_state['page_values'][1] = $form_state['values'];
 
-  if ( isset($form_state['page_values'][1]['user_uid_temp']) && $form_state['page_values'][1]['user_uid_temp'] != null ) {
-    variable_set('user_uid_temp', $form['user_uid_temp']['#value']);
-    }
-
-  $my_user_id_temp = variable_get('user_uid_temp');
-
   // set page num if it does not yet exist, ie this is the first pass
   if (empty($form_state['page_num'])) { $form_state['page_num'] = 1; } 
 
+  // else go forward to page 2
+  $form_state['page_num'] = 3;
 
-
-//krumo(variable_get('user_uid_temp'));
-
-
-  // try to get UID from Shibboleth
-  $uid_from_shib = get_uid_from_shib($form['user_name']['#value'],$form['user_pwd']['#value'],$my_user_id_temp);
-
-  // if UID from Shibolleth is not valid, stay on page one and show error message
-  if ( $uid_from_shib < 0 ){
-    // if set-create-flag is not set
-    if (!empty($form_state['page_num']) && $form_state['page_num'] != 1.5) {
-      // if user is not on rc-res user list
-      $is_user_in_rc_res = is_user_in_rc_res($form['user_name']['#value']);
-      if ( $is_user_in_rc_res < 0 ) {
-	// set set-create-flag
-	$form_state['page_num'] = 1.5;
-      }
-      else {
-	// else if pwd is not correct
-	$is_pwd_ok = is_pwd_ok($form['user_pwd']['#value']);
-	if ( $is_pwd_ok < 0 ) {
-	  $form_state['page_num'] = 1.6;
-	}
-	// if pwd is ok
-	else {
-	  // else go to page 2
-	  $working_uid = $is_pwd_ok;
-	  variable_set('working_uid', $working_uid);
-	  // get user category here
-	    $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
-	    variable_set('rc_res_full_get_user_category', $rc_res_full_get_user_category);
-	  $form_state['page_num'] = 3;
-	}
-      }
-    }
-    else {
-      // create new rc-res user and go to page 2
-      $rc_res_full_add_user = rc_res_full_add_user($form, $form_state);
-      $working_uid = $form_state['values']['user_uid'];
-      variable_set('working_uid', $working_uid);
-      // get user category here
-	$rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
-	variable_set('rc_res_full_get_user_category', $rc_res_full_get_user_category);
-//krumo($rc_res_full_get_user_category);
-      $form_state['page_num'] = 3;
-    }
-  }
-  else {
-    // else go forward to page 2
-    $working_uid = $uid_from_shib;
-    variable_set('working_uid', $working_uid);
-      // get user category here
-      $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
-      variable_set('rc_res_full_get_user_category', $rc_res_full_get_user_category);
-
-      // get category rules here
-      $rc_res_full_get_user_rules = rc_res_full_get_user_rules($rc_res_full_get_user_category);
-      variable_set('rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
-
-//$my_kvar = variable_get('rc_res_full_get_user_rules');
-//$my_kvar = $my_kvar[0]['time_unit'];
-//krumo( $my_kvar );
-
-
-    $form_state['page_num'] = 3;
-  }
   $form_state['rebuild'] = TRUE;
 }
 
