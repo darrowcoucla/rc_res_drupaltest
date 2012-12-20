@@ -266,7 +266,8 @@ function rc_res_full_menu() {
 
   $items = array();
   global $rc_res_full_get_user_category;
-  $items['examples/rc_res_full'] = array(
+  $items['libraries/researchlibrary/research-commons-reservation'] = array(
+//  $items['examples/rc_res_full'] = array(
     'title' => 'RC-Res Reservations',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('rc_res_full_form_page_one'),
@@ -562,6 +563,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
       $options[$lcnt]['startDate'] = $row['startDate'];
       $options[$lcnt]['endDate'] = $row['endDate'];
 
+
 //      // each element of the array is keyed with the PID
 //      $options[$row['schedID']] = array
 //      (
@@ -631,22 +633,16 @@ function rc_res_full_form_page_three($form, &$form_state) {
     $sub_delete = TRUE;
   }
 
-
-
-
-
-
-
-    $form['myselector12'] = array
-    (
-      '#type' => 'tableselect',
-      '#title' => 'My Selector12',
-      '#id' => 'form_p312',
-      '#header' => $header,
-      '#options' => $options,
-//      '#disabled' => true,
-      '#empty' => t('No existing reservations'),
-    );
+  $form['myselector12'] = array
+  (
+    '#type' => 'tableselect',
+    '#title' => 'My Selector12',
+    '#id' => 'form_p312',
+    '#header' => $header,
+    '#options' => $options,
+//    '#disabled' => true,
+    '#empty' => t('No existing reservations'),
+  );
 
   $form['myselector12'][0]['#disabled'] = true;
 
