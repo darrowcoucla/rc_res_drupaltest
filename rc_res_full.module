@@ -774,8 +774,8 @@ function rc_res_full_form_page_three($form, &$form_state) {
   $form_p3_submit = array();
 
     // disable the submit button if this test is true
-    if( $deleteFlag && $waitFlag ){
-///////////////////////////////////// dhc: reverse these, set like this for setting up row disable //    if( $deleteFlag || $waitFlag ){
+    if( $deleteFlag || $waitFlag ){  ///////////////////////////////////// dhc: use this one normally
+//    if( $deleteFlag && $waitFlag ){  ///////////////////////////////////// dhc: use this one for testing, use this for setting up row disable when only undergraduate case is available
       $form_p3_submit = array(
 	$form['submit'] = array(
 	  '#type' => 'submit',
