@@ -274,7 +274,7 @@ function rc_res_full_menu() {
     'access callback' => TRUE,
     'menu_name' => 'navigation',
   );
-  $items['examples/rc_res_full2'] = array(
+  $items['libraries/researchlibrary/rc_res_full2'] = array(
     'title' => 'RC-Res Reservations222',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('rc_res_full_form_page_one'),
