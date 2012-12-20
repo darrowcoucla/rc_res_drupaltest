@@ -362,7 +362,7 @@ $GLOBALS['conf']['cache']=FALSE;
   $form = array();
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Sign in using Shibboleth.'),
+    '#title' => t('Sign in using Shibboleth'),
   );
   $form['user_name'] = array(
     '#type'  => 'textfield',
@@ -444,7 +444,7 @@ $default_value = '0';
 
 
 global $user;
-print_r($user->name);
+print_r($user);
 
 
 
