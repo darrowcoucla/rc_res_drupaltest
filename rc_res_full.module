@@ -442,14 +442,6 @@ else
 $default_value = '0';
 }
 
-
-global $user;
-print_r($user);
-
-
-
-
-
   return $form;
 }
 
@@ -491,9 +483,15 @@ function rc_res_full_form_page_two($form, &$form_state) {
  * page 3 ......................................................................................................................
  */
 function rc_res_full_form_page_three($form, &$form_state) {
+  global $user;
 
-  // retrieve the previously saved UID
-  $working_uid = variable_get('working_uid');
+  // retrieve the UID from the global user
+  $working_uid = $user->name;
+
+krumo($working_uid);
+
+//  // retrieve the previously saved UID
+//  $working_uid = variable_get('working_uid');
 
   // retrieve the policy rules previously saved in the rules table
   $my_kvar = variable_get('rc_res_full_get_user_rules');
