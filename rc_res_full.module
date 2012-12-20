@@ -485,10 +485,12 @@ function rc_res_full_form_page_two($form, &$form_state) {
 function rc_res_full_form_page_three($form, &$form_state) {
   global $user;
 
+print_r($user->name);
+
   // retrieve the UID from the global user
   $working_uid = $user->name;
 
-krumo($working_uid);
+
 
 //  // retrieve the previously saved UID
 //  $working_uid = variable_get('working_uid');
