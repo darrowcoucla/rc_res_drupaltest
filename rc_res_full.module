@@ -497,8 +497,6 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   global $user;
 
-print_r($user);
-
   // Jump to appropriate pafe if necessary
   // Jump to appropriate pafe if necessary
   // Jump to appropriate pafe if necessary
