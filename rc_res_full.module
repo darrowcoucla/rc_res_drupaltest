@@ -414,9 +414,6 @@ $GLOBALS['conf']['cache']=FALSE;
 
 
 
-
-
-
 $header = array();
 $options = array();
 $default_value = array();
@@ -501,13 +498,13 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // Jump to appropriate pafe if necessary
   // Jump to appropriate pafe if necessary
   // Display page 2 if $form_state['page_num'] == 2
-  if (!empty($form_state['page_num']) && $form_state['page_num'] == 2) {
-    return rc_res_full_form_page_two($form, $form_state);
-  }
-  elseif (!empty($form_state['page_num']) && $form_state['page_num'] == 3) {
-    return rc_res_full_form_page_three($form, $form_state);
-  }
-  elseif (!empty($form_state['page_num']) && $form_state['page_num'] == 4) {
+//  if (!empty($form_state['page_num']) && $form_state['page_num'] == 2) {
+//    return rc_res_full_form_page_two($form, $form_state);
+//  }
+//  elseif (!empty($form_state['page_num']) && $form_state['page_num'] == 3) {
+//    return rc_res_full_form_page_three($form, $form_state);
+//  }
+  if (!empty($form_state['page_num']) && $form_state['page_num'] == 4) {
     return rc_res_full_form_page_four($form, $form_state);
   }
   elseif (!empty($form_state['page_num']) && $form_state['page_num'] == 5) {
@@ -524,6 +521,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // Otherwise we build page 1.
   // Otherwise we build page 1.
 
+
+
+print_r($form_state['page_num']);
 
 
 
@@ -577,10 +577,15 @@ function rc_res_full_form_page_three($form, &$form_state) {
 //  $startDateLatest = array();
 
 
-  global $user;
-
   // this section deletes an existing reservation from Resource Scheduler
   if (!empty($form_state['page_values'][3]['op']) && $form_state['page_values'][3]['op'] == 'Delete') {
+
+
+// krumo($form_state);
+
+///////////////////////////dhc: where is rid??????
+
+
     foreach ($form_state['values'][0] as $pid_del) {
       if( $pid_del != 0 ){
 	$working_rid = $pid_del;
@@ -596,10 +601,11 @@ function rc_res_full_form_page_three($form, &$form_state) {
     }
   }
 
-  // read reservations given a UID (currently simulated in drupal)
+  // read any reservations given a UID
   $rows = array();
-
   $rows = rc_res_full_get_user_reservations($working_uid);
+
+// krumo($rows);
 
   // header for the form
   $header = array
@@ -653,7 +659,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
       if (!empty($startDateFuture)) {
 
-krumo($rc_res_full_get_user_category);
+// krumo($rc_res_full_get_user_category);
 
 	$deleteFlag = 1;
       }else if(!empty($startDatePast)){
@@ -715,7 +721,7 @@ krumo($rc_res_full_get_user_category);
     '#empty' => t('No existing reservations'),
   );
 
-  $form['myselector12'][0]['#disabled'] = true;
+//  $form['myselector12'][0]['#disabled'] = true;
 
 
 /////////////////////////////////////////// dhc: set disabled rows above
