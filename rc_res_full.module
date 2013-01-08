@@ -523,9 +523,6 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
 
 
-print_r($form_state['page_num']);
-
-
 
 
 
@@ -879,6 +876,9 @@ print_r($form_state['page_num']);
   }
   return $page_array;
 //  return $page_array;
+
+print_r($form_state['page_num']);
+
 }
 
 /**
