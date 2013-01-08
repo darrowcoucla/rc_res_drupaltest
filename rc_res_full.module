@@ -735,7 +735,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'),
+      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'.$form_state['page_num']),
     ),
 
     // main array
@@ -876,9 +876,6 @@ function rc_res_full_form_page_three($form, &$form_state) {
   }
   return $page_array;
 //  return $page_array;
-
-print_r($form_state['page_num']);
-
 }
 
 /**
