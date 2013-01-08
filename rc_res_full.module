@@ -442,7 +442,7 @@ $default_value = '0';
 
 
 global $user;
-print_r($user);
+//print_r($user);
 
 
 
