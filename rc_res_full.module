@@ -271,7 +271,7 @@ function rc_res_full_menu() {
 //  $items['examples/rc_res_full'] = array(
     'title' => 'RC-Res Reservations',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('rc_res_full_form_page_three'),
+    'page arguments' => array('rc_res_full_form_page_one'),
     'access callback' => TRUE,
     'menu_name' => 'navigation',
   );
