@@ -513,6 +513,8 @@ print_r($working_uid);
   if( $user->uid == 0 || $user->name == "darrowco" ){
     $working_uid = '502673598';
   }
+  $working_uid = variable_get('working_uid');
+  variable_set('working_uid', $working_uid);
 
   // get user category here
   $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
