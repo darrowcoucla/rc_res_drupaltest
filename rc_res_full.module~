@@ -513,7 +513,6 @@ print_r($working_uid);
   if( $user->uid == 0 || $user->name == "darrowco" ){
     $working_uid = '502673598';
   }
-  $working_uid = variable_get('working_uid');
   variable_set('working_uid', $working_uid);
 
   // get user category here
@@ -2255,7 +2254,7 @@ function rc_res_full_set_user_reservations($rrid, $str_create1) {
     'headers' => array('Content-Type' => 'application/json')
   ));
 
-
+print_r($response);
 
 //  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/1', $headers = array('Content-Type' => 'application/json'), $method = 'POST', $data = $params, $retry = 3);
 

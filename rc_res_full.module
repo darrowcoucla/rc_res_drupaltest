@@ -2254,7 +2254,7 @@ function rc_res_full_set_user_reservations($rrid, $str_create1) {
     'headers' => array('Content-Type' => 'application/json')
   ));
 
-
+print_r($response);
 
 //  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/1', $headers = array('Content-Type' => 'application/json'), $method = 'POST', $data = $params, $retry = 3);
 
