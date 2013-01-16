@@ -1348,7 +1348,9 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
  krumo($form_state['values']);
  krumo($form_state);
 
- ///////////////////////////dhc: where is rid??????
+ krumo($form_state['complete form'][1]['rendered'][0]['#options'][2]['schedID']);
+
+///////////////////////////dhc: where is rid??????
 
     // delete any rows with set checkboxes from previous page
     foreach ($form_state['values'][0] as $pid_del) {
