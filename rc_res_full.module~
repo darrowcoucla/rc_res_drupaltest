@@ -507,6 +507,8 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // retrieve the UCLA UID (not drupal uid)
   $working_uid = $user->name;
 
+print_r($working_uid);
+
   // temp code to set uid when running on workstation
   if( $user->uid == 0 || $user->name == "darrowco" ){
     $working_uid = '502673598';
@@ -1199,7 +1201,7 @@ $working_uid = variable_get('working_uid');
 //krumo($str_create1);
 
 print_r($str_create1);
-krumo($rrid);
+print_r($rrid);
 
   rc_res_full_set_user_reservations($rrid, $str_create1);
 

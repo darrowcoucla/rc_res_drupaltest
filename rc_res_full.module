@@ -507,6 +507,8 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // retrieve the UCLA UID (not drupal uid)
   $working_uid = $user->name;
 
+print_r($working_uid);
+
   // temp code to set uid when running on workstation
   if( $user->uid == 0 || $user->name == "darrowco" ){
     $working_uid = '502673598';
