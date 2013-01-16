@@ -1198,7 +1198,8 @@ $working_uid = variable_get('working_uid');
 
 //krumo($str_create1);
 
-
+print_r($str_create1);
+krumo($rrid);
 
   rc_res_full_set_user_reservations($rrid, $str_create1);
 
