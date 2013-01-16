@@ -464,6 +464,7 @@ function rc_res_full_form_page_two($form, &$form_state) {
   return $form;
 }
 
+
 /**
  * page 3 ......................................................................................................................
  * page 3 ......................................................................................................................
@@ -475,10 +476,11 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   global $user;
 
-  // Jump to appropriate pafe if necessary
-  // Jump to appropriate pafe if necessary
-  // Jump to appropriate pafe if necessary
-  // Display page 2 if $form_state['page_num'] == 2
+  // Jump to appropriate page if necessary
+  // Jump to appropriate page if necessary
+  // Jump to appropriate page if necessary
+
+// Display page 2 if $form_state['page_num'] == 2
 //  if (!empty($form_state['page_num']) && $form_state['page_num'] == 2) {
 //    return rc_res_full_form_page_two($form, $form_state);
 //  }
@@ -498,23 +500,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
     return rc_res_full_form_page_seven($form, $form_state);
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   // Otherwise we build page 1.
   // Otherwise we build page 1.
   // Otherwise we build page 1.
-
 
   // retrieve the UCLA UID (not drupal uid)
   $working_uid = $user->name;
@@ -548,29 +536,16 @@ function rc_res_full_form_page_three($form, &$form_state) {
   $startDateFuture = array();
   $startDateLatest = array();
 
-
-//  // get the current date/time of the DrupalTest server
-//  $nowDate = new DateTime("now");
-//  $earliest_new_reservation = new DateTime("now".' +1 day');
-//  $startDatePast = array();
-//  $startDateFuture = array();
-//  $startDateLatest = array();
-
   // read any reservations given a UID
   $rows = array();
   $rows = rc_res_full_get_user_reservations($working_uid);
 
-  // this section deletes an existing reservation from Resource Scheduler
-  if (!empty($form_state['page_values'][3]['op']) && $form_state['page_values'][3]['op'] == 'Delete') {
-  }
-
-  // header for the form
+  // set header for the form
   $header = array
   (
     'roomName' => t('Room Name'),
     'startDate' => t('Start'),
     'endDate' => t('End'),
-    'schedID' => t('Resv No.'),
   );
 
   // Initialize an empty array for the row(s) of reservations just returned from the Resource Scheduler db
@@ -583,27 +558,22 @@ function rc_res_full_form_page_three($form, &$form_state) {
   if (!empty($rows['reservation'])) {
     // if at least one row was returned, loop through each row
 
-
-    // start of foreach
-    // start of foreach
-    // start of foreach
+    ///////////////////////////////////////
     foreach($rows['reservation'] as $row) {
-
-krumo($rows);
-
-      // each element of the array is keyed with the PID
+      // each element of the array is keyed with the lcnt
       $options[$lcnt]['roomName'] = $row['roomName'];
       $options[$lcnt]['startDate'] = $row['startDate'];
       $options[$lcnt]['endDate'] = $row['endDate'];
       $options[$lcnt]['schedID'] = $row['schedID'];
 
-      // count number of rows
+      // keep count of number of rows
       $lcnt += 1;
 
       // save any expired reservation; only one should exist and it should be within the last 24 hours (detection of expired reservation and period in which to detect is set in the web services call)
       $curRowDate = strtotime($row['startDate']);
 
-
+//dhc - temp disable for development
+//dhc - temp disable for development
 //dhc - temp disable for development
 if(0){
       if( $curRowDate < $nowDate){
@@ -624,11 +594,9 @@ if(0){
       }
 }
 
-
     }
-    // end of foreach
-    // end of foreach
-    // end of foreach
+    ///////////////////////////////////////
+
   }
 
   variable_set('earliest_new_reservation', $earliest_new_reservation);
@@ -640,6 +608,7 @@ if(0){
     $sub_delete = TRUE;
   }
 
+  // this builds the rows with checkboxes
   $form['myselector12'] = array
   (
     '#type' => 'tableselect',
@@ -647,16 +616,15 @@ if(0){
     '#id' => 'form_p312',
     '#header' => $header,
     '#options' => $options,
-//    '#disabled' => true,
     '#empty' => t('No existing reservations'),
   );
 
   // if the business rules indicate that the user is not allowed to make a new reservation at this time, remove the option to delete any old reservations
   if( $deleteFlag || $waitFlag ){
-    $form['myselector12'][0]['#disabled'] = true;
-    $form['submit'] = array();
+    $form['myselector12'][0]['#disabled'] = true; // disable the row
+    $form['submit'] = array(); // remove delet button array to prevent display of the delete button
   }else{
-    // delete button
+    // create delete button to delete existing reservation(s) from Resource Scheduler by calling a web service from the handler
     $form['submit'] = array
     (
       '#type' => 'submit',
@@ -1348,9 +1316,7 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
  krumo($form_state['values']);
  krumo($form_state);
 
- krumo($form_state['complete form'][1]['rendered'][0]['#options'][2]['schedID']);
-
-///////////////////////////dhc: where is rid??????
+ ///////////////////////////dhc: where is rid??????
 
     // delete any rows with set checkboxes from previous page
     foreach ($form_state['values'][0] as $pid_del) {
