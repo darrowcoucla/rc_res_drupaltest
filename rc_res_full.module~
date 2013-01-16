@@ -1304,27 +1304,12 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
   // to carry forward to subsequent pages in the form.
   // The Forms API rebuilds the form.
   $form_state['page_values'][3] = $form_state['values'];
-
-
-
-
-
-
-
-
- krumo($form_state['page_values']);
- krumo($form_state['values']);
- krumo($form_state);
-
- ///////////////////////////dhc: where is rid??????
-
     // delete any rows with set checkboxes from previous page
     foreach ($form_state['values'][0] as $pid_del) {
       if( $pid_del != 0 ){
 	$working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
 //	$working_rid = $rows['reservation'][$pid_del]['schedID'];
 //	$working_rid = $pid_del;
-krumo($working_rid);
 	$url_stack = "http://lit321v-b.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
 	$url = $url_stack;
 	$response = drupal_http_request($url,
@@ -1335,20 +1320,6 @@ krumo($working_rid);
 	);
       }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // When form rebuilds in n+2 or so, use this to determine which page to build.
   $form_state['page_num'] = 3;
   $form_state['rebuild'] = TRUE;
