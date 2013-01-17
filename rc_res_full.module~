@@ -399,33 +399,6 @@ global $user;
     '#submit' => array('rc_res_full_form_page_one_handler_submit'),
   );
 
-$header = array();
-$options = array();
-$default_value = array();
-
-$IsCheckbox = true;
-
-$header = array(
-  'title' => t('Column title')
-);
-$options[0]['title'] = "A red row";
-$options[0]['#attributes'] = array ('class' => array('red-row'));
-$options[1]['title'] = "A blue row";
-$options[1]['#attributes'] = array ('class' => array('blue-row'));
-
-if($IsCheckbox)
-{
-/* Checkbox only */
-$default_value[0] = true;
-$default_value[1] = false;
-}
-else
-{
-/* Radiobox only */
-$default_value = '0';
-}
-
-
 global $user;
 //print_r($user);
 
