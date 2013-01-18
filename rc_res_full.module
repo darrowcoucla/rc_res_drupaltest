@@ -353,7 +353,8 @@ $GLOBALS['conf']['cache']=FALSE;
 
 global $user;
 //print_r($user->uid);
-//krumo($user);
+//print_r($user->field_user_full_name);
+krumo($user);
 
 // build form for page
 //  $form_state['page_num'] = 1;
@@ -366,6 +367,7 @@ global $user;
     '#type'  => 'textfield',
     '#title' => t('User First Name'),
     '#size'  => 15,
+//    '#value'  => $user->field_user_full_name,
   );
   $form['user_pwd'] = array(
     '#type'  => 'textfield',
@@ -477,11 +479,12 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // Otherwise we build page 1.
   // Otherwise we build page 1.
 
-  // retrieve the UCLA UID (not drupal uid)
+//dhc_change: improve this to work on a shibboleth system with a matching user. ie both shib user and drupal user, possibly with same username
+// retrieve the UCLA UID (not drupal uid)
   if (!empty($user->name) && $user->name!=0 && $user->name!=1 && $user->name!="darrowco") {
     $working_uid = $user->name;
   }else{
-    $working_uid = '502673598';
+    $working_uid = '502673598'; // insert uid if running this code on a non-shibboleth workstation
   }
   variable_set('working_uid', $working_uid);
 
