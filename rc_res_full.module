@@ -353,6 +353,7 @@ $GLOBALS['conf']['cache']=FALSE;
 
 global $user;
 print_r($user->uid);
+print_r($user->name);
 print_r($user->field_user_full_name);
 //krumo($user);
 

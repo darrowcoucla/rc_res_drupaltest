@@ -352,9 +352,10 @@ $GLOBALS['conf']['cache']=FALSE;
   // Otherwise we build page 1.
 
 global $user;
-//print_r($user->uid);
-//print_r($user->field_user_full_name);
-krumo($user);
+print_r($user->uid);
+print_r($user->name);
+print_r($user->field_user_full_name);
+//krumo($user);
 
 // build form for page
 //  $form_state['page_num'] = 1;
