@@ -468,7 +468,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
   }
   variable_set('working_uid', $working_uid);
 
-print_r($working_uid);
+//print_r($working_uid);
 
   // get user category here
   $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
@@ -530,9 +530,9 @@ print_r($working_uid);
       // save any expired reservation; only one should exist and it should be within the last 24 hours (detection of expired reservation and period in which to detect is set in the web services call)
       $curRowDate = strtotime($row['startDate']);
 
-//dhc - temp disable for development
-//dhc - temp disable for development
-//dhc - temp disable for development
+//dhc - temp disable with if(0) for development
+//dhc - temp disable with if(0) for development
+//dhc - temp disable with if(0) for development
 if(0){
       if( $curRowDate < $nowDate){
 	$startDatePast = $curRowDate;
@@ -551,7 +551,9 @@ if(0){
 	}
       }
 }
-
+//dhc - END: temp disable with if(0) for development
+//dhc - END: temp disable with if(0) for development
+//dhc - END: temp disable with if(0) for development
     }
     ///////////////////////////////////////
 
@@ -1156,8 +1158,8 @@ $working_uid = variable_get('working_uid');
 
 //krumo($str_create1);
 
-print_r($str_create1);
-print_r($rrid);
+//print_r($str_create1);
+//print_r($rrid);
 
   rc_res_full_set_user_reservations($rrid, $str_create1);
 
@@ -1672,7 +1674,7 @@ global $user;
 function get_uid_from_shib_old($user_name, $user_pwd) {
 
 global $user;
-print_r("fffff");
+//print_r("fffff");
 
 // dhc - get preset, temp UID from table, must set first???
 // test for values at or before this point, validation?
@@ -1716,7 +1718,7 @@ print_r("fffff");
 function get_uid_from_drupal($user_name, $user_pwd) {
 
 global $user;
-print_r("ggggg");
+//print_r("ggggg");
 
   $uid_from_drupal = 0;
 
@@ -1758,7 +1760,7 @@ print_r("ggggg");
 function is_user_in_rc_res($user_name) {
 
 global $user;
-print_r("hhhhh");
+//print_r("hhhhh");
 
   $uid_from_drupal = 0;
 
@@ -2207,7 +2209,7 @@ function rc_res_full_set_user_reservations($rrid, $str_create1) {
     'headers' => array('Content-Type' => 'application/json')
   ));
 
-print_r($response);
+//print_r($response);
 
 //  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/1', $headers = array('Content-Type' => 'application/json'), $method = 'POST', $data = $params, $retry = 3);
 
