@@ -533,7 +533,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 //dhc - temp disable with if(0) for development
 //dhc - temp disable with if(0) for development
 //dhc - temp disable with if(0) for development
-//if(0){
+if(0){
       if( $curRowDate < $nowDate){
 	$startDatePast = $curRowDate;
       }else{
@@ -550,7 +550,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 	  $waitFlag = 1;
 	}
       }
-//}
+}
 //dhc - END: temp disable with if(0) for development
 //dhc - END: temp disable with if(0) for development
 //dhc - END: temp disable with if(0) for development
@@ -1265,6 +1265,11 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
   // to carry forward to subsequent pages in the form.
   // The Forms API rebuilds the form.
   $form_state['page_values'][3] = $form_state['values'];
+
+
+//krumo($form_state);
+
+
     // delete any rows with set checkboxes from previous page
     foreach ($form_state['values'][0] as $pid_del) {
       if( $pid_del != 0 ){
