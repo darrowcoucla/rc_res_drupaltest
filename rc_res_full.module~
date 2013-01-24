@@ -352,54 +352,33 @@ $GLOBALS['conf']['cache']=FALSE;
   // Otherwise we build page 1.
 
 global $user;
-print_r($user->uid);
-print_r($user->name);
-print_r($user->field_user_full_name);
+//print_r($user->uid." ");
+//print_r($user->name." ");
+//print_r($user->field_user_full_name);
 //krumo($user);
 
-// build form for page
-//  $form_state['page_num'] = 1;
+  //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
+  $names = explode("|||", $user->field_user_full_name);
+//  print_r($names[0]." ");
+//  print_r($names[1]." ");
+
+  variable_set('name_first', $names[0]);
+  variable_set('name_last', $names[1]);
+
+  // build form for page
+  //  $form_state['page_num'] = 1;
   $form = array();
+
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Successful sign in using Shibboleth, please enter your first and last name to continue.'),
-  );
-  $form['user_name'] = array(
-    '#type'  => 'textfield',
-    '#title' => t('User First Name'),
-    '#size'  => 15,
-//    '#value'  => $user->field_user_full_name,
-  );
-  $form['user_pwd'] = array(
-    '#type'  => 'textfield',
-    '#title' => t('User Last Name'),
-    '#size'  => 15,
+    '#title' => t('Welcome '.$names[0].' '.$names[1].'<br>You have successfully signed in using Shibboleth.'),
   );
 
-//  $form['user_uid_temp'] = array(
-//    '#type'  => 'textfield',
-//    '#title' => t('User UID'),
-//    '#size'  => 15,
-//  );
-//
-//  if (!empty($form_state['page_num']) && $form_state['page_num'] == 1.5) {
-//    drupal_set_message(t('Username does not exist in Shibboleth. Please enter your UID (University ID) and try again: 004065587 503863314 800291038 101832840 203834851 203806377'));
-//    $create_new_rc_res_user_flag = 1;
-//    $form['user_uid'] = array(
-//      '#type'  => 'textfield',
-//      '#title' => t('User UID'),
-//      '#size'  => 15,
-//    );
-//  }
-//
-//  else if (!empty($form_state['page_num']) && $form_state['page_num'] == 1.6) {
-//    drupal_set_message(t('Username or Password not fouind. Please try again.'));
-//  }
-//
   $form['next'] = array(
     '#type'  => 'submit',
     '#value' => t('Next'),
     '#submit' => array('rc_res_full_form_page_one_handler_submit'),
+
   );
 
 global $user;
@@ -1147,8 +1126,8 @@ $working_uid = variable_get('working_uid');
   $rend = date('Y-m-d h:i A', strtotime($rstart)+$res_length);
   $rcap = $sub_array[3];
   $rcap = $form_state['page_values'][6]['pnumber'];
-  $ufname = $form_state['page_values'][1]['user_name'];
-  $ulname = $form_state['page_values'][1]['user_pwd'];
+//  $ufname = $form_state['page_values'][1]['user_name'];
+//  $ulname = $form_state['page_values'][1]['user_pwd'];
   $uemail = $form_state['page_values'][6]['user_email'];
   $udept = $form_state['page_values'][6]['user_dept'];
   $course_level = 0;
@@ -1162,8 +1141,8 @@ $working_uid = variable_get('working_uid');
     'numberOfAttendees' => $rcap,
     'email' => $uemail,
     'phone' => '310-206-5565',
-    'firstName' => $ufname,
-    'lastName' => $ulname,
+    'firstName' => variable_get('name_first'),
+    'lastName' => variable_get('name_last'),
     'academicDept' => $udept,
     'academicDeptOther' => 'Education',
     'division' => 'Staff',
@@ -1508,7 +1487,7 @@ if (preg_match("/View/", $form_state['clicked_button']['#value'])) {
 
 
 /**
- * Page X submit handler.
+ * Page X submit handler. //not used
  *
  * This is the final submit handler. Gather all the data together and save it to the db.
  * Also display it in a drupal_set_message() for development.
@@ -1552,8 +1531,6 @@ function rc_res_full_form_submit($form, &$form_state) {
   global $user;
   // Save the submitted entry.
   $entry = array(
-    'user_name'    => $form_state['values']['user_name'],
-    'user_pwd' => $form_state['values']['user_pwd'],
     'uid'     => $user->uid,
   );
   $return = rc_res_full_entry_insert($entry);
@@ -1564,7 +1541,7 @@ function rc_res_full_form_submit($form, &$form_state) {
 }
 
 /**
- * add a rc-res user
+ * add a rc-res user //not used
  */
 function rc_res_full_add_user($form, &$form_state) {
   global $user;
@@ -1583,7 +1560,7 @@ function rc_res_full_add_user($form, &$form_state) {
 }
 
 /**
- * Sample UI to update a record.
+ * Sample UI to update a record. //not used
  */
 function rc_res_full_form_update($form, &$form_state) {
   $form = array(
@@ -1641,7 +1618,7 @@ function rc_res_full_form_update($form, &$form_state) {
 }
 
 /**
- * AJAX callback handler for the pid select.
+ * AJAX callback handler for the pid select. //not used
  *
  * When the pid changes, populates the defaults from the database in the form.f
  */
@@ -1657,7 +1634,7 @@ function rc_res_full_form_update_callback($form, $form_state) {
 }
 
 /**
- * Submit handler for 'update entry' form.
+ * Submit handler for 'update entry' form. //not used
  */
 function rc_res_full_form_update_submit($form, &$form_state) {
   global $user;
@@ -1674,7 +1651,7 @@ function rc_res_full_form_update_submit($form, &$form_state) {
 }
 
 /**
- * get the UID from shib based on user login values
+ * get the UID from shib based on user login values //not used
  */
 function get_uid_from_shib($user_name, $user_pwd, $user_uid_temp) {
 
@@ -1690,7 +1667,7 @@ global $user;
 }
 
 /**
- * get the UID from shib based on user login values
+ * get the UID from shib based on user login values //not used
  */
 function get_uid_from_shib_old($user_name, $user_pwd) {
 
@@ -1734,7 +1711,7 @@ print_r("fffff");
 }
 
 /**
- * get the UID from drupal because shib failed (using on user login values)
+ * get the UID from drupal because shib failed (using on user login values) //not used
  */
 function get_uid_from_drupal($user_name, $user_pwd) {
 
@@ -1776,7 +1753,7 @@ print_r("ggggg");
 }
 
 /**
- * get the UID from drupal because shib failed (using on user login values)
+ * get the UID from drupal because shib failed (using on user login values) //not used
  */
 function is_user_in_rc_res($user_name) {
 
