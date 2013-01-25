@@ -538,9 +538,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
 //dhc - temp disable with if(0) for development
 //dhc - temp disable with if(0) for development
 
-krumo($form_state);
+//krumo($form_state);
 
-if (empty($form_state['input']['test']['Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed'])){ 
+if (empty($form_state['input']['test']['Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed'])){
 //if(0){
       if( $curRowDate < $nowDate){
 	$startDatePast = $curRowDate;
