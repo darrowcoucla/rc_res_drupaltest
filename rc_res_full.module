@@ -359,8 +359,8 @@ global $user;
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   $names = explode("|||", $user->field_user_full_name);
-//  print_r($names[0]." ");
-//  print_r($names[1]." ");
+   print_r($names[0]." ");
+   print_r($names[1]." ");
 
   variable_set('name_first', $names[0]);
   variable_set('name_last', $names[1]);
@@ -596,10 +596,11 @@ if (empty($form_state['input']['test']['Test - checking this checkbox allows del
     '#empty' => t('No existing reservations'),
   );
 
-  // if the business rules indicate that the user is not allowed to make a new reservation at this time, remove the option to delete any old reservations
-  if( $deleteFlag || $waitFlag ){
+  // if the business rules indicate that the user is not allowed to make a new reservation, or delete an old reservation, at this time, remove the option to delete any old reservations
+  if( $waitFlag ){
+//  if( $deleteFlag || $waitFlag ){
     $form['myselector12'][0]['#disabled'] = true; // disable the row
-    $form['submit'] = array(); // remove delet button array to prevent display of the delete button
+    $form['submit'] = array(); // remove delete button array to prevent display of the delete button
   }else{
     // create delete button to delete existing reservation(s) from Resource Scheduler by calling a web service from the handler
     $form['submit'] = array
