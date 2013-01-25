@@ -359,8 +359,8 @@ global $user;
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   $names = explode("|||", $user->field_user_full_name);
-   print_r($names[0]." ");
-   print_r($names[1]." ");
+//   print_r($names[0]." ");
+//   print_r($names[1]." ");
 
   variable_set('name_first', $names[0]);
   variable_set('name_last', $names[1]);
