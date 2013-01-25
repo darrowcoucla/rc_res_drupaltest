@@ -374,11 +374,15 @@ global $user;
     '#title' => t('Welcome '.$names[0].' '.$names[1].'<br>You have successfully signed in using Shibboleth.'),
   );
 
+  $form['test'] = array(
+    '#type'  => 'checkboxes',
+    '#options' => drupal_map_assoc(  array( t('Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed') )  ),
+  );
+
   $form['next'] = array(
     '#type'  => 'submit',
     '#value' => t('Next'),
     '#submit' => array('rc_res_full_form_page_one_handler_submit'),
-
   );
 
 global $user;
@@ -533,6 +537,10 @@ function rc_res_full_form_page_three($form, &$form_state) {
 //dhc - temp disable with if(0) for development
 //dhc - temp disable with if(0) for development
 //dhc - temp disable with if(0) for development
+
+krumo($form_state);
+
+
 if(0){
       if( $curRowDate < $nowDate){
 	$startDatePast = $curRowDate;
@@ -568,12 +576,21 @@ if(0){
     $sub_delete = TRUE;
   }
 
+  variable_set('lcnt', $lcnt);
+// dhc: cannot seem to pass a hidden variable to the delete handler?? use global for now
+//  // save number of items on reserve to use later in delete handler; see bug http://qa.drupal.org/pifr/test/281743
+//  $form['myHidden']['lcnt'] = array(
+//    '#type' => 'hidden',
+//    '#value' => $lcnt,
+//  );
+
   // this builds the rows with checkboxes
   $form['myselector12'] = array
   (
     '#type' => 'tableselect',
     '#title' => 'My Selector12',
     '#id' => 'form_p312',
+//    '#default_value' => 1,
     '#header' => $header,
     '#options' => $options,
     '#empty' => t('No existing reservations'),
@@ -597,6 +614,7 @@ if(0){
 /////////////////////////////////////////// dhc: set disabled rows above
 /////////////////////////////////////////// dhc: set disabled rows above
 
+  
   // build the main part of the form
   $form_p3_main = array();
   $form_p3_main = array(
@@ -1265,25 +1283,36 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
   // to carry forward to subsequent pages in the form.
   // The Forms API rebuilds the form.
   $form_state['page_values'][3] = $form_state['values'];
-
-
-krumo($form_state);
-
-
     // delete any rows with set checkboxes from previous page
     foreach ($form_state['values'][0] as $pid_del) {
-      if( $pid_del != 0 ){
-	$working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
-//	$working_rid = $rows['reservation'][$pid_del]['schedID'];
-//	$working_rid = $pid_del;
-	$url_stack = "http://lit321v-b.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
-	$url = $url_stack;
-	$response = drupal_http_request($url,
-	  array(
-	    'method' => 'DELETE',
-	    'headers' => array('Pragma" => "no-cache', 'Cache-Control' => 'no-cache'),
-	  )
-	);
+      if( variable_get('earliest_new_reservation') == 1 ){
+	if( $pid_del == 0 ){
+	  $working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
+//		$working_rid = $rows['reservation'][$pid_del]['schedID'];
+//		$working_rid = $pid_del;
+	  $url_stack = "http://lit321v-b.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
+	  $url = $url_stack;
+	  $response = drupal_http_request($url,
+	    array(
+	      'method' => 'DELETE',
+	      'headers' => array('Pragma" => "no-cache', 'Cache-Control' => 'no-cache'),
+	    )
+	  );
+	}
+      }else{
+	if( $pid_del >= 0 ){
+	  $working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
+//		$working_rid = $rows['reservation'][$pid_del]['schedID'];
+//		$working_rid = $pid_del;
+	  $url_stack = "http://lit321v-b.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
+	  $url = $url_stack;
+	  $response = drupal_http_request($url,
+	    array(
+	      'method' => 'DELETE',
+	      'headers' => array('Pragma" => "no-cache', 'Cache-Control' => 'no-cache'),
+	    )
+	  );
+	}
       }
     }
   // When form rebuilds in n+2 or so, use this to determine which page to build.
