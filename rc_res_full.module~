@@ -261,8 +261,8 @@ function rc_res_full_list() {
 function rc_res_full_form_page_one($form, &$form_state) {
 
 
+global $user;
 krumo($user);
-
 
 
 $GLOBALS['conf']['cache']=FALSE;
