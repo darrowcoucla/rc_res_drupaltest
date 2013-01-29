@@ -262,7 +262,7 @@ function rc_res_full_form_page_one($form, &$form_state) {
 
 
 global $user;
-dpm($user);
+print_r($user);
 
 
 $GLOBALS['conf']['cache']=FALSE;
