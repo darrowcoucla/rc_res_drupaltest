@@ -263,9 +263,6 @@ function rc_res_full_form_page_one($form, &$form_state) {
 
 global $user;
 $rc_user = user_load($user->uid);
-print_r($rc_user);
-
-
 $GLOBALS['conf']['cache']=FALSE;
 
   // Jump to appropriate page if necessary
@@ -315,8 +312,8 @@ $GLOBALS['conf']['cache']=FALSE;
   }else{
     $names = explode("|||", "Name|||unavailable");
   }
-//   print_r($names[0]." ");
-//   print_r($names[1]." ");
+   print_r($names[0]." ");
+   print_r($names[1]." ");
 
 
   // build form for page
