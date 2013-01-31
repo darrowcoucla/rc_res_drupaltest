@@ -300,7 +300,7 @@ $GLOBALS['conf']['cache']=FALSE;
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
-    if (preg_match("/|||/", "$rc_user->field_user_full_name['und'][0]['value']", $temp)) {
+    if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
 print_r('AAAAA');
       $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
       variable_set('name_first', $names[0]);
