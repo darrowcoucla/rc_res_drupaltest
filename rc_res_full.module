@@ -319,7 +319,7 @@ $GLOBALS['conf']['cache']=FALSE;
 
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Welcome '.$names[0].' '.$names[1].'<br>You have successfully signed in using Shibboleth.'),
+    '#title' => t('Welcome '.$names[1].' '.$names[0].'<br>You have successfully signed in using Shibboleth.'),
   );
 
   $form['test'] = array(
