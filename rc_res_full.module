@@ -298,6 +298,8 @@ $GLOBALS['conf']['cache']=FALSE;
 //print_r($user->field_user_full_name);
 //krumo($user);
 
+print_r($rc_user->field_user_full_name['und'][0]['value']);
+
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
     if (preg_match("/|||/", "$rc_user->field_user_full_name['und'][0]['value']")) {

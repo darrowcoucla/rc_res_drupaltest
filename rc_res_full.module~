@@ -302,7 +302,7 @@ $GLOBALS['conf']['cache']=FALSE;
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
     if (preg_match("/|||/", "$rc_user->field_user_full_name['und'][0]['value']")) {
 print_r('AAAAA');
-      $names = explode("|||", "$rc_user->field_user_full_name['und'][0]['value']");
+      $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
       variable_set('name_first', $names[0]);
       variable_set('name_last', $names[1]);
     }else{
