@@ -262,6 +262,7 @@ function rc_res_full_form_page_one($form, &$form_state) {
 
 
 global $user;
+$rc_user = user_load($user->uid);
 print_r($user);
 
 
@@ -294,15 +295,15 @@ $GLOBALS['conf']['cache']=FALSE;
   // Otherwise we build page 1.
   // Otherwise we build page 1.
 
-global $user;
+//global $user;
 //print_r($user->uid." ");
 //print_r($user->name." ");
 //print_r($user->field_user_full_name);
 //krumo($user);
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
-  if (!empty($user->field_user_full_name)){
-    $names = explode("|||", $user->field_user_full_name);
+  if (!empty($rc_user->field_user_full_name)){
+    $names = explode("|||", $rc_user->field_user_full_name);
   }else{
     $names = explode("|||", "Name|||unavailable");
   }
