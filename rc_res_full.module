@@ -310,8 +310,8 @@ $GLOBALS['conf']['cache']=FALSE;
 //   print_r($names[0]." ");
 //   print_r($names[1]." ");
 
-  variable_set('name_first', $names[0]);
-  variable_set('name_last', $names[1]);
+  variable_set('name_last', $names[0]);
+  variable_set('name_first', $names[1]);
 
   // build form for page
   //  $form_state['page_num'] = 1;
