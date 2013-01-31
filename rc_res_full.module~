@@ -312,8 +312,9 @@ $GLOBALS['conf']['cache']=FALSE;
   }else{
     $names = explode("|||", "Name|||unavailable");
   }
-   print_r($names[0]." ");
-   print_r($names[1]." ");
+    print_r($rc_user->field_user_full_name['und'][0]['value']);
+    print_r($names[0]." 00000");
+    print_r($names[1]." 11111");
 
 
   // build form for page
