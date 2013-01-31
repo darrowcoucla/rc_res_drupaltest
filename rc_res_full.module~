@@ -303,15 +303,21 @@ $GLOBALS['conf']['cache']=FALSE;
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
-    $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
+    if (preg_match("/|||/", $rc_user->field_user_full_name['und'][0]['value'])) {
+      $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
+      variable_set('name_first', $names[0]);
+      variable_set('name_last', $names[1]);
+    }else{
+      $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
+      variable_set('name_last', $names[0]);
+      variable_set('name_first', $names[1]);
+    }
   }else{
     $names = explode("|||", "Name|||unavailable");
   }
 //   print_r($names[0]." ");
 //   print_r($names[1]." ");
 
-  variable_set('name_last', $names[0]);
-  variable_set('name_first', $names[1]);
 
   // build form for page
   //  $form_state['page_num'] = 1;
@@ -319,7 +325,7 @@ $GLOBALS['conf']['cache']=FALSE;
 
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Welcome '.$names[0].' '.$names[1].'<br>You have successfully signed in using Shibboleth.'),
+    '#title' => t('Welcome '.variable_get('name_first').' '.variable_get('name_last').'<br>You have successfully signed in using Shibboleth.'),
   );
 
   $form['test'] = array(
