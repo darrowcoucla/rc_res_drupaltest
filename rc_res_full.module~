@@ -262,14 +262,14 @@ function rc_res_full_form_page_one($form, &$form_state) {
 
 
 global $user;
-dpm($user);
+print_r($user);
 
 
 $GLOBALS['conf']['cache']=FALSE;
 
-  // Jump to appropriate pafe if necessary
-  // Jump to appropriate pafe if necessary
-  // Jump to appropriate pafe if necessary
+  // Jump to appropriate page if necessary
+  // Jump to appropriate page if necessary
+  // Jump to appropriate page if necessary
   // Display page 2 if $form_state['page_num'] == 2
   if (!empty($form_state['page_num']) && $form_state['page_num'] == 2) {
     return rc_res_full_form_page_two($form, $form_state);
