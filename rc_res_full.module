@@ -303,7 +303,7 @@ $GLOBALS['conf']['cache']=FALSE;
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
-    $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
+    $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
   }else{
     $names = explode("|||", "Name|||unavailable");
   }
