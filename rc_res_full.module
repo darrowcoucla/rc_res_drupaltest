@@ -701,19 +701,36 @@ function rc_res_full_form_page_four($form, &$form_state) {
 
   // convert to old style to work under php 5.2.x
   $old_date_timestamp = strtotime($earliest_new_reservation);
-  $earliest_new_reservation_time = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
+  $earliest_new_reservation_time = date('g:ia', $earliest_new_reservation);
+  $earliest_new_reservation_time_date = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
 
 //krumo($old_date_timestamp);
 //krumo($earliest_new_reservation);
-//krumo($earliest_new_reservation_time);
+//krumo($earliest_new_reservation_time_date);
 
-//print_r($earliest_new_reservation_time);
+//print_r($earliest_new_reservation_time_date);
 
-  if( $userDateTime && $userDateTime > $earliest_new_reservation){
+
+$nowDate = strtotime("now");
+$nowDateDisplay = date('g:ia \o\n l jS F Y', $nowDate);
+
+  if( $userDateTime > $earliest_new_reservation){
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<b>Please choose a time before:<BR> ').$earliest_new_reservation_time.'</b>'
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
+		      <br>
+		      <b>Please choose a start time within the next 24 hours</b><br>
+		      (before ').$earliest_new_reservation_time_date.')'
+    );
+    }else if( $userDateTime < $nowDate){
+    $form['description'] = array
+    (
+      '#type'  => 'item',
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
+		      <br>
+		      <b>Please choose a start time within the next 24 hours</b><br>
+		      (between now and ').$earliest_new_reservation_time_date.')'
     );
     }else{
     $form['description'] = array
@@ -721,7 +738,9 @@ function rc_res_full_form_page_four($form, &$form_state) {
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<BR>
 		      <BR>
-		      Start your reservation within the next 24 hours - choose a time before: ').$earliest_new_reservation_time
+		      Start your reservation within the next 24 hours<BR>
+		      <BR>
+		      <b>Start before ').$earliest_new_reservation_time.' tomorrow</b> ('.$earliest_new_reservation_time_date.')'
     );
     }
 //}
@@ -1290,6 +1309,9 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
     $form_state['values'] = $form_state['page_values'][5];
   }
 
+  // get the current time/date from server
+  $nowDate = strtotime("now");
+
   // get the user's selection
   $userDate = strtotime($form_state['page_values'][4]['date']);
 
@@ -1297,7 +1319,7 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   $earliest_new_reservation = variable_get('earliest_new_reservation');
 
   // is the user's selection time for a new reservation more that 24 hours into the future?
-  if( $userDate > $earliest_new_reservation){
+  if( $userDate > $earliest_new_reservation || $userDate < $nowDate){
   // save the user's selection time before looping back and asking for a new selection
     variable_set('userDate', $userDate);
     $form_state['page_num'] = 4;

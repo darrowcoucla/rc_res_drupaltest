@@ -301,12 +301,10 @@ $GLOBALS['conf']['cache']=FALSE;
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
     if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
-print_r('AAAAA');
       $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
       variable_set('name_first', $names[0]);
       variable_set('name_last', $names[1]);
     }else{
-print_r('BBBBB');
       $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
       variable_set('name_last', $names[0]);
       variable_set('name_first', $names[1]);
@@ -314,10 +312,6 @@ print_r('BBBBB');
   }else{
     $names = explode("|||", "Name|||unavailable");
   }
-    print_r($rc_user->field_user_full_name['und'][0]['value']);
-    print_r($names[0]." 00000");
-    print_r($names[1]." 11111");
-
 
   // build form for page
   //  $form_state['page_num'] = 1;
@@ -707,19 +701,35 @@ function rc_res_full_form_page_four($form, &$form_state) {
 
   // convert to old style to work under php 5.2.x
   $old_date_timestamp = strtotime($earliest_new_reservation);
-  $earliest_new_reservation_time = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
+  $earliest_new_reservation_time = date('g:ia', $earliest_new_reservation);
+  $earliest_new_reservation_time_date = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
 
 //krumo($old_date_timestamp);
 //krumo($earliest_new_reservation);
-//krumo($earliest_new_reservation_time);
+//krumo($earliest_new_reservation_time_date);
 
-//print_r($earliest_new_reservation_time);
+//print_r($earliest_new_reservation_time_date);
 
-  if( $userDateTime && $userDateTime > $earliest_new_reservation){
+
+$nowDate = strtotime("now");
+$nowDateDisplay = date('g:ia \o\n l jS F Y', $nowDate);
+
+  if( $userDateTime > $earliest_new_reservation){
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<b>Please choose a time before:<BR> ').$earliest_new_reservation_time.'</b>'
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
+		      <br>
+		      Please choose a start time <b>before ').$earliest_new_reservation_time_date.'</b>'
+    );
+    }else if( $userDateTime < $nowDate){
+    $form['description'] = array
+    (
+      '#type'  => 'item',
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
+		      <br>
+		      <b>Please choose a start time within the next 24 hours</b><br>
+		      (between now and ').$earliest_new_reservation_time_date.')'
     );
     }else{
     $form['description'] = array
@@ -727,7 +737,9 @@ function rc_res_full_form_page_four($form, &$form_state) {
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<BR>
 		      <BR>
-		      Start your reservation within the next 24 hours - choose a time before: ').$earliest_new_reservation_time
+		      Start your reservation within the next 24 hours<BR>
+		      <BR>
+		      <b>Start before ').$earliest_new_reservation_time.' tomorrow</b> ('.$earliest_new_reservation_time_date.')'
     );
     }
 //}
@@ -1296,6 +1308,9 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
     $form_state['values'] = $form_state['page_values'][5];
   }
 
+  // get the current time/date from server
+  $nowDate = strtotime("now");
+
   // get the user's selection
   $userDate = strtotime($form_state['page_values'][4]['date']);
 
@@ -1303,7 +1318,7 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   $earliest_new_reservation = variable_get('earliest_new_reservation');
 
   // is the user's selection time for a new reservation more that 24 hours into the future?
-  if( $userDate > $earliest_new_reservation){
+  if( $userDate > $earliest_new_reservation || $userDate < $nowDate){
   // save the user's selection time before looping back and asking for a new selection
     variable_set('userDate', $userDate);
     $form_state['page_num'] = 4;
