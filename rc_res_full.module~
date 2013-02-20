@@ -447,7 +447,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   // get the current date/time of the DrupalTest server
   $nowDate = strtotime("now");
-  $earliest_new_reservation = strtotime("now".' +1 day');
+  $earliest_new_reservation = strtotime("now".' +7 day'); //dhc_change move this to just before needing it so that it is set at the time the user clicks on a button dhcdhcdhc
   $startDatePast = array();
   $startDateFuture = array();
   $startDateLatest = array();
@@ -492,9 +492,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
   if (empty($form_state['input']['test']['Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed'])){
 
 //dhc - temp disable with if(0) for development  
-//if(0){
+if(0){
 
-	///// business rules
+	///// START: business rules
 	if( $curRowDate < $nowDate){
 	  $startDatePast = $curRowDate;
 	}else{
@@ -511,7 +511,7 @@ function rc_res_full_form_page_three($form, &$form_state) {
 	}
 	// END: business rules
 
-//}
+}
 //dhc - END: temp disable with if(0) for development  
 
       }
@@ -521,6 +521,20 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // END: if at least one row was returned, loop through each row  
   // END: if at least one row was returned, loop through each row  
   // END: if at least one row was returned, loop through each row  
+
+
+
+
+
+variable_set('options', $options);
+
+
+
+
+
+$earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
+krumo($earliest_new_reservationDisplay);
+
 
   variable_set('earliest_new_reservation', $earliest_new_reservation);
 
@@ -715,13 +729,24 @@ function rc_res_full_form_page_four($form, &$form_state) {
 $nowDate = strtotime("now");
 $nowDateDisplay = date('g:ia \o\n l jS F Y', $nowDate);
 
+
+
+
+$userDateTimeDisplay = date('g:ia \o\n l jS F Y', $userDateTime);
+$earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
+krumo($userDateTimeDisplay);
+krumo($earliest_new_reservationDisplay);
+
+
+
+
   if( $userDateTime > $earliest_new_reservation){
     $form['description'] = array
     (
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
 		      <br>
-		      <b>Please choose a start time within the next 24 hours</b><br>
+		      <b>Please choose a start time within the next 24 hours 1</b><br>
 		      (before ').$earliest_new_reservation_time_date.')'
     );
     }else if( $userDateTime < $nowDate){
@@ -730,7 +755,7 @@ $nowDateDisplay = date('g:ia \o\n l jS F Y', $nowDate);
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
 		      <br>
-		      <b>Please choose a start time within the next 24 hours</b><br>
+		      <b>Please choose a start time within the next 24 hours 2</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
     );
     }else{
@@ -1364,8 +1389,58 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   // get the earliest legal reservation time
   $earliest_new_reservation = variable_get('earliest_new_reservation');
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $existing_resv = variable_get('lcnt');
+    $options = variable_get('options');
+    $too_close_flag = 0;
+  for ($i=0; $i<$existing_resv; $i++){
+
+      $resvDate = strtotime($options[$i]['startDate']);
+      $ddate =  ($userDate - $resvDate)/(3600);
+      $addate = abs($ddate);
+
+      // is there an existing reservation with 24 hours of the newly proposed reservation?
+      if($addate < 24 ){ // replace 24 with value from rules if/when the rule becomes group specific
+	$too_close_flag = 1;
+      }
+//      print_r($userDate." ");
+//      print_r(date('g:ia \o\n l jS F Y', $userDate)."||");
+
+//      print_r($resvDate." ");
+//      print_r(date('g:ia \o\n l jS F Y', $resvDate)."||");
+
+//      print_r($addate." ");
+//      print_r(date('g:ia \o\n l jS F Y', $addate)."||"); // converts to hours not a date. hours should be less than max from rules table, currently 24 or 168
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
   // is the user's selection time for a new reservation more that 24 hours into the future?
-  if( $userDate > $earliest_new_reservation || $userDate < $nowDate){
+  if( $userDate > $earliest_new_reservation || $too_close_flag == 1){
   // save the user's selection time before looping back and asking for a new selection
     variable_set('userDate', $userDate);
     $form_state['page_num'] = 4;
