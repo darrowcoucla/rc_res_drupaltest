@@ -260,7 +260,6 @@ function rc_res_full_list() {
  */
 function rc_res_full_form_page_one($form, &$form_state) {
 
-
 global $user;
 $rc_user = user_load($user->uid);
 $GLOBALS['conf']['cache']=FALSE;
@@ -442,13 +441,19 @@ function rc_res_full_form_page_three($form, &$form_state) {
   // get the number of items the current category of user is allowed to reserve into the future - typically either 1 or 3
   $my_advance = $my_kvar[0]['cls_adv'];
   $my_resv_lim = $my_kvar[0]['time_per'];
-krumo($rc_res_full_get_user_rules);
   $my_fresv_max = $my_resv_lim;
+  // convert hours to days
+  $my_advance_days = $my_advance/24;
+  $my_advance_seconds = $my_advance*3600;
+
+  // build string for setting the date for the earliest time that a new reservation may be made
+  $earliest_new_reservation_inc = ' +'.$my_advance_days.' day';
+
 //  $my_fresv_max = $my_advance/$my_resv_lim;
 
   // get the current date/time of the DrupalTest server
   $nowDate = strtotime("now");
-  $earliest_new_reservation = strtotime("now".' +7 day'); //dhc_change move this to just before needing it so that it is set at the time the user clicks on a button dhcdhcdhc
+  $earliest_new_reservation = strtotime("now".$earliest_new_reservation_inc); //dhc_change move this to just before needing it so that it is set at the time the user clicks on a button dhcdhcdhc
   $startDatePast = array();
   $startDateFuture = array();
   $startDateLatest = array();
@@ -467,6 +472,10 @@ krumo($rc_res_full_get_user_rules);
 
   // Initialize an empty array for the row(s) of reservations just returned from the Resource Scheduler db
   $options = array();
+ 
+  // Use this in the tableselect to set the initial vals for the radio buttons
+  $values = array();
+
   $lcnt = 0;
   $startDateFutureCnt = 0;
   $startDatePastCnt = 0;
@@ -474,6 +483,14 @@ krumo($rc_res_full_get_user_rules);
   $deleteFlag = 0;
   $waitFlag = 0;
   $waitFlagOnly = 0;
+
+  // Set defaults to enable the form displayed to the user
+  $myRow = 1;
+  $myDelete = 1;
+  $myNext = 1;
+  $myMax = 0;
+
+
 
   // if at least one row was returned, loop through each row  
   // if at least one row was returned, loop through each row  
@@ -485,6 +502,8 @@ krumo($rc_res_full_get_user_rules);
       $options[$lcnt]['startDate'] = $row['startDate'];
       $options[$lcnt]['endDate'] = $row['endDate'];
       $options[$lcnt]['schedID'] = $row['schedID'];
+      // set the initial vals for the radio buttons
+      $values[$lcnt] = FALSE;
       // keep count of number of rows
       $lcnt += 1;
 
@@ -496,32 +515,95 @@ krumo($rc_res_full_get_user_rules);
 
 //dhc - temp disable with if(0) for development  
 if(1){
+
 	///// START: business rules
-	if( $curRowDate < $nowDate){
-	  $startDatePast = $curRowDate;
-	  $startDatePastCnt += 1;
-	}else{
+	///// START: business rules
+	///// START: business rules
+	if( $curRowDate > $nowDate){
 	  $startDateFuture = $curRowDate;
 	  $startDateFutureCnt += 1;
-	}
-	if (!empty($startDateFuture)) {
-	  $startDateTotalCnt = $startDatePastCnt + $startDateFutureCnt;
-	  if( $startDateTotalCnt >= $my_resv_lim ){
-	    $deleteFlag = 1;
-	  }
-	}else if(!empty($startDatePast)){
-	  $earliest_new_reservation = strtotime($row['startDate'].' +1 day');
-	  if( $earliest_new_reservation > $nowDate){
+	  if( $startDatePastCnt > 0 ){
 	    if( $my_resv_lim == 1 ){
-	      $waitFlag = 1;
-	      $waitFlagOnly = 0;
-	    } else{
-	      $waitFlag = 0;
-	      $waitFlagOnly = 1;
+		print_r('ERROR - call Darrow Cole at Library IT 310-206-5565');
+	    } else if( $lcnt < $my_resv_lim ){
+	      $myRow = 0;
+	      $myDelete = 1;
+	      $myNext = 1;
+	    } else if( $lcnt >= $my_resv_lim ){
+	      $myRow = 1;
+	      $myDelete = 1;
+	      $myNext = 0;
+	      $myMax = 1;
+	    }
+	  } else {
+	    if( $my_resv_lim == 1 ){
+	      $myRow = 0;
+	      $myDelete = 0;
+	      $myNext = 0;
+	    } else if( $lcnt < $my_resv_lim ){
+	      $myRow = 1;
+	      $myDelete = 1;
+	      $myNext = 1;
+	    } else if( $lcnt >= $my_resv_lim ){
+	      $myRow = 1;
+	      $myDelete = 1;
+	      $myNext = 0;
+	      $myMax = 1;
+	    }
+	  }
+	} else if( $curRowDate <= $nowDate){
+	  $startDatePast = $curRowDate;
+	  $startDatePastCnt += 1;
+	  if( $startDateFutureCnt > 0 ){
+	    if( $my_resv_lim == 1 ){
+		print_r('ERROR - call Darrow Cole at Library IT 310-206-5565');
+	    } else if( $lcnt < $my_resv_lim ){
+	      $myRow = 1;
+	      $myDelete = 1;
+	      $myNext = 1;
+	    } else if( $lcnt >= $my_resv_lim ){
+	      $myRow = 1;
+	      $myDelete = 1;
+	      $myNext = 0;
+	    }
+	  } else {
+	    if( $my_resv_lim == 1 ){
+	      $myRow = 0;
+	      $myDelete = 0;
+	      $myNext = 0;
+	      $myMax = 1;
+	      $earliest_new_reservation_lim1 = $curRowDate + $my_advance_seconds;
+	    } else if( $lcnt < $my_resv_lim ){
+	      $myRow = 0;
+	      $myDelete = 0;
+	      $myNext = 1;
+	    } else if( $lcnt >= $my_resv_lim ){
+	      $myRow = 0;
+	      $myDelete = 0;
+	      $myNext = 0;
+	      $myMax = 1;
 	    }
 	  }
 	}
 	// END: business rules
+	// END: business rules
+	// END: business rules
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 //dhc - END: temp disable with if(0) for development  
@@ -548,7 +630,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
 //krumo($earliest_new_reservationDisplay);
 
 
-  variable_set('earliest_new_reservation', $earliest_new_reservation);
+  variable_set('earliest_new_reservation', $earliest_new_reservation);  //dhc ?///??????
 
   // ?? where is this used ??
   if(!$options){
@@ -571,18 +653,19 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     '#type' => 'tableselect',
     '#title' => 'My Selector12',
     '#id' => 'form_p312',
-//    '#default_value' => 1,
     '#header' => $header,
     '#options' => $options,
+    '#default_value' => $values,
     '#empty' => t('No existing reservations'),
   );
 
   // if the business rules indicate that the user is not allowed to make a new reservation, or delete an old reservation, at this time, remove the option to delete any old reservations
-  if( $waitFlag || $waitFlagOnly ){
-//  if( $deleteFlag || $waitFlag ){
+  if( $myRow == 0 ){
     $form['myselector12'][0]['#disabled'] = true; // disable the row
     $form['submit'] = array(); // remove delete button array to prevent display of the delete button
-  }else{
+  }
+
+  if( $myDelete == 1 ){
     // create delete button to delete existing reservation(s) from Resource Scheduler by calling a web service from the handler
     $form['submit'] = array
     (
@@ -614,21 +697,22 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   );
 
   // check for maxed out reservations, add a "reservations are at a max" message to the form if necessary
+  $earliest_new_reservation_lim_gt_1 = strtotime($options[0]['startDate'])+24*3600;
   $form_p3_maxed = array();
-  if( $deleteFlag ){
+  if( ($myMax==1) && ($my_resv_lim>1) ){
     $form_p3_maxed = array(
       $form['description'] = array
       (
 	'#type'  => 'item',
-	'#title' => t('Reservations maxed out - please try again after the oldest reservation has passed (or delete one or more reservations right now) before making a new reservation.'),
+	'#title' => t('Only '.$my_resv_lim.' Reservation(s) per '.$my_advance_days.' days is allowed - To make a new reservation please first delete an existing reservation or try again after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim_gt_1)),
       ),
     );
-  }else  if( $waitFlag ){ // NOTE: this is currently hardcoded for the undergraduate case, it needs to be expanded to handle all cases; dhc_change
+  }else  if( ($myMax==1) && ($my_resv_lim==1) ){ // NOTE: this is currently hardcoded for the undergraduate case, it needs to be expanded to handle all cases; dhc_change; fixed now?
     $form_p3_maxed = array(
       $form['description'] = array
       (
 	'#type'  => 'item',
-	'#title' => t('Only 1 Reservation per 24 hours is allowed - please try again after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation)),
+	'#title' => t('Only '.$my_resv_lim.' Reservation(s) per 24 hours is allowed - To make a new reservation please try again after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim1)),
       ),
     );
   }
@@ -637,8 +721,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   $form_p3_submit = array();
 
     // disable the submit button if this test is true
-    if( $deleteFlag || $waitFlag ){  ///////////////////////////////////// dhc: use this one normally
-//    if( $deleteFlag && $waitFlag ){  ///////////////////////////////////// dhc: use this one for testing, use this for setting up row disable when only undergraduate case is available
+    if( $myNext == 0 ){
       $form_p3_submit = array(
 	$form['submit'] = array(
 	  '#type' => 'submit',
@@ -787,34 +870,40 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   }
   } else if ( $my_resv_lim > 1 ){
 
-
-
-
-
-
-
   // calculate legal reservation zones based on any existing reservations in the n-24 to n+168 interval
   $nm1 = 0;
   $zcnt = 0;
   $existing_resv = variable_get('lcnt');
-krumo($existing_resv);
   $options = variable_get('options');
 
-  // if only one reservation exists and it is in the past (past 24 hours)
+  // if no reservation exists
+  // if no reservation exists
+  // if no reservation exists
   if( $existing_resv == 0 ){
     $zone[0] = strtotime("now");
     $zone[1] = strtotime("now".' +7 day');
-  } else if( $existing_resv == 1 ){
-    $zone[0] = strtotime( $options[0]['startDate'].' +1 day');
-    $zone[1] = strtotime("now".' +7 day');
+//  } else if( $existing_resv == 1 ){
+//    $zone[0] = strtotime( $options[0]['startDate'].' +1 day');
+//    $zone[1] = strtotime("now".' +7 day');
     // $dzone = ($zone[1]-$zone[0])/(3600*24); // this is the zone within which a reservation may be made
 
-  // else if more than one reservation exists and they are in the past and future OR just in the future
+  // else if one or more than one reservation exists and they are in the past and future OR just in the future
+  // else if one or more than one reservation exists and they are in the past and future OR just in the future
+  // else if one or more than one reservation exists and they are in the past and future OR just in the future
   } else {
-krumo($optionsw);
+
+    // calculate zones time within which a reservation can be made
     for ($i=0; $i<$existing_resv; $i++){
       $resvDate = strtotime($options[$i]['startDate']);
-      if( $nm1 != 0 ){
+      if( $nm1 == 0 ){
+	$nowDate = strtotime("now");
+	if( ($resvDate-$nowDate) > (24*3600) ){
+	  $zone[ $zcnt ] = strtotime("now");
+	  $zcnt += 1;
+	  $zone[ $zcnt ] = $resvDate - (24*3600);
+	  $zcnt += 1;
+	}
+      }else if( $nm1 != 0 ){
 	if( ($resvDate-$nm1) > (48*3600) ){
 	  $zone[ $zcnt ] = $nm1 + (24*3600);
 	  $zcnt += 1;
@@ -825,33 +914,28 @@ krumo($optionsw);
       $nm1 = $resvDate;
     }
 
-$zone[$zcnt] = strtotime( $options[0]['startDate'].' +1 day');
-$zone[$zcnt+1] = strtotime("now".' +7 day');
-
+    // check the last zone point through 7 days out from now
+    $zone[$zcnt] = strtotime( $options[0]['startDate'].' +1 day');
+    $zone[$zcnt+1] = strtotime("now".' +7 day');
     if( (strtotime("now".' +7 day') - $nm1) > (24*3600) ){
 	  $zone[ $zcnt ] = $nm1 + (24*3600);
 	  $zcnt += 1;
 	  $zone[ $zcnt ] = strtotime("now".' +7 day');
 	  $zcnt += 1;
     }
+    // END - calculate zones time within which a reservation can be made  
   }
 
-
+  // print out ranges for the user
   $zonePoints = sizeof( $zone );
-
-
   $i = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
-
-krumo($zone);
-
     $zoneRangeNew = date('o-m-d  g:i A', $zone[$i]).' --- '.date('o-m-d  g:i A', $zone[$i+1]).'<br>';
 //    $zoneRangeNew = date('g:ia D m/d/y', $zone[$i]).' --- '.date('g:ia D m/d/y', $zone[$i+1]).'<br>';
     $zoneRange = $zoneRange.$zoneRangeNew;
     $i+=2;
   }
-
 
   $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
 		      <br>
@@ -860,10 +944,8 @@ krumo($zone);
 		      <br>'
 		      .$zoneRange;
 
-
-
-
-  if( $userDateTime > $earliest_new_reservation){
+  if (!empty($zoneRange)) {  
+//  if( $userDateTime > $earliest_new_reservation){
     $form['description'] = array
     (
       '#type'  => 'item',
@@ -906,22 +988,6 @@ krumo($zone);
 //		      after '.$earliest_new_reservation_time_date
 //    );
 //  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   }
 
@@ -1279,8 +1345,6 @@ $working_uid = variable_get('working_uid');
     'uid' => '502673598',
   );
 
-krumo($form_state['page_values']);
-
   $delimiter = ':::';
   $string = $form_state['page_values'][5]['table'];
   $sub_array = explode ( $delimiter, $string );
@@ -1486,34 +1550,18 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
   $form_state['page_values'][3] = $form_state['values'];
     // delete any rows with set checkboxes from previous page
     foreach ($form_state['values'][0] as $pid_del) {
-      if( variable_get('earliest_new_reservation') == 1 ){
-	if( $pid_del == 0 ){
-	  $working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
-//		$working_rid = $rows['reservation'][$pid_del]['schedID'];
-//		$working_rid = $pid_del;
-	  $url_stack = "http://lit321v-b.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
-	  $url = $url_stack;
-	  $response = drupal_http_request($url,
-	    array(
-	      'method' => 'DELETE',
-	      'headers' => array('Pragma" => "no-cache', 'Cache-Control' => 'no-cache'),
-	    )
-	  );
-	}
-      }else{
-	if( $pid_del >= 0 ){
-	  $working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
-//		$working_rid = $rows['reservation'][$pid_del]['schedID'];
-//		$working_rid = $pid_del;
-	  $url_stack = "http://lit321v-b.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
-	  $url = $url_stack;
-	  $response = drupal_http_request($url,
-	    array(
-	      'method' => 'DELETE',
-	      'headers' => array('Pragma" => "no-cache', 'Cache-Control' => 'no-cache'),
-	    )
-	  );
-	}
+      // tableselect sets the checkbox vals to strings 0,1,2,... but to integer 0 if not selected so for element 0,
+      //  the val is int 0 if not selected, string 0 if selected, the others are autoconverted
+      if( ($pid_del == '0' && is_string($pid_del)) || $pid_del > 0 ){
+	$working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
+	$url_stack = "http://lit321v-b.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
+	$url = $url_stack;
+	$response = drupal_http_request($url,
+	  array(
+	    'method' => 'DELETE',
+	    'headers' => array('Pragma" => "no-cache', 'Cache-Control' => 'no-cache'),
+	  )
+	);
       }
     }
   // When form rebuilds in n+2 or so, use this to determine which page to build.
@@ -1545,24 +1593,13 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   // get the earliest legal reservation time
   $earliest_new_reservation = variable_get('earliest_new_reservation');
 
+  $too_close_flag = 0;
+  $too_old_flag = 0;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+if( $userDate>$nowDate ){
 
     $existing_resv = variable_get('lcnt');
     $options = variable_get('options');
-    $too_close_flag = 0;
   for ($i=0; $i<$existing_resv; $i++){
       $resvDate = strtotime($options[$i]['startDate']);
       $ddate =  ($userDate - $resvDate)/(3600);
@@ -1584,30 +1621,29 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
     }
 
 
-
-krumo(date('g:ia \o\n l jS F Y', $userDate));
-krumo(date('g:ia \o\n l jS F Y', $earliest_new_reservation));
-
-
-
 //$userDateTimeDisplay = date('g:ia \o\n l jS F Y', $userDateTime);
 //krumo($userDateTime);
 //krumo($userDateTimeDisplay);
 //krumo($earliest_new_reservationDisplay);
 
-
-
-
-
-
+// END - if( $userDate>$nowDate )
+  } else{
+    $too_old_flag = 1;
+  }
 
 
 
   // OLD is the user's selection time for a new reservation more that 24 hours into the future?
   // is the user's selection time for a new reservation too early or too close to an existing reservation? Is the too early part covered by the new too close test???
-  if( $userDate < $earliest_new_reservation || $too_close_flag == 1){
+  if( $too_close_flag == 1 ){
+//  if( $userDate < $earliest_new_reservation || $too_close_flag == 1){
   // save the user's selection time before looping back and asking for a new selection
     variable_set('userDate', $userDate);
+    $form_state['page_num'] = 4;
+    $form_state['rebuild'] = TRUE;
+  }else if( $too_old_flag == 1 ){
+    // the user's selection is ok, continue on to the next step
+    // When form rebuilds in n+2 or so, use this to determine which page to build.
     $form_state['page_num'] = 4;
     $form_state['rebuild'] = TRUE;
   }else{
