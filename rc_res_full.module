@@ -339,7 +339,7 @@ $GLOBALS['conf']['cache']=FALSE;
   );
 
 global $user;
-//print_r($user);
+print_r($user);
 
 print_r( $user->name );
 
