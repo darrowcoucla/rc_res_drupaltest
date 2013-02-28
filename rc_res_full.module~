@@ -423,9 +423,9 @@ function rc_res_full_form_page_three($form, &$form_state) {
 // retrieve the UCLA UID (not drupal uid)
 
   if ( $user->name == "darrowco" ) {
-    $working_uid = $user->name;
+    $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
   }else{
-    $working_uid = '502673598'; // insert uid if running this code on a non-shibboleth workstation
+    $working_uid = $user->name;
   }
   variable_set('working_uid', $working_uid);
 
