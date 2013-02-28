@@ -341,6 +341,9 @@ $GLOBALS['conf']['cache']=FALSE;
 global $user;
 //print_r($user);
 
+print_r( $user->name );
+
+
   return $form;
 }
 
@@ -628,8 +631,6 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
 //    '#type' => 'hidden',
 //    '#value' => $lcnt,
 //  );
-
-krumo($values);
 
   // this builds the rows with checkboxes
   $form['myselector12'] = array
@@ -1550,16 +1551,8 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
     }
 
 
-
-
-
-krumo($form_state['values']);
-krumo(count($form_state['values'][0]));
-
     $llcnt = 5;
 //    $llcnt = variable_get('lcnt');
-
-krumo($llcnt);
 
     for ($i=0; $i<$llcnt; $i++){
 //      if (!empty($form_state['values'][0][$i])) {
@@ -1568,9 +1561,6 @@ krumo($llcnt);
 //	unset($form_state['values'][0][$i]);
 //      }
     }
-
-krumo($form_state);
-
 
 //$form_state['complete form']['values']['und'][0]['value']['#value'] = NULL;
 //$form_state['complete form'][0]['rendered'][0][1]['#value'] = NULL;
@@ -1586,13 +1576,6 @@ $form_state['input'][0][2] = NULL;
 
 
   $form_state['page_values'][3] = $form_state['values']; // no reaseon to save, it only makes the check box sticky which is no desireable when the rows shift up after a deletion
-krumo($form_state);
-
-
-
-
-
-
 
 
 
