@@ -844,7 +844,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
 		      <br>
-		      <b>Please choose a start time within the next 24 hours 1</b><br>
+		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (before ').$earliest_new_reservation_time_date.')'
     );
   }else if( $userDateTime < $nowDate){
@@ -853,7 +853,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
 		      <br>
-		      <b>Please choose a start time within the next 24 hours 2</b><br>
+		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
     );
   }else{
@@ -862,7 +862,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<BR>
 		      <BR>
-		      Start your reservation within the next 24 hours 3<BR>
+		      Start your reservation within the next 24 hours<BR>
 		      <BR>
 		      <b>Start before ').$earliest_new_reservation_time.' tomorrow</b> ('.$earliest_new_reservation_time_date.')'
     );
@@ -939,7 +939,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
 		      <br>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
-		      (at least 24 hours before/after any existing/previous reservations and no more than 7 days into the future) 44<br>
+		      (at least 24 hours before/after any existing/previous reservations and no more than 7 days into the future)<br>
 		      <br>'
 		      .$zoneRange;
 
@@ -956,7 +956,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<br>
 		      <br>
-		      <b>Please choose a start time within the next 24 hours 5</b><br>
+		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
     );
   }else{
@@ -965,7 +965,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
       '#type'  => 'item',
       '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit<BR>
 		      <BR>
-		      Start your reservation within the next 24 hours 6<BR>
+		      Start your reservation within the next 24 hours<BR>
 		      <BR>
 		      <b>Start before ').$earliest_new_reservation_time.' tomorrow</b> ('.$earliest_new_reservation_time_date.')'
     );
