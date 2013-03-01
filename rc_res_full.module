@@ -339,9 +339,9 @@ $GLOBALS['conf']['cache']=FALSE;
   );
 
 global $user;
-print_r($user);
+//print_r($user);
 
-print_r( $user->name );
+//print_r( $user->name );
 
 
   return $form;
@@ -430,8 +430,8 @@ function rc_res_full_form_page_three($form, &$form_state) {
   variable_set('working_uid', $working_uid);
 
 
-print_r($user->name);
-print_r($working_uid);
+//print_r($user->name);
+//print_r($working_uid);
 
 
 //  if (!empty($user->name) && $user->name!=0 && $user->name!=1 && $user->name!="darrowco") {
