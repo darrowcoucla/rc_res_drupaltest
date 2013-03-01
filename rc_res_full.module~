@@ -326,12 +326,6 @@ $GLOBALS['conf']['cache']=FALSE;
     '#options' => drupal_map_assoc(  array( t('Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed') )  ),
   );
 
-  $form['table'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Table'),
-    '#submit' => array('rc_res_full_list'),
-  );
-
   $form['next'] = array(
     '#type'  => 'submit',
     '#value' => t('Next'),

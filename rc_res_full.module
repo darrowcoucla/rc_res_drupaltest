@@ -690,7 +690,11 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   );
 
   // check for maxed out reservations, add a "reservations are at a max" message to the form if necessary
-  $earliest_new_reservation_lim_gt_1 = strtotime($options[0]['startDate'])+24*3600;
+  if (!empty($options)){
+    $earliest_new_reservation_lim_gt_1 = strtotime($options[0]['startDate'])+24*3600;
+  }
+
+
   $form_p3_maxed = array();
   if( ($myMax==1) && ($my_resv_lim>1) ){
     $form_p3_maxed = array(
