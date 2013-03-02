@@ -609,16 +609,10 @@ if(1){
   // END: if at least one row was returned, loop through each row  
 
 
-
-
 variable_set('options', $options);
-
-$optionstest = variable_get('options');
-krumo($optionstest);
 
 $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
 //krumo($earliest_new_reservationDisplay);
-
 
   variable_set('earliest_new_reservation', $earliest_new_reservation);  //dhc ?///??????
 

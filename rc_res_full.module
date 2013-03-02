@@ -291,7 +291,7 @@ $GLOBALS['conf']['cache']=FALSE;
   // Otherwise we build page 1.
   // Otherwise we build page 1.
 
-//global $user;
+print_r($user);
 //print_r($user->uid." ");
 //print_r($user->name." ");
 //print_r($user->field_user_full_name);
