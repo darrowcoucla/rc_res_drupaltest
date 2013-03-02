@@ -334,9 +334,8 @@ $GLOBALS['conf']['cache']=FALSE;
 
 global $user;
 //print_r($user);
-
 // print_r( $user->name );
-
+krumo($user);
 
   return $form;
 }
@@ -614,9 +613,8 @@ if(1){
 
 variable_set('options', $options);
 
-
-
-
+$optionstest = variable_get('options');
+krumo($optionstest);
 
 $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
 //krumo($earliest_new_reservationDisplay);
@@ -690,7 +688,10 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   );
 
   // check for maxed out reservations, add a "reservations are at a max" message to the form if necessary
-  $earliest_new_reservation_lim_gt_1 = strtotime($options[0]['startDate'])+24*3600;
+  if (!empty($options)){
+    $earliest_new_reservation_lim_gt_1 = strtotime($options[0]['startDate'])+24*3600;
+  }
+
   $form_p3_maxed = array();
   if( ($myMax==1) && ($my_resv_lim>1) ){
     $form_p3_maxed = array(
@@ -1405,18 +1406,30 @@ $working_uid = variable_get('working_uid');
 //  $body = 'Research Commons Reservation Confirmation'.' '.$rrid.' '.$rstart.' '.$rend_oem.' '.$rcapacity.' '.$rtitle.' '.$rdescription;
 
 
-$body = '
-<table class="sticky-enabled">
- <thead><tr><th class="select-all"></th><th>Room Name</th><th>Start</th><th>End</th> </tr></thead>
-<tbody>
- <tr class="odd"><td><div class="form-item form-type-checkbox form-item-0-0">
-  <input type="checkbox" id="edit-0-0" name="0[0]" value="0" class="form-checkbox" />
-</div>
-</td><td>media:scape R21 - Single Screen</td><td>2013-02-05 12:00:00.0</td><td>2013-02-05 13:00:00.0</td> </tr>
-</tbody>
-</table>';
 
 
+  $bodyContent = array();
+  $existing_resv = variable_get('lcnt');
+  $options = variable_get('options');
+  $dDate = 0;
+
+  // set the email content
+  $body = '
+Research Commons Reservation Confirmation
+
+';
+  for ($i=0; $i<$existing_resv; $i++){
+      $roomName = $options[$i]['roomName'];
+      $startDate = strtotime($options[$i]['startDate']);
+      $endDate = strtotime($options[$i]['endDate']);
+      $schedID = $options[$i]['schedID'];
+      $dDate = ($endDate-$startDate)/3600;
+      $body = $body.' - '.$roomName.'
+'.'   Date/Time: '.date('g:ia \o\n l jS F Y',$startDate).'
+'.'   '.$dDate.' hour(s)
+
+';
+  }
 
   $to = 'darrowco@library.ucla.edu';
   $from = 'darrowco@library.ucla.edu';
