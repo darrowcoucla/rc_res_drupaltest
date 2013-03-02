@@ -335,7 +335,7 @@ $GLOBALS['conf']['cache']=FALSE;
 global $user;
 //print_r($user);
 // print_r( $user->name );
-krumo($user);
+//krumo($user);
 
   return $form;
 }
@@ -1393,45 +1393,39 @@ $working_uid = variable_get('working_uid');
 //    'uid' => '603513612',
   );
 
-//krumo($str_create1);
-
-//print_r($str_create1);
-//print_r($rrid);
-
+  // create the new reservation
   rc_res_full_set_user_reservations($rrid, $str_create1);
 
 
   // send a confirmation email
-  // send a confirmation email
-//  $body = 'Research Commons Reservation Confirmation'.' '.$rrid.' '.$rstart.' '.$rend_oem.' '.$rcapacity.' '.$rtitle.' '.$rdescription;
-
-
-
-
-  $bodyContent = array();
-  $existing_resv = variable_get('lcnt');
-  $options = variable_get('options');
   $dDate = 0;
 
-  // set the email content
-  $body = '
+  // re-read the user's reservations to catch anything new
+  $rows = rc_res_full_get_user_reservations($working_uid);
+
+  // if at least one row was returned, loop through each row  
+  if (!empty($rows['reservation'])) {
+    // set the email content, spacing and cr/lf effect the email layout
+    $body = '
 Research Commons Reservation Confirmation
 
 ';
-  for ($i=0; $i<$existing_resv; $i++){
-      $roomName = $options[$i]['roomName'];
-      $startDate = strtotime($options[$i]['startDate']);
-      $endDate = strtotime($options[$i]['endDate']);
-      $schedID = $options[$i]['schedID'];
+    foreach($rows['reservation'] as $row) {
+      // each element of the array is keyed with the lcnt
+      $roomName = $row['roomName'];
+      $startDate = strtotime($row['startDate']);
+      $endDate = strtotime($row['endDate']);
+      $schedID = $row['schedID'];
       $dDate = ($endDate-$startDate)/3600;
       $body = $body.' - '.$roomName.'
 '.'   Date/Time: '.date('g:ia \o\n l jS F Y',$startDate).'
 '.'   '.$dDate.' hour(s)
 
 ';
+    }
   }
 
-  $to = 'darrowco@library.ucla.edu';
+  $to = $user->mail;
   $from = 'darrowco@library.ucla.edu';
   // If you are using suhosin (the hardened PHP extension) and want to use
   // Cc or Bcc, then make sure that suhosin.mail.protect is not set to 2,
@@ -1448,11 +1442,6 @@ Research Commons Reservation Confirmation
   // by just setting the Content-Type.
   $message = drupal_mail('rc_res_full', 'message_key', $to, user_preferred_language($user), array('body' => $body, 'subject' => $subject, 'headers' => array('Cc' => $header_cc, 'Bcc' => $header_bcc)), $from, TRUE);
   // You can check $message['result'] to see if the message sent successfully.
-
-
-
-
-
 
   $form = array();
 
