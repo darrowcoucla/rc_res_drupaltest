@@ -1420,6 +1420,7 @@ Research Commons Reservation Confirmation
   }
 
   $to = $user->mail;
+print_r($to);
   $from = 'darrowco@library.ucla.edu';
   // If you are using suhosin (the hardened PHP extension) and want to use
   // Cc or Bcc, then make sure that suhosin.mail.protect is not set to 2,
