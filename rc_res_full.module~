@@ -1155,9 +1155,6 @@ function rc_res_full_form_page_five($form, &$form_state) {
   $rows = array();
   $rows = rc_res_full_get_resources_for_period_complete($form, $form_state);
 
-
-krumo($rows);
-
 //  rc_res_full_set_user_reservations($working_uid);
   //rc_res_full_get_open_resources();
 
