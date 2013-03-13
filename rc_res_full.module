@@ -489,16 +489,13 @@ print_r('page_77');
     
 $working_uid = $user->name;
 
-
 //  if ( $user->name == "darrowco" ) {
-//    $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
-//  }else{
-//    $working_uid = $user->name;
-//  }
-
+//     $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
+//   }else{
+//     $working_uid = $user->name;
+//   }
 
   variable_set('working_uid', $working_uid);
-
 
 //print_r($user->name);
 //print_r($working_uid);
@@ -1040,7 +1037,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
 		      .$zoneRange.'</b>';
   }
 
-  if (!empty($zoneRange)) {  
+  if (!empty($zoneRange)) {
 //  if( $userDateTime > $earliest_new_reservation){
     $form['description'] = array
     (
