@@ -384,7 +384,7 @@ variable_set('no_res_available', 0); // used to indicate that no reservations ar
 
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Welcome '.variable_get('name_first').' '.variable_get('name_last').'&nbsp;&nbsp;&nbsp;<a href="http://www.ucla.edu">logout</a><br>You have successfully signed in using Shibboleth.'),
+    '#title' => t('Welcome '.variable_get('name_first').' '.variable_get('name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>You have successfully signed in using Shibboleth.'),
   );
 
   $form['test'] = array(
@@ -750,7 +750,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'),
+      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>),
     ),
 
     // main array
