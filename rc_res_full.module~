@@ -321,13 +321,6 @@ function rc_res_full_form_page_one($form, &$form_state) {
 
 global $user;
 
-
-
-print_r(variable_get("shib_auth_full_logout_url"));
-
-
-
-
 $rc_user = user_load($user->uid);
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
@@ -391,7 +384,7 @@ variable_set('no_res_available', 0); // used to indicate that no reservations ar
 
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Welcome '.variable_get('name_first').' '.variable_get('name_last').'<br>You have successfully signed in using Shibboleth.'),
+    '#title' => t('Welcome '.variable_get('name_first').' '.variable_get('name_last').'&nbsp;&nbsp;&nbsp;<a href="http://www.ucla.edu">logout</a><br>You have successfully signed in using Shibboleth.'),
   );
 
   $form['test'] = array(
@@ -493,11 +486,17 @@ print_r('page_77');
 //dhc_change: improve this to work on a shibboleth system with a matching user. ie both shib user and drupal user, possibly with same username
 // retrieve the UCLA UID (not drupal uid)
 
-  if ( $user->name == "darrowco" ) {
-    $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
-  }else{
-    $working_uid = $user->name;
-  }
+    
+$working_uid = $user->name;
+
+
+//  if ( $user->name == "darrowco" ) {
+//    $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
+//  }else{
+//    $working_uid = $user->name;
+//  }
+
+
   variable_set('working_uid', $working_uid);
 
 

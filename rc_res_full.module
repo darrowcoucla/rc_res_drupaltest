@@ -321,13 +321,6 @@ function rc_res_full_form_page_one($form, &$form_state) {
 
 global $user;
 
-
-
-print_r(variable_get("shib_auth_full_logout_url"));
-
-
-
-
 $rc_user = user_load($user->uid);
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
@@ -391,7 +384,7 @@ variable_set('no_res_available', 0); // used to indicate that no reservations ar
 
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Welcome '.variable_get('name_first').' '.variable_get('name_last').'<br>You have successfully signed in using Shibboleth.'),
+    '#title' => t('Welcome '.variable_get('name_first').' '.variable_get('name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>You have successfully signed in using Shibboleth.'),
   );
 
   $form['test'] = array(
