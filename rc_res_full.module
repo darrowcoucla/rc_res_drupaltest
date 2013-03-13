@@ -902,7 +902,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
 //krumo($userDateTimeDisplay);
 //krumo($earliest_new_reservationDisplay);
 
-
+print_r($my_resv_lim);
 
   if ( $my_resv_lim == 1 ){
     $maxDate = strtotime("now".' +1 day');

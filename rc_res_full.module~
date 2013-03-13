@@ -489,11 +489,11 @@ print_r('page_77');
     
 $working_uid = $user->name;
 
-  if ( $user->name == "darrowco" ) {
-    $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
-  }else{
-    $working_uid = $user->name;
-  }
+//  if ( $user->name == "darrowco" ) {
+//     $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
+//   }else{
+//     $working_uid = $user->name;
+//   }
 
   variable_set('working_uid', $working_uid);
 
