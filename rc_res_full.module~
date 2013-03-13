@@ -851,8 +851,6 @@ function rc_res_full_form_page_four($form, &$form_state) {
 
 print_r($my_resv_lim);
 
-form_set_error('user_dept', 'Please enter the Department or Major associated with this request.');
-
   if (!empty($form_state['page_values'][4])) {
     $form_state['values'] = $form_state['page_values'][4];
     $default_date_time = $form_state['values']['date'];
