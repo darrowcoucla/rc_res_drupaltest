@@ -849,7 +849,7 @@ function rc_res_full_form_page_four($form, &$form_state) {
   // get the number of items the current category of user is allowed to reserve into the future - typically either 1 or 3
   $my_resv_lim = $my_kvar[0]['time_per'];
 
-print_r($my_resv_lim);
+print_r('poipoi');
 
   if (!empty($form_state['page_values'][4])) {
     $form_state['values'] = $form_state['page_values'][4];
