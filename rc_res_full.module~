@@ -322,7 +322,7 @@ function rc_res_full_form_page_one($form, &$form_state) {
 
 global $user;
 
-print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
+//print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
 
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
@@ -487,6 +487,16 @@ print_r('page_77');
 
 //dhc_change: improve this to work on a shibboleth system with a matching user. ie both shib user and drupal user, possibly with same username
 // retrieve the UCLA UID (not drupal uid)
+
+
+
+
+
+
+
+
+
+
 
     
 $working_uid = $user->name;
