@@ -493,6 +493,11 @@ print_r('page_77');
 
 
 
+  if (!empty( $_SERVER['SHIBUCLAUNIVERSITYID'] ) {
+    print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
+  } else {
+    print_r{'NO UID IN HEADERS'};
+  }
 
 
 
