@@ -261,6 +261,7 @@ function rc_res_full_form_page_one_validate($form, &$form_state) {
 function rc_res_full_menu() {
   global $user;
   global $rc_res_full_get_user_category;
+  $rc_user = user_load($user->uid);
   
   $items = array();
   $items['libraries/researchlibrary/research-commons-reservation'] = array(
@@ -320,8 +321,6 @@ function rc_res_full_list() {
 function rc_res_full_form_page_one($form, &$form_state) {
 
 global $user;
-
-$rc_user = user_load($user->uid);
 
 print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
 
