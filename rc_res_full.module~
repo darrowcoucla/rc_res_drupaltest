@@ -498,7 +498,7 @@ $working_uid = $user->name;
   variable_set('working_uid', $working_uid);
 
 //print_r($user->name);
-print_r($rc_user->uid);
+print_r($rc_user);
 
 
 //  if (!empty($user->name) && $user->name!=0 && $user->name!=1 && $user->name!="darrowco") {
