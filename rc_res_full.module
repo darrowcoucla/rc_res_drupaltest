@@ -322,6 +322,9 @@ function rc_res_full_form_page_one($form, &$form_state) {
 global $user;
 
 $rc_user = user_load($user->uid);
+
+print_r($rc_user);
+
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
