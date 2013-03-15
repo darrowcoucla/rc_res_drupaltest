@@ -493,18 +493,22 @@ print_r('page_77');
 
 
 
-  if (!empty( $_SERVER )) {
-    print_r($_SERVER['SHIBUCLAUNIVERSITYID']);}
-//  } else {
-//    print_r('NO UID IN HEADERS');
-//  }
-
-
+  if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
+    $working_uid = $_SERVER['SHIBUCLAUNIVERSITYID'];
+    print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
+  } else if ( !empty($_SERVER['HTTP_HOST']) ) {
+    if ( $_SERVER['HTTP_HOST']=='localhost' ) {
+      $working_uid = '502673598';
+      print_r($_SERVER['HTTP_HOST']);
+    }
+  } else {
+    print_r($_SERVER);
+  }
 
 
 
     
-$working_uid = $user->name;
+
 
 //  if ( $user->name == "darrowco" ) {
 //     $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation

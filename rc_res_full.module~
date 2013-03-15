@@ -493,13 +493,15 @@ print_r('page_77');
 
 
 
-  if (!empty( $_SERVER ) {
-    print_r($_SERVER['SHIBUCLAUNIVERSITYID']);}
-//  } else {
-//    print_r('NO UID IN HEADERS');
-//  }
-
-
+  if ( !empty( $_SERVER['SHIBUCLAUNIVERSITYID']) ) {
+    print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
+  } else if ( !empty($_SERVER['HTTP_HOST']) ) {
+    if ( $_SERVER['HTTP_HOST']=='localhost' ) {
+      print_r($_SERVER['HTTP_HOST']);
+    }
+  } else {
+    print_r($_SERVER);
+  }
 
 
 
