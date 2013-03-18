@@ -319,8 +319,27 @@ function rc_res_full_list() {
  * page 1 ......................................................................................................................
  */
 function rc_res_full_form_page_one($form, &$form_state) {
-
 global $user;
+
+// code to remove deprecated variables set with variable_set
+print_r('Starting');
+$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_full_get_user_category').', '.variable_get('rc_res_full_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
+print_r($print_r_var);
+variable_del('earliest_new_reservation');
+variable_del('firstAccess4');
+variable_del('lcnt');
+variable_del('maxDate');
+variable_del('name_first');
+variable_del('name_last');
+variable_del('no_res_available');
+variable_del('options');
+variable_del('rc_res_full_get_user_category');
+variable_del('rc_res_full_get_user_rules');
+variable_del('userDate');
+variable_del('working_uid');
+print_r('finishing');
+$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_full_get_user_category').', '.variable_get('rc_res_full_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
+print_r($print_r_var);
 
 //print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
 
@@ -363,18 +382,18 @@ global $user;
 //print_r($user->field_user_full_name);
 //krumo($user);
   
-variable_set('no_res_available', 0); // used to indicate that no reservations are available after submitting page 4
+  session_variable_set('rc-res','no_res_available',0);
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
     if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
       $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
-      variable_set('name_first', $names[0]);
-      variable_set('name_last', $names[1]);
+      session_variable_set('rc-res','name_first', $names[0]);
+      session_variable_set('rc-res','name_last', $names[1]);
     }else{
       $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
-      variable_set('name_last', $names[0]);
-      variable_set('name_first', $names[1]);
+      session_variable_set('rc-res','name_last', $names[0]);
+      session_variable_set('rc-res','name_first', $names[1]);
     }
   }else{
     $names = explode("|||", "Name|||unavailable");
@@ -386,7 +405,7 @@ variable_set('no_res_available', 0); // used to indicate that no reservations ar
 
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Welcome '.variable_get('name_first').' '.variable_get('name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>You have successfully signed in using Shibboleth.'),
+    '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>You have successfully signed in using Shibboleth.'),
   );
 
   $form['test'] = array(
@@ -418,8 +437,8 @@ function rc_res_full_form_page_two($form, &$form_state) {
   // Build page 2.
   // Build page 2.
 
-// drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
-// drupal_set_message(t("User ID: " . variable_get('working_uid') ));
+// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_full_get_user_category') ));
+// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
 
   $form = array();
 
@@ -450,7 +469,8 @@ function rc_res_full_form_page_three($form, &$form_state) {
 
   $GLOBALS['conf']['cache']=FALSE;
   global $user;
-  variable_set('firstAccess4', 0);
+  session_variable_set('rc-res','firstAccess4', 0);
+
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
@@ -502,7 +522,7 @@ print_r('page_77');
       print_r($_SERVER['HTTP_HOST']);
     }
   } else {
-    print_r($_SERVER);
+    print_r('Unable to login.');
   }
 
 
@@ -516,7 +536,7 @@ print_r('page_77');
 //     $working_uid = $user->name;
 //   }
 
-  variable_set('working_uid', $working_uid);
+  session_variable_set('rc-res','working_uid', $working_uid);
 
 //print_r($user->name);
 //print_r($user);
@@ -527,20 +547,20 @@ print_r('page_77');
 //  }else{
 //    $working_uid = '502673598'; // insert uid if running this code on a non-shibboleth workstation
 //  }
-//  variable_set('working_uid', $working_uid);
+//  session_variable_set('rc-res','working_uid', $working_uid);
 
 //print_r($working_uid);
 
   // get user category here
   $rc_res_full_get_user_category = rc_res_full_get_user_category($working_uid);
-  variable_set('rc_res_full_get_user_category', $rc_res_full_get_user_category);
+  session_variable_set('rc-res','rc_res_full_get_user_category', $rc_res_full_get_user_category);
 
   // get category rules here
   $rc_res_full_get_user_rules = rc_res_full_get_user_rules($rc_res_full_get_user_category);
-  variable_set('rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
+  session_variable_set('rc-res','rc_res_full_get_user_rules', $rc_res_full_get_user_rules);
 
   // retrieve the policy rules previously saved in the rules table
-  $my_kvar = variable_get('rc_res_full_get_user_rules');
+  $my_kvar = session_variable_get('rc-res','rc_res_full_get_user_rules');
 
   // get the number of items the current category of user is allowed to reserve into the future - typically either 1 or 3
   $my_advance = $my_kvar[0]['cls_adv'];
@@ -704,12 +724,12 @@ if(1){
   // END: if at least one row was returned, loop through each row  
 
 
-variable_set('options', $options);
+session_variable_set('rc-res','options', $options);
 
 $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
 //krumo($earliest_new_reservationDisplay);
 
-  variable_set('earliest_new_reservation', $earliest_new_reservation);  //dhc ?///??????
+  session_variable_set('rc-res','earliest_new_reservation', $earliest_new_reservation);  //dhc ?///??????
 
   // used to prevent rendering of the delete button if there are no existing reservations
   if(!$options){
@@ -718,7 +738,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $sub_delete = TRUE;
   }
 
-  variable_set('lcnt', $lcnt);
+  session_variable_set('rc-res','lcnt', $lcnt);
 // dhc: cannot seem to pass a hidden variable to the delete handler?? use global for now
 //  // save number of items on reserve to use later in delete handler; see bug http://qa.drupal.org/pifr/test/281743
 //  $form['myHidden']['lcnt'] = array(
@@ -768,7 +788,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
     ),
 
     // main array
@@ -859,14 +879,14 @@ function rc_res_full_form_page_four($form, &$form_state) {
   // Build page 4.
   $GLOBALS['conf']['cache']=FALSE;
   global $user;
-  $no_res_available = variable_get('no_res_available');
+  $no_res_available = session_variable_get('rc-res','no_res_available');
 
-// drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
-// drupal_set_message(t("User ID: " . variable_get('working_uid') ));
+// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_full_get_user_category') ));
+// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
 
 //krumo($form_state['page_values']);
 
-  $my_kvar = variable_get('rc_res_full_get_user_rules');
+  $my_kvar = session_variable_get('rc-res','rc_res_full_get_user_rules');
   // get the number of items the current category of user is allowed to reserve into the future - typically either 1 or 3
   $my_resv_lim = $my_kvar[0]['time_per'];
 
@@ -893,9 +913,9 @@ function rc_res_full_form_page_four($form, &$form_state) {
   }
 
   $form = array();
-  $userDate = variable_get('userDate');
+  $userDate = session_variable_get('rc-res','userDate');
   $userDateTime = $userDate;
-  $earliest_new_reservation = variable_get('earliest_new_reservation');
+  $earliest_new_reservation = session_variable_get('rc-res','earliest_new_reservation');
 
 //krumo($earliest_new_reservation);
 
@@ -930,7 +950,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (before ').$earliest_new_reservation_time_date.')'
@@ -939,7 +959,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
@@ -948,7 +968,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><BR>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><BR>
 		      <BR>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -960,8 +980,8 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   // calculate legal reservation zones based on any existing reservations in the n-24 to n+168 interval
   $nm1 = 0;
   $zcnt = 0;
-  $existing_resv = variable_get('lcnt');
-  $options = variable_get('options');
+  $existing_resv = session_variable_get('rc-res','lcnt');
+  $options = session_variable_get('rc-res','options');
 
   // if no reservation exists
   // if no reservation exists
@@ -1025,30 +1045,30 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $i+=2;
   }
 
-  $firstAccess4 = variable_get('firstAccess4');
-  $no_res_available = variable_get('no_res_available');
+  $firstAccess4 = session_variable_get('rc-res','firstAccess4');
+  $no_res_available = session_variable_get('rc-res','no_res_available');
   if( $no_res_available == 1 ){
-    variable_set('no_res_available', 0); // used to indicate that no reservations are available after submitting page 4
+    session_variable_set('rc-res','no_res_available',0);
 
 form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time');
 
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ){
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <em>Please choose a start time in one of the following time slot(s)</em><br>
 		      <br>'
 		      .$zoneRange;
-  variable_set('firstAccess4', 1);
+  session_variable_set('rc-res','firstAccess4', 1);
   } else if( $firstAccess4 > 0 ){
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)');
 
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
@@ -1066,7 +1086,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
@@ -1075,7 +1095,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><BR>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><BR>
 		      <BR>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -1092,7 +1112,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
 //    $form['description'] = array
 //    (
 //      '#type'  => 'item',
-//      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+//      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 //		      <br>
 //		      <b>Please choose a start time at least 24 hours before/after any existing/previous reservations and no more than 7 days into the future 4</b><br>
 //		      before ').$earliest_new_reservation_time_date.'<br>
@@ -1102,7 +1122,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
 
   }
 
-  variable_set('maxDate', $maxDate);
+  session_variable_set('rc-res','maxDate', $maxDate);
 
 //}
   
@@ -1160,8 +1180,8 @@ function rc_res_full_form_page_five($form, &$form_state) {
   // Build page 5.
   // Build page 5.
 
-// drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
-// drupal_set_message(t("User ID: " . variable_get('working_uid') ));
+// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_full_get_user_category') ));
+// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
 
 //krumo($form_state['values']);
 
@@ -1252,7 +1272,7 @@ function rc_res_full_form_page_five($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > Date&Time > <B>Available Resources</B> > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+      '#markup' => t('Your Reservations > Date&Time > <B>Available Resources</B> > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
     ),
 
     $form['description2'] = array
@@ -1348,8 +1368,8 @@ function rc_res_full_form_page_five($form, &$form_state) {
  */
 function rc_res_full_form_page_six($form, &$form_state) {
 
-// drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
-// drupal_set_message(t("User ID: " . variable_get('working_uid') ));
+// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_full_get_user_category') ));
+// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
 
 //krumo($form_state['values']);
 
@@ -1364,7 +1384,7 @@ function rc_res_full_form_page_six($form, &$form_state) {
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date&Time > Available Resources > <B>Details</B> > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+    '#markup' => t('Your Reservations > Date&Time > Available Resources > <B>Details</B> > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
   );
 
   $form['user_email'] = array(
@@ -1430,9 +1450,9 @@ function rc_res_full_form_page_seven($form, &$form_state) {
 
 global $user;
 
-// drupal_set_message(t("User category: " . variable_get('rc_res_full_get_user_category') ));
-// drupal_set_message(t("User ID: " . variable_get('working_uid') ));
-$working_uid = variable_get('working_uid');
+// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_full_get_user_category') ));
+// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
+$working_uid = session_variable_get('rc-res','working_uid');
   $str_create = array(
     'description' => 'testing ',
     'start' => '2012-12-25 02:00 PM',
@@ -1494,8 +1514,8 @@ $working_uid = variable_get('working_uid');
     'numberOfAttendees' => $rcap,
     'email' => $uemail,
     'phone' => '310-206-5565',
-    'firstName' => variable_get('name_first'),
-    'lastName' => variable_get('name_last'),
+    'firstName' => session_variable_get('rc-res','name_first'),
+    'lastName' => session_variable_get('rc-res','name_last'),
     'academicDept' => $udept,
     'academicDeptOther' => 'Education',
     'division' => 'Staff',
@@ -1562,7 +1582,7 @@ Research Commons Reservation Confirmation
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date&Time > Available Resources > Details > <B>Submit</B>'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+    '#markup' => t('Your Reservations > Date&Time > Available Resources > Details > <B>Submit</B>'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
   );
 
   $form['description2'] = array(
@@ -1636,7 +1656,7 @@ function rc_res_full_form_page_three_handler_submit($form, &$form_state) {
 
   // zero out any previous choice by the user
   $userDate = array();
-  variable_set('userDate', $userDate);
+  session_variable_set('rc-res','userDate', $userDate);
 
   if (!empty($form_state['page_values'][4])) {
     $form_state['values'] = $form_state['page_values'][4];
@@ -1675,7 +1695,7 @@ function rc_res_full_form_page_three_delete_handler_submit($form, &$form_state) 
 
 
     $llcnt = 5;
-//    $llcnt = variable_get('lcnt');
+//    $llcnt = session_variable_get('rc-res','lcnt');
 
     for ($i=0; $i<$llcnt; $i++){
 //      if (!empty($form_state['values'][0][$i])) {
@@ -1729,10 +1749,10 @@ function rc_res_full_form_page_four_handler_submit($form, &$form_state) {
   $userDate = strtotime($form_state['page_values'][4]['date']);
 
   // get the earliest legal reservation time
-  $earliest_new_reservation = variable_get('earliest_new_reservation');
+  $earliest_new_reservation = session_variable_get('rc-res','earliest_new_reservation');
 
   // get the most distant legal reservation time
-  $maxDate = variable_get('earliest_new_reservation');
+  $maxDate = session_variable_get('rc-res','earliest_new_reservation');
 
   $too_close_flag = 0;
   $too_old_flag = 0;
@@ -1747,8 +1767,8 @@ if( $rows == 'Not Found' ){
   $no_res_available_flag = 1;
 } else if( $userDate>$nowDate ){
 
-    $existing_resv = variable_get('lcnt');
-    $options = variable_get('options');
+    $existing_resv = session_variable_get('rc-res','lcnt');
+    $options = session_variable_get('rc-res','options');
   for ($i=0; $i<$existing_resv; $i++){
       $resvDate = strtotime($options[$i]['startDate']);
       $ddate =  ($userDate - $resvDate)/(3600);
@@ -1787,13 +1807,13 @@ if( $rows == 'Not Found' ){
   // OLD is the user's selection time for a new reservation more that 24 hours into the future?
   // is the user's selection time for a new reservation too early or too close to an existing reservation? Is the too early part covered by the new too close test???
   if( $no_res_available_flag == 1 ){
-    variable_set('no_res_available', 1);
+    session_variable_set('rc-res','no_res_available',1);
     $form_state['page_num'] = 4;
     $form_state['rebuild'] = TRUE;
   } else if( $too_close_flag == 1 || $too_new_flag == 1 ){
 //  if( $userDate < $earliest_new_reservation || $too_close_flag == 1){
   // save the user's selection time before looping back and asking for a new selection
-    variable_set('userDate', $userDate);
+    session_variable_set('rc-res','userDate', $userDate);
     $form_state['page_num'] = 4;
     $form_state['rebuild'] = TRUE;
   }else if( $too_old_flag == 1 ){
@@ -1804,7 +1824,7 @@ if( $rows == 'Not Found' ){
   }else{
     // the user's selection is ok, continue on to the next step
     // When form rebuilds in n+2 or so, use this to determine which page to build.
-    variable_set('firstAccess4', 0);
+    session_variable_set('rc-res','firstAccess4', 0);
     $form_state['page_num'] = 5;
     $form_state['rebuild'] = TRUE;
   }
@@ -2559,7 +2579,7 @@ function rc_res_full_get_resources_for_period_complete($form, $form_state) {
 
 
 
-  $my_kvar = variable_get('rc_res_full_get_user_rules');
+  $my_kvar = session_variable_get('rc-res','rc_res_full_get_user_rules');
 
 //krumo($my_kvar);
 
@@ -2812,3 +2832,69 @@ function rc_res_full_mail($key, &$message, $params) {
   }
 }
   
+
+// session variable functions
+function session_variable_check_session()
+	{
+	return session_id() != '';
+	}
+
+function session_variable_check_module($module)
+	{
+	$module_safe = session_variable_safe($module);
+	if($module_safe !== $module or isset($_SESSION[$module]))
+		{
+		return false;
+		}
+	return true;
+	}
+
+function session_variable_delete($module, $name)
+	{
+	if(session_variable_is($module, $name))
+		{
+		$module = session_variable_safe($module);
+		$name = session_variable_safe($name);
+		unset($_SESSION[$module][$name]);
+		if(!count($_SESSION[$module]))
+			{
+			unset($_SESSION[$module]);
+			}
+		return true;
+		}
+	return false;
+	}
+
+function session_variable_is($module, $name)
+	{
+	$module = session_variable_safe($module);
+	$name = session_variable_safe($name);
+	return (isset($_SESSION[$module]) and isset($_SESSION[$module][$name]));
+	}
+
+function session_variable_get($module, $name, $default_value = '')
+	{
+	if(session_variable_is($module, $name))
+		{
+		$module = session_variable_safe($module);
+		$name = session_variable_safe($name);
+		return $_SESSION[$module][$name];
+		}
+	return $default_value;
+	}
+
+function session_variable_set($module, $name, $value = '')
+	{
+	$module = session_variable_safe($module);
+	$name = session_variable_safe($name);
+	$_SESSION[$module][$name] = $value;
+	}
+
+/*
+Is the module name or the variable name safe for use as an entry in the session?
+This function returns a safe version of the name.
+*/
+function session_variable_safe($name = '')
+	{
+	return htmlentities($name);
+	}
