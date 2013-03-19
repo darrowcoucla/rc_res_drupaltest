@@ -321,6 +321,25 @@ function rc_res_full_list() {
 function rc_res_full_form_page_one($form, &$form_state) {
 global $user;
 
+// code to remove deprecated variables set with variable_set
+print_r('Starting');
+$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_full_get_user_category').', '.variable_get('rc_res_full_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
+print_r($print_r_var);
+variable_del('earliest_new_reservation');
+variable_del('firstAccess4');
+variable_del('lcnt');
+variable_del('maxDate');
+variable_del('name_first');
+variable_del('name_last');
+variable_del('no_res_available');
+variable_del('options');
+variable_del('rc_res_full_get_user_category');
+variable_del('rc_res_full_get_user_rules');
+variable_del('userDate');
+variable_del('working_uid');
+print_r('finishing');
+$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_full_get_user_category').', '.variable_get('rc_res_full_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
+print_r($print_r_var);
 
 //print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
 
