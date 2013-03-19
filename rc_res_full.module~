@@ -193,12 +193,9 @@ function rc_res_full_entry_load($entry = array()) {
 
 
 
-
-
-
-
-
-
+/**********************************************************************************************************/
+/*** Master validation function for the customer survey form **********************************************/
+/**********************************************************************************************************/
 /**
  * Master validation function for the customer survey form - uses per-stage 
  * validation and calls functions for each one.
@@ -237,14 +234,9 @@ function rc_res_full_form_page_one_validate($form, &$form_state) {
     }
   }
 }
-
-
-
-
-
-
-
-
+/**********************************************************************************************************/
+/*** END Master validation function for the customer survey form ******************************************/
+/**********************************************************************************************************/
 
 
 
@@ -313,6 +305,7 @@ function rc_res_full_list() {
  * Create a form to add an entry, ......................................................................................................................
  */
 
+
 /**
  * page 1 ......................................................................................................................
  * page 1 ......................................................................................................................
@@ -321,6 +314,25 @@ function rc_res_full_list() {
 function rc_res_full_form_page_one($form, &$form_state) {
 global $user;
 
+//// code to remove deprecated variables set with variable_set
+//print_r('Starting');
+//$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_full_get_user_category').', '.variable_get('rc_res_full_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
+//print_r($print_r_var);
+//variable_del('earliest_new_reservation');
+//variable_del('firstAccess4');
+//variable_del('lcnt');
+//variable_del('maxDate');
+//variable_del('name_first');
+//variable_del('name_last');
+//variable_del('no_res_available');
+//variable_del('options');
+//variable_del('rc_res_full_get_user_category');
+//variable_del('rc_res_full_get_user_rules');
+//variable_del('userDate');
+//variable_del('working_uid');
+//print_r('finishing');
+//$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_full_get_user_category').', '.variable_get('rc_res_full_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
+//print_r($print_r_var);
 
 //print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
 
@@ -357,12 +369,6 @@ global $user;
   // Otherwise we build page 1.
   // Otherwise we build page 1.
 
-//print_r($user);
-//print_r($user->uid." ");
-//print_r($user->name." ");
-//print_r($user->field_user_full_name);
-//krumo($user);
-  
   session_variable_set('rc-res','no_res_available',0);
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
@@ -400,13 +406,10 @@ global $user;
     '#submit' => array('rc_res_full_form_page_one_handler_submit'),
   );
 
-global $user;
-//print_r($user);
-// print_r( $user->name );
-//krumo($user);
-
+  global $user;
   return $form;
 }
+
 
 /**
  * page 2 ......................................................................................................................
@@ -417,9 +420,6 @@ function rc_res_full_form_page_two($form, &$form_state) {
   // Build page 2.
   // Build page 2.
   // Build page 2.
-
-// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_full_get_user_category') ));
-// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
 
   $form = array();
 
@@ -496,14 +496,14 @@ print_r('page_77');
 
   if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
     $working_uid = $_SERVER['SHIBUCLAUNIVERSITYID'];
-    print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
+//    print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
   } else if ( !empty($_SERVER['HTTP_HOST']) ) {
     if ( $_SERVER['HTTP_HOST']=='localhost' ) {
       $working_uid = '502673598';
-      print_r($_SERVER['HTTP_HOST']);
+//      print_r($_SERVER['HTTP_HOST']);
     }
   } else {
-    print_r('Unable to login.');
+//    print_r('Unable to login.'); // dhc; error handling needed here
   }
 
 
