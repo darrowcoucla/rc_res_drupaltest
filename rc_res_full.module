@@ -194,7 +194,7 @@ function rc_res_full_entry_load($entry = array()) {
 
 
 /**********************************************************************************************************/
-/*** Master validation function for the customer survey form **********************************************/
+/*** Master validation function for the RC-Res form *******************************************************/
 /**********************************************************************************************************/
 /**
  * Master validation function for the customer survey form - uses per-stage 
@@ -225,6 +225,10 @@ function rc_res_full_form_page_one_validate($form, &$form_state) {
 	    form_set_error('', $checkboxErrorMsg2);
       }
     }
+  } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 4) {
+    if (!$form_state['values']['date']) {
+      form_set_error('date', 'Please enter a date and time.');
+    }
   } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 6) {
     if (!$form_state['values']['user_email']) {
       form_set_error('user_email', 'Please enter an email address.');
@@ -232,10 +236,11 @@ function rc_res_full_form_page_one_validate($form, &$form_state) {
     if (!$form_state['values']['user_dept']) {
       form_set_error('user_dept', 'Please enter the Department or Major associated with this request.');
     }
+
   }
 }
 /**********************************************************************************************************/
-/*** END Master validation function for the customer survey form ******************************************/
+/*** END Master validation function for the RC-Res form ***************************************************/
 /**********************************************************************************************************/
 
 
@@ -604,8 +609,10 @@ print_r('page_77');
     foreach($rows['reservation'] as $row) {
       // each element of the array is keyed with the lcnt
       $options[$lcnt]['roomName'] = $row['roomName'];
-      $options[$lcnt]['startDate'] = $row['startDate'];
-      $options[$lcnt]['endDate'] = $row['endDate'];
+      $rowStartDate = date('l\, g:ia',strtotime($row['startDate'])); // format date
+      $options[$lcnt]['startDate'] = $rowStartDate;
+      $rowEndDate = date('l\, g:ia',strtotime($row['endDate'])); // format date
+      $options[$lcnt]['endDate'] = $rowEndDate;
       $options[$lcnt]['schedID'] = $row['schedID'];
       // set the initial vals for the radio buttons
       $values[$lcnt] = 0;
@@ -1020,7 +1027,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   $i = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
-    $zoneRangeNew = date('o-m-d  g:i A', $zone[$i]).' --- '.date('o-m-d  g:i A', $zone[$i+1]).'<br>';
+    $zoneRangeNew = date('l\, n\/j g:i A', $zone[$i]).' --- '.date('l\, n\/j  g:i A', $zone[$i+1]).'<br>';
 //    $zoneRangeNew = date('g:ia D m/d/y', $zone[$i]).' --- '.date('g:ia D m/d/y', $zone[$i+1]).'<br>';
     $zoneRange = $zoneRange.$zoneRangeNew;
     $i+=2;
@@ -1109,6 +1116,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
   
   $form['date'] = array(
     '#type' => 'date_popup', // Provided by the date_popup module
+
     '#default_value' => $default_date_time,
     '#date_format' => 'Y-m-d h:i A', // Uses the PHP date() format - http://php.net/manual/en/function.date.php
     '#date_year_range' => '0:+0.1', // Limits the year range to the next two upcoming years
