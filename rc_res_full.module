@@ -2442,7 +2442,7 @@ global $user;
   // read reervations given an UID (currently simulated in drupal)
   $entries = array();
   // select table
-  $select = db_select('rc_res', 'e');
+  $select = db_select('rc_res_rules', 'e');
   // fields to read
   $select->addField('e', 'cls_lim');
   $select->addField('e', 'gsr_lim');

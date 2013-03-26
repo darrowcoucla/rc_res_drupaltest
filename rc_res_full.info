@@ -1,4 +1,4 @@
-name = RC-Res Full
+name = RC-Res
 description = Main RC-Res Module
 package = RC-Res modules
 core = 7.x
