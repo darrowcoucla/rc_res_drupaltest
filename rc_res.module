@@ -376,6 +376,8 @@ global $user;
 
   session_variable_set('rc-res','no_res_available',0);
 
+krumo($rc_user->field_user_full_name['und'][0]['value'])'
+
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
     if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
