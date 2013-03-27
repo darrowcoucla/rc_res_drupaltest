@@ -397,7 +397,7 @@ global $user;
 
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>You have successfully signed in using Shibboleth.'),
+    '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>You have successfully signed in using Shibboleth.'),
   );
 
 //  $form['test'] = array(
@@ -776,7 +776,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
+      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
     ),
 
     // main array
@@ -938,7 +938,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (before ').$earliest_new_reservation_time_date.')'
@@ -947,7 +947,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
@@ -956,7 +956,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><BR>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><BR>
 		      <BR>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -1040,13 +1040,13 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
 
 form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time');
 
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ){
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <em>Please choose a start time in one of the following time slot(s)</em><br>
 		      <br>'
@@ -1056,7 +1056,7 @@ form_set_error('', 'There are no reservations available at the time you chose, p
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)');
 
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
@@ -1074,7 +1074,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 		      <br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
@@ -1083,7 +1083,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><BR>
+      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><BR>
 		      <BR>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -1100,7 +1100,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
 //    $form['description'] = array
 //    (
 //      '#type'  => 'item',
-//      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
+//      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>
 //		      <br>
 //		      <b>Please choose a start time at least 24 hours before/after any existing/previous reservations and no more than 7 days into the future 4</b><br>
 //		      before ').$earliest_new_reservation_time_date.'<br>
@@ -1264,7 +1264,7 @@ function rc_res_form_page_five($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > Date&Time > <B>Available Resources</B> > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
+      '#markup' => t('Your Reservations > Date&Time > <B>Available Resources</B> > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
     ),
 
     $form['description2'] = array
@@ -1462,7 +1462,7 @@ function rc_res_form_page_six($form, &$form_state) {
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date&Time > Available Resources > <B>Details</B> > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
+    '#markup' => t('Your Reservations > Date&Time > Available Resources > <B>Details</B> > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
   );
 
   $form['user_email'] = array(
@@ -1657,7 +1657,7 @@ Research Commons Reservation Confirmation
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date&Time > Available Resources > Details > <B>Submit</B>'.'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
+    '#markup' => t('Your Reservations > Date&Time > Available Resources > Details > <B>Submit</B>'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('rc-res','shib_auth_full_logout_url').'">logout</a>'),
   );
 
   $form['description2'] = array(
