@@ -319,9 +319,6 @@ function rc_res_list() {
 function rc_res_form_page_one($form, &$form_state) {
 global $user;
 
-print_r('ghjhg');
-
-
 //// code to remove deprecated variables set with variable_set
 //print_r('Starting');
 //$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_get_user_category').', '.variable_get('rc_res_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
