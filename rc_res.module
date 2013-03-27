@@ -378,7 +378,7 @@ global $user;
   session_variable_set('rc-res','no_res_available',0);
 
 
-print_r(session_variable_set('rc-res','rc_user'));
+print_r(session_variable_get('rc-res','rc_user'));
 
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
