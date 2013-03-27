@@ -399,7 +399,7 @@ function rc_res_form_page_one($form, &$form_state) {
 
   $form['description'] = array(
     '#type'  => 'item',
-    '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>You have successfully signed in using Shibboleth.'),
+    '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
   );
 
 //  $form['test'] = array(
@@ -409,7 +409,7 @@ function rc_res_form_page_one($form, &$form_state) {
 
   $form['next'] = array(
     '#type'  => 'submit',
-    '#value' => t('Next'),
+    '#value' => t('Start'),
     '#submit' => array('rc_res_form_page_one_handler_submit'),
   );
 
@@ -577,7 +577,7 @@ print_r('page_77');
   // set header for the form
   $header = array
   (
-    'roomName' => t('Room Name'),
+    'roomName' => t('Name'),
     'startDate' => t('Start'),
     'endDate' => t('End'),
   );
@@ -778,7 +778,21 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<B>Your Reservations</B> > Date&Time > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+      '#markup' => t('<B>Your Reservations</B> > Date & Time > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
+'),
     ),
 
     // main array
@@ -940,8 +954,20 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
-		      <br>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (before ').$earliest_new_reservation_time_date.')'
     );
@@ -949,8 +975,20 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
-		      <br>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
     );
@@ -958,7 +996,20 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><BR>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
 		      <BR>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -1042,14 +1093,38 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
 
 form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time');
 
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
-		      <br>
+    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ){
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
-		      <br>
+    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
 		      <em>Please choose a start time in one of the following time slot(s)</em><br>
 		      <br>'
 		      .$zoneRange;
@@ -1058,8 +1133,20 @@ form_set_error('', 'There are no reservations available at the time you chose, p
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)');
 
-    $zones = 'Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
-		      <br>
+    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
@@ -1076,8 +1163,20 @@ form_set_error('', 'Please choose a start time in one of the following time slot
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
-		      <br>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
     );
@@ -1085,8 +1184,20 @@ form_set_error('', 'Please choose a start time in one of the following time slot
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><BR>
-		      <BR>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
 		      <b>Start before ').$earliest_new_reservation_time.' tomorrow</b> ('.$earliest_new_reservation_time_date.')'
@@ -1102,7 +1213,7 @@ form_set_error('', 'Please choose a start time in one of the following time slot
 //    $form['description'] = array
 //    (
 //      '#type'  => 'item',
-//      '#markup' => t('Your Reservations > <b>Date&Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+//      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 //		      <br>
 //		      <b>Please choose a start time at least 24 hours before/after any existing/previous reservations and no more than 7 days into the future 4</b><br>
 //		      before ').$earliest_new_reservation_time_date.'<br>
@@ -1266,7 +1377,7 @@ function rc_res_form_page_five($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > Date&Time > <B>Available Resources</B> > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+      '#markup' => t('Your Reservations > Date & Time > <B>Available Resources</B> > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
     ),
 
     $form['description2'] = array
@@ -1464,13 +1575,13 @@ function rc_res_form_page_six($form, &$form_state) {
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date&Time > Available Resources > <B>Details</B> > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+    '#markup' => t('Your Reservations > Date & Time > Available Resources > <B>Details</B> > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
   );
 
   $form['user_email'] = array(
     '#type'  => 'textfield',
     '#title' => t('Email'),
-    '#size'  => 15,
+    '#size'  => 45,
     '#default_value' => isset($form_state['values']['user_email']) ? $form_state['values']['user_email'] : NULL,
   );
 
@@ -1490,7 +1601,7 @@ function rc_res_form_page_six($form, &$form_state) {
   $form['user_dept'] = array(
     '#type'  => 'textfield',
     '#title' => t('Department / Major'),
-    '#size'  => 40,
+    '#size'  => 45,
     '#default_value' => isset($form_state['values']['user_dept']) ? $form_state['values']['user_dept'] : NULL,
   );
 
@@ -1610,7 +1721,7 @@ $working_uid = session_variable_get('rc-res','working_uid');
 
   // send a confirmation email
   $dDate = 0;
-
+  $mySpace = '-----';
   // re-read the user's reservations to catch anything new
   $rows = rc_res_get_user_reservations($working_uid);
 
@@ -1618,9 +1729,7 @@ $working_uid = session_variable_get('rc-res','working_uid');
   if (!empty($rows['reservation'])) {
     // set the email content, spacing and cr/lf effect the email layout
     $body = '
-Research Commons Reservation Confirmation
-
-';
+You have successfully reserved the resource(s) listed below. Please bring your current Bruincard to the CLICC Laptop Lending Desk in the Research Library to claim your reservation. You can only claim your reservation from fifteen minutes before until fifteen minutes after the beginning of your reservation. Unclaimed reservations will be canceled. Laptop display adapters and dry erase markers and erasers are available for check out.';
     foreach($rows['reservation'] as $row) {
       // each element of the array is keyed with the lcnt
       $roomName = $row['roomName'];
@@ -1628,7 +1737,9 @@ Research Commons Reservation Confirmation
       $endDate = strtotime($row['endDate']);
       $schedID = $row['schedID'];
       $dDate = ($endDate-$startDate)/3600;
-      $body = $body.' - '.$roomName.'
+      $body = $body.'
+'.'<br><br>'.$mySpace.'
+'.'> '.$roomName.'
 '.'   Date/Time: '.date('g:ia \o\n l jS F Y',$startDate).'
 '.'   '.$dDate.' hour(s)
 
@@ -1659,12 +1770,7 @@ Research Commons Reservation Confirmation
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date&Time > Available Resources > Details > <B>Submit</B>'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
-  );
-
-  $form['description2'] = array(
-    '#type'  => 'item',
-    '#title' => t('Success'),
+    '#markup' => t('Your Reservations > Date & Time > Available Resources > Details > <B>Submit</B>'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>'.$body),
   );
 
   $form['submit'] = array(
