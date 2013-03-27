@@ -400,10 +400,10 @@ global $user;
     '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.session_variable_get('rc-res','shib_auth_full_logout_url').'">logout</a><br>You have successfully signed in using Shibboleth.'),
   );
 
-  $form['test'] = array(
-    '#type'  => 'checkboxes',
-    '#options' => drupal_map_assoc(  array( t('Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed') )  ),
-  );
+//  $form['test'] = array(
+//    '#type'  => 'checkboxes',
+//    '#options' => drupal_map_assoc(  array( t('Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed') )  ),
+//  );
 
   $form['next'] = array(
     '#type'  => 'submit',
