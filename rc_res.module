@@ -1551,6 +1551,7 @@ $working_uid = session_variable_get('rc-res','working_uid');
 
 //krumo($form_state['page_values']);
 
+  // get the length of the reservation //dhc this needs to be generic for any length
   $res_length = $form_state['page_values'][6]['res_length'];
   if ( $res_length == 60 ) {
     $res_length = 3600;
@@ -1558,6 +1559,14 @@ $working_uid = session_variable_get('rc-res','working_uid');
     $res_length = 5400;
   } else if ( $res_length == 120 ) {
     $res_length = 7200;
+  } else if ( $res_length == 150 ) {
+    $res_length = 9000;
+  } else if ( $res_length == 180 ) {
+    $res_length = 10800;
+  } else if ( $res_length == 210 ) {
+    $res_length = 12600;
+  } else if ( $res_length == 240 ) {
+    $res_length = 14400;
   } else {
     $res_length = 3600;
   }
