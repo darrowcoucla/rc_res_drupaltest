@@ -318,7 +318,8 @@ function rc_res_list() {
  * page 1 ......................................................................................................................
  */
 function rc_res_form_page_one($form, &$form_state) {
-global $user;
+  global $user;
+  $rc_user = user_load($user->uid);
 
 //// code to remove deprecated variables set with variable_set
 //print_r('Starting');
@@ -376,10 +377,6 @@ global $user;
   // Otherwise we build page 1.
 
   session_variable_set('rc-res','no_res_available',0);
-
-
-print_r(session_variable_get('rc-res','rc_user'));
-
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
