@@ -1,198 +1,5 @@
 <?php
 
-/***********************************************************************************/
-/*** Administration of Business Rules seection *************************************/
-/***********************************************************************************/
-/**
- * Save an entry in the database.
- * Save an entry in the database.
- * Save an entry in the database.
- *
- * The underlying DBTNG function is db_insert().
- *
- * Exception handling is shown in this example. It could be simplified
- * without the try/catch blocks, but since an insert will throw an exception
- * and terminate your application if the exception is not handled, it is best
- * to employ try/catch.
- *
- * @param $entry
- *   An array containing all the fields of the database record.
- *
- * @see db_insert()
- */
-function rc_res_full_entry_insert($entry) {
-  $return_value = NULL;
-  try {
-    $return_value = db_insert('rc_res_full')
-                    ->fields($entry)
-                    ->execute();
-  }
-  catch (Exception $e) {
-    drupal_set_message(t('db_insert failed. Message = %message, query= %query',
-      array('%message' => $e->getMessage(), '%query' => $e->query_string)), 'error');
-  }
-  return $return_value;
-}
-
-/**
- * Update an entry in the database.
- * Update an entry in the database.
- * Update an entry in the database.
- *
- * The former, deprecated techniques used db_query() or drupal_write_record():
- * @code
- *  drupal_write_record('rc_res_full', $entry, $entry['pid']);
- * @endcode
- *
- * @code
- *  db_query(
- *    "UPDATE {rc_res_full}
- *     SET name = '%s', surname = '%s', age = '%d'
- *     WHERE pid = %d",
- *     $entry['pid']
- *  );
- * @endcode
- *
- * @param $entry
- *   An array containing all the fields of the item to be updated.
- *
- * @see db_update()
- */
-function rc_res_full_entry_update($entry) {
-  try {
-    // db_update()...->execute() returns the number of rows updated.
-    $count = db_update('rc_res_full')
-              ->fields($entry)
-              ->condition('pid', $entry['pid'])
-              ->execute();
-  }
-  catch (Exception $e) {
-    drupal_set_message(t('db_update failed. Message = %message, query= %query',
-      array('%message' => $e->getMessage(), '%query' => $e->query_string)), 'error');
-  }
-  return $count;
-}
-
-/**
- * Delete an entry from the database.
- * Delete an entry from the database.
- * Delete an entry from the database.
- *
- * The usage of db_query is deprecated except for static queries.
- * Formerly, a deletion might have been accomplished like this:
- * @code
- *  db_query("DELETE FROM {rc_res_full} WHERE pid = %d", $entry['pid]);
- * @endcode
- *
- * @param $entry
- *   An array containing at least the person identifier 'pid' element of the
- *   entry to delete.
- *
- * @see db_delete()
- */
-function rc_res_full_entry_delete($table,$entry) {
-  db_delete($table)
-    ->condition('pid', $entry['pid'])
-    ->execute();
-}
-
-/**
- * Read from the database using a filter array.
- * Read from the database using a filter array.
- * Read from the database using a filter array.
- *
- * In Drupal 6, the standard function to perform reads was db_query(), and
- * for static queries, it still is.
- *
- * db_query() used an SQL query with placeholders and arguments as parameters.
- *
- * @code
- *  // Old way
- *  $query = "SELECT * FROM {rc_res_full} n WHERE n.uid = %d AND name = '%s'";
- *  $result = db_query($query, $uid, $name);
- * @endcode
- *
- * Drupal 7 DBTNG provides an abstracted interface that will work with a wide
- * variety of database engines.
- *
- * db_query() is deprecated except when doing a static query. The following is
- * perfectly acceptable in Drupal 7. See
- * @link http://drupal.org/node/310072 the handbook page on static queries @endlink
- *
- * @code
- *   // SELECT * FROM {rc_res_full} WHERE uid = 0 AND name = 'John'
- *   db_query(
- *     "SELECT * FROM {rc_res_full} WHERE uid = :uid and name = :name",
- *     array(':uid' => 0, ':name' => 'John')
- *   )->execute();
- * @endcode
- *
- * But for more dynamic queries, Drupal provides the db_select()
- * API method, so there are several ways to perform the same SQL query.
- * See the @link http://drupal.org/node/310075 handbook page on dynamic queries. @endlink
- *
- * @code
- *   // SELECT * FROM {rc_res_full} WHERE uid = 0 AND name = 'John'
- *   db_select('rc_res_full')
- *     ->fields('rc_res_full')
- *     ->condition('uid', 0)
- *     ->condition('name', 'John')
- *     ->execute();
- * @endcode
- *
- * Here is db_select with named placeholders:
- * @code
- *   // SELECT * FROM {rc_res_full} WHERE uid = 0 AND name = 'John'
- *   $arguments = array(':name' => 'John', ':uid' => 0);
- *   db_select('rc_res_full')
- *     ->fields('rc_res_full')
- *     ->where('uid = :uid AND name = :name', $arguments)
- *     ->execute();
- * @endcode
- *
- * Conditions are stacked and evaluated as AND and OR depending on the type of
- * query. For more information, read the conditional queries handbook page at:
- * http://drupal.org/node/310086
- *
- * The condition argument is an 'equal' evaluation by default, but this can be
- * altered:
- * @code
- *   // SELECT * FROM {rc_res_full} WHERE age > 18
- *   db_select('rc_res_full')
- *     ->fields('rc_res_full')
- *     ->condition('age', 18, '>')
- *     ->execute();
- * @endcode
- *
- * @param $entry
- *   An array containing all the fields used to search the entries in the table.
- * @return
- *   An object containing the loaded entries if found.
- *
- * @see db_select()
- * @see db_query()
- * @see http://drupal.org/node/310072
- * @see http://drupal.org/node/310075
- *
- */
-function rc_res_full_entry_load($entry = array()) {
-  // Read all fields from the rc_res_full table.
-  $select = db_select('rc_res_full', 'example');
-  $select->fields('example');
-
-  // Add each field and value as a condition to this query.
-  foreach ($entry as $field => $value) {
-    $select->condition($field, $value);
-  }
-  // Return the result in object format.
-  return $select->execute()->fetchAll();
-}
-/***********************************************************************************/
-/*** END Administration of Business Rules seection *********************************/
-/***********************************************************************************/
-
-
-
 /**********************************************************************************************************/
 /*** Master validation function for the RC-Res form *******************************************************/
 /**********************************************************************************************************/
@@ -270,39 +77,7 @@ function rc_res_menu() {
     'access callback' => TRUE,
     'menu_name' => 'navigation',
   );
-  $items['libraries/researchlibrary/rc_res2'] = array(
-    'title' => 'RC-Res Reservations222',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('rc_res_form_page_one'),
-    'access callback' => TRUE,
-    'menu_name' => 'rc-res-menutest',
-  );
   return $items;
-}
-
-/**
- * Render a list of entries in the database.
- * Render a list of entries in the database.
- * Render a list of entries in the database.
- */
-function rc_res_list() {
-  $output = '';
-
-  // Get all entries in the rc_res table.
-  if ($entries = rc_res_entry_load()) {
-    $rows = array();
-    foreach ($entries as $entry) {
-      // Sanitize the data before handing it off to the theme layer.
-      $rows[] = array_map('check_plain', (array) $entry);
-    }
-    // Make a table for them.
-    $header = array(t('Id'), t('Uid'), t('User Name'), t('User Pwd'));
-    $output .= theme('table', array('header' => $header, 'rows' => $rows));
-  }
-  else {
-    drupal_set_message(t('No entries have been added yet.'));
-  }
-  return $output;
 }
 
 /**
@@ -321,31 +96,12 @@ function rc_res_form_page_one($form, &$form_state) {
   global $user;
   $rc_user = user_load($user->uid);
 
-//// code to remove deprecated variables set with variable_set
-//print_r('Starting');
-//$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_get_user_category').', '.variable_get('rc_res_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
-//print_r($print_r_var);
-//variable_del('earliest_new_reservation');
-//variable_del('firstAccess4');
-//variable_del('lcnt');
-//variable_del('maxDate');
-//variable_del('name_first');
-//variable_del('name_last');
-//variable_del('no_res_available');
-//variable_del('options');
-//variable_del('rc_res_get_user_category');
-//variable_del('rc_res_get_user_rules');
-//variable_del('userDate');
-//variable_del('working_uid');
-//print_r('finishing');
-//$print_r_var = variable_get('earliest_new_reservation').', '.variable_get('firstAccess4').', '.variable_get('lcnt').', '.variable_get('maxDate').', '.variable_get('name_first').', '.variable_get('name_last').', '.variable_get('no_res_available').', '.variable_get('options').', '.variable_get('rc_res_get_user_category').', '.variable_get('rc_res_get_user_rules').', '.variable_get('userDate').', '.variable_get('working_uid');
-//print_r($print_r_var);
-
-//print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
+print_r('first name:'.session_variable_get('rc-res','name_first'));
 
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
+
   // Display page 2 if $form_state['page_num'] == 2
   if (!empty($form_state['page_num']) && $form_state['page_num'] == 2) {
 //print_r('page_2');
@@ -402,10 +158,10 @@ function rc_res_form_page_one($form, &$form_state) {
     '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
   );
 
-//  $form['test'] = array(
-//    '#type'  => 'checkboxes',
-//    '#options' => drupal_map_assoc(  array( t('Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed') )  ),
-//  );
+  $form['test'] = array(
+    '#type'  => 'checkboxes',
+    '#options' => drupal_map_assoc(  array( t('Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed') )  ),
+  );
 
   $form['next'] = array(
     '#type'  => 'submit',
@@ -413,7 +169,6 @@ function rc_res_form_page_one($form, &$form_state) {
     '#submit' => array('rc_res_form_page_one_handler_submit'),
   );
 
-  global $user;
   return $form;
 }
 
@@ -1046,12 +801,25 @@ Graduate Student, Faculty, and Library Staff Reservations
       $resvDate = strtotime($options[$i]['startDate']);
       if( $nm1 == 0 ){
 	$nowDate = strtotime("now");
-	if( ($resvDate-$nowDate) > (24*3600) ){
-	  $zone[ $zcnt ] = strtotime("now");
-	  $zcnt += 1;
-	  $zone[ $zcnt ] = $resvDate - (24*3600);
-	  $zcnt += 1;
+	if( $nowDate>$resvDate ){
+	  if( ($nowDate-$resvDate) > (24*3600) ){
+	    $zone[ $zcnt ] = strtotime("now");
+	    $zcnt += 1;
+	    $zone[ $zcnt ] = $resvDate - (24*3600);
+	    $zcnt += 1;
+	  }
+	} else if( $resvDate>$nowDate ) {
+	  if( ($resvDate-$nowDate) > (24*3600) ){
+	    $zone[ $zcnt ] = strtotime("now");
+	    $zcnt += 1;
+	    $zone[ $zcnt ] = $resvDate - (24*3600);
+	    $zcnt += 1;
+	  }
 	}
+
+
+
+
       }else if( $nm1 != 0 ){
 	if( ($resvDate-$nm1) > (48*3600) ){
 	  $zone[ $zcnt ] = $nm1 + (24*3600);
@@ -1063,17 +831,24 @@ Graduate Student, Faculty, and Library Staff Reservations
       $nm1 = $resvDate;
     }
 
-    // check the last zone point through 7 days out from now
-    $zone[$zcnt] = strtotime( $options[0]['startDate'].' +1 day');
-    $zone[$zcnt+1] = strtotime("now".' +7 day');
-    if( (strtotime("now".' +7 day') - $nm1) > (24*3600) ){
-	  $zone[ $zcnt ] = $nm1 + (24*3600);
-	  $zcnt += 1;
-	  $zone[ $zcnt ] = strtotime("now".' +7 day');
-	  $zcnt += 1;
+krumo($zone);
+
+    // If there is more than one existing reservation, check the last zone point through 7 days out from now
+    if( $existing_resv > 1 ){
+      $zone[$zcnt] = strtotime( $options[0]['startDate'].' +1 day');
+      $zone[$zcnt+1] = strtotime("now".' +7 day');
+      if( (strtotime("now".' +7 day') - $nm1) > (24*3600) ){
+	    $zone[ $zcnt ] = $nm1 + (24*3600);
+	    $zcnt += 1;
+	    $zone[ $zcnt ] = strtotime("now".' +7 day');
+	    $zcnt += 1;
+      }
     }
     // END - calculate zones time within which a reservation can be made  
   }
+
+
+krumo($zone);
 
   // print out ranges for the user
   $zonePoints = sizeof( $zone );
@@ -1800,7 +1575,7 @@ function rc_res_form_page_one_handler_submit($form, &$form_state) {
   // set page num if it does not yet exist, ie this is the first pass
   if (empty($form_state['page_num'])) { $form_state['page_num'] = 1; } 
 
-  // else go forward to page 2
+  // else go forward to page 2; skip page 2 and go to page 3
   $form_state['page_num'] = 3;
 
   $form_state['rebuild'] = TRUE;
