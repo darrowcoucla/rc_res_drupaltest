@@ -96,7 +96,7 @@ function rc_res_form_page_one($form, &$form_state) {
   global $user;
   $rc_user = user_load($user->uid);
 
-print_r('first name:'.session_variable_get('rc-res','name_first'));
+print_r($user);
 
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
