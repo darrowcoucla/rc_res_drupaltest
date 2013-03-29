@@ -796,40 +796,77 @@ Graduate Student, Faculty, and Library Staff Reservations
   // else if one or more than one reservation exists and they are in the past and future OR just in the future
   } else {
 
+
+
+
+
+
+
+
+
     // calculate zones time within which a reservation can be made
-    for ($i=0; $i<$existing_resv; $i++){
-      $resvDate = strtotime($options[$i]['startDate']);
-      if( $nm1 == 0 ){
-	$nowDate = strtotime("now");
-	if( $nowDate>$resvDate ){
-	  if( ($nowDate-$resvDate) > (24*3600) ){
-	    $zone[ $zcnt ] = strtotime("now");
-	    $zcnt += 1;
-	    $zone[ $zcnt ] = $resvDate - (24*3600);
-	    $zcnt += 1;
-	  }
-	} else if( $resvDate>$nowDate ) {
-	  if( ($resvDate-$nowDate) > (24*3600) ){
-	    $zone[ $zcnt ] = strtotime("now");
-	    $zcnt += 1;
-	    $zone[ $zcnt ] = $resvDate - (24*3600);
-	    $zcnt += 1;
-	  }
+    for ($i=1; $i<=$existing_resv; $i++){
+      if( (strtotime($options[$i]['startDate'])-strtotime($options[$i-1]['startDate'])) >= (48*3600) ){
+	if( (strtotime($options[$i-1]['startDate'])+(24*3600)) < strtotime("now") ){
+	  $zone[$i-1] = strtotime("now");
+	} else{
+	  $zone[$i-1] = strtotime($options[$i-1]['startDate'])+(24*3600);
 	}
-
-
-
-
-      }else if( $nm1 != 0 ){
-	if( ($resvDate-$nm1) > (48*3600) ){
-	  $zone[ $zcnt ] = $nm1 + (24*3600);
-	  $zcnt += 1;
-	  $zone[ $zcnt ] = $resvDate - (24*3600);
-	  $zcnt += 1;
+	$zone[$i] = strtotime($options[$i]['startDate'])-(24*3600);
+      }
+      if( $i == $existing_resv ){
+	if( (strtotime("now".' +7 day')-strtotime($options[$i]['startDate'])) >= (24*3600) ){
+	  $zone[$i-1] = strtotime("now".' +7 day');
+	  $zone[$i] = strtotime($options[$i]['startDate'])+(24*3600);
 	}
       }
-      $nm1 = $resvDate;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    // calculate zones time within which a reservation can be made
+//    for ($i=0; $i<$existing_resv; $i++){
+//      $resvDate = strtotime($options[$i]['startDate']);
+//      if( $nm1 == 0 ){
+//	$nowDate = strtotime("now");
+//	if( $nowDate>$resvDate ){
+//	  if( ($nowDate-$resvDate) > (24*3600) ){
+//	    $zone[ $zcnt ] = strtotime("now");
+//	    $zcnt += 1;
+//	    $zone[ $zcnt ] = $resvDate - (24*3600);
+//	    $zcnt += 1;
+//	  }
+//	} else if( $resvDate>$nowDate ) {
+//	  if( ($resvDate-$nowDate) > (24*3600) ){
+//	    $zone[ $zcnt ] = strtotime("now");
+//	    $zcnt += 1;
+//	    $zone[ $zcnt ] = $resvDate - (24*3600);
+//	    $zcnt += 1;
+//	  }
+//	}
+//      }else if( $nm1 != 0 ){
+//	if( ($resvDate-$nm1) > (48*3600) ){
+//	  $zone[ $zcnt ] = $nm1 + (24*3600);
+//	  $zcnt += 1;
+//	  $zone[ $zcnt ] = $resvDate - (24*3600);
+//	  $zcnt += 1;
+//	}
+//      }
+//      $nm1 = $resvDate;
+//    }
+
+
 
     // If there is more than one existing reservation, check the last zone point through 7 days out from now
     if( $existing_resv > 1 ){
