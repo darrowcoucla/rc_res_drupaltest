@@ -831,8 +831,6 @@ Graduate Student, Faculty, and Library Staff Reservations
       $nm1 = $resvDate;
     }
 
-krumo($zone);
-
     // If there is more than one existing reservation, check the last zone point through 7 days out from now
     if( $existing_resv > 1 ){
       $zone[$zcnt] = strtotime( $options[0]['startDate'].' +1 day');
@@ -847,8 +845,6 @@ krumo($zone);
     // END - calculate zones time within which a reservation can be made  
   }
 
-
-krumo($zone);
 
   // print out ranges for the user
   $zonePoints = sizeof( $zone );
