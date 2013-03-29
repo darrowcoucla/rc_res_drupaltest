@@ -1,3 +1,4 @@
+
 <?php
 
 /**********************************************************************************************************/
@@ -155,6 +156,7 @@ print_r($user);
 
   $form['description'] = array(
     '#type'  => 'item',
+    '#no-cache'  => TRUE,
     '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
   );
 
