@@ -97,7 +97,7 @@ function rc_res_form_page_one($form, &$form_state) {
   global $user;
   $rc_user = user_load($user->uid, $reset = TRUE);
 
-print_r($user);
+print_r($user->uid);
 
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
