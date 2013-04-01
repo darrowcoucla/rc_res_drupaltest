@@ -98,6 +98,7 @@ function rc_res_form_page_one($form, &$form_state) {
   $rc_user = user_load($user->uid, $reset = TRUE);
 
 print_r($user->uid);
+print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
 
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
