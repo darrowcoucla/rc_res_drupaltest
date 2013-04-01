@@ -99,7 +99,7 @@ function rc_res_form_page_one($form, &$form_state) {
 
 print_r($user->uid);
 print_r(': '.$_SERVER['SHIBUCLAUNIVERSITYID']);
-print_r(': '.$_SERVER);
+krumo(': '.$_SERVER);
 
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
