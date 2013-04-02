@@ -98,7 +98,12 @@ function rc_res_form_page_one($form, &$form_state) {
   $rc_user = user_load($user->uid, $reset = TRUE);
 
 print_r($user->uid);
-print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
+
+  if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
+    print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
+  } else{
+    print_r(': >>>EMPTY $_SERVER[SHIBUCLAUNIVERSITYID]<<<');
+  }
 //krumo($_SERVER);
 
   // Jump to appropriate page if necessary
