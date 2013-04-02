@@ -98,8 +98,8 @@ function rc_res_form_page_one($form, &$form_state) {
   $rc_user = user_load($user->uid, $reset = TRUE);
 
 print_r($user->uid);
-print_r(': '.$_SERVER['SHIBUCLAUNIVERSITYID']);
-krumo($_SERVER);
+print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
+//krumo($_SERVER);
 
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
@@ -142,10 +142,10 @@ krumo($_SERVER);
     if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
       $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
       session_variable_set('rc-res','name_first', $names[0]);
-      session_variable_set('rc-res','name_last', $names[1]);
+      session_variable_set('rc-res','name_last', $names[1].' 1');
     }else{
       $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
-      session_variable_set('rc-res','name_last', $names[0]);
+      session_variable_set('rc-res','name_last', $names[0].' 2');
       session_variable_set('rc-res','name_first', $names[1]);
     }
   }else{
