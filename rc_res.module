@@ -94,6 +94,7 @@ function rc_res_menu() {
 function rc_res_form_page_one($form, &$form_state) {
   global $user;
   $rc_user = user_load($user->uid, $reset = TRUE);
+  session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
 print_r($user->uid);
@@ -1525,7 +1526,7 @@ function rc_res_form_page_six($form, &$form_state) {
   $rc_user = session_variable_get('rc-res','rc_user');  
   $my_email = $rc_user->mail;
 
-print_r(session_variable_get('rc-res','rc_user'));
+print_r($my_email);
 
 
   $form['user_email'] = array(
