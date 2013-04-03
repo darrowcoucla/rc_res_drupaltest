@@ -98,9 +98,6 @@ function rc_res_form_page_one($form, &$form_state) {
 
 print_r($user->uid);
 
-print_r($rc_user);
-
-
   if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
     print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
   } else{
@@ -149,10 +146,10 @@ print_r($rc_user);
     if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
       $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
       session_variable_set('rc-res','name_first', $names[0]);
-      session_variable_set('rc-res','name_last', $names[1].' 1');
+      session_variable_set('rc-res','name_last', $names[1]);
     }else{
       $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
-      session_variable_set('rc-res','name_last', $names[0].' 2');
+      session_variable_set('rc-res','name_last', $names[0]);
       session_variable_set('rc-res','name_first', $names[1]);
     }
   }else{
@@ -166,7 +163,7 @@ print_r($rc_user);
   $form['description'] = array(
     '#type'  => 'item',
     '#no-cache'  => TRUE,
-    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
+    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
   );
 
 //  $form['test'] = array(
@@ -546,7 +543,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('<B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -722,7 +719,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -743,7 +740,7 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -764,7 +761,7 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1008,7 +1005,7 @@ Graduate Student, Faculty, and Library Staff Reservations
 
 form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time');
 
-    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1030,7 +1027,7 @@ Graduate Student, Faculty, and Library Staff Reservations
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)1');
 
-    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1048,7 +1045,7 @@ Graduate Student, Faculty, and Library Staff Reservations
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ) {
-    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1070,7 +1067,7 @@ Graduate Student, Faculty, and Library Staff Reservations
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)2');
 
-    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1100,7 +1097,7 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1121,7 +1118,7 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1150,7 +1147,7 @@ Graduate Student, Faculty, and Library Staff Reservations
 //    $form['description'] = array
 //    (
 //      '#type'  => 'item',
-//      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+//      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish'.'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 //		      <br>
 //		      <b>Please choose a start time at least 24 hours before/after any existing/previous reservations and no more than 7 days into the future 4</b><br>
 //		      before ').$earliest_new_reservation_time_date.'<br>
@@ -1315,7 +1312,7 @@ function rc_res_form_page_five($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+      '#markup' => t('Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
     ),
 
     $form['description2'] = array
@@ -1522,7 +1519,7 @@ function rc_res_form_page_six($form, &$form_state) {
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+    '#markup' => t('Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
   );
 
   $rc_user = session_variable_get('rc-res','rc_user');  
@@ -1721,7 +1718,7 @@ You have successfully reserved the resource(s) listed below. Please bring your c
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>'.$body),
+    '#markup' => t('Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>'.$body),
   );
 
   $form['submit'] = array(
