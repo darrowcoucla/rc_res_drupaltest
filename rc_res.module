@@ -1530,7 +1530,7 @@ print_r($rc_user);
 
   $form['user_email'] = array(
     '#type'  => 'textfield',
-    '#title' => t('Email'),
+    '#title' => t('Email.'),
     '#size'  => 45,
     '#default_value' => isset($my_email) ? $my_email : NULL,
   );
