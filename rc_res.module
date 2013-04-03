@@ -1525,6 +1525,9 @@ function rc_res_form_page_six($form, &$form_state) {
   $rc_user = session_variable_get('rc-res','rc_user');  
   $my_email = $rc_user->mail;
 
+print_r($rc_user);
+
+
   $form['user_email'] = array(
     '#type'  => 'textfield',
     '#title' => t('Email'),
