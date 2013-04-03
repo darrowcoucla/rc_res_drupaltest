@@ -67,7 +67,6 @@ function rc_res_menu() {
   global $rc_res_get_user_category;
   $rc_user = user_load($user->uid);
   session_variable_set('rc-res','rc_user',$rc_user);  
-
   $items = array();
   $items['libraries/researchlibrary/research-commons-reservation'] = array(
   //$items['examples/rc_res'] = array( // old path
@@ -97,9 +96,10 @@ function rc_res_form_page_one($form, &$form_state) {
   $rc_user = user_load($user->uid, $reset = TRUE);
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
-
-session_variable_set('rc-res','name_first','Darrow');
 print_r($user->uid);
+
+print_r($rc_user);
+
 
   if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
     print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
