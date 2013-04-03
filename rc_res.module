@@ -1,4 +1,3 @@
-
 <?php
 
 /**********************************************************************************************************/
@@ -96,6 +95,7 @@ function rc_res_menu() {
 function rc_res_form_page_one($form, &$form_state) {
   global $user;
   $rc_user = user_load($user->uid, $reset = TRUE);
+  session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
 print_r($user->uid);
 
@@ -164,7 +164,7 @@ print_r($user->uid);
   $form['description'] = array(
     '#type'  => 'item',
     '#no-cache'  => TRUE,
-    '#title' => t('Welcome '.session_variable_get('rc-res','name_first').' '.session_variable_get('rc-res','name_last').'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
+    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
   );
 
 //  $form['test'] = array(
@@ -607,7 +607,7 @@ Graduate Student, Faculty, and Library Staff Reservations
       $form_p3_submit = array(
 	$form['description'] = array(
 	  '#type'  => 'item',
-	  '#title' => t('Please click on the button to create a new reservation'),
+	  '#title' => t('&nbsp;&nbsp;or'),
 	),
 
 	$form['submit'] = array(
@@ -977,8 +977,12 @@ Graduate Student, Faculty, and Library Staff Reservations
     // END - calculate zones time within which a reservation can be made  
   }
 
+  // save the zones for use in the handler
+  session_variable_set('rc-res','zone',$zone);
+
   // print out ranges for the user
   $zonePoints = sizeof( $zone );
+
   $i = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
@@ -992,6 +996,11 @@ Graduate Student, Faculty, and Library Staff Reservations
 
   $firstAccess4 = session_variable_get('rc-res','firstAccess4');
   $no_res_available = session_variable_get('rc-res','no_res_available');
+  $outOfRange = session_variable_get('rc-res','outOfRange'); // this is used in page 4 and set in the page 4 handler
+
+
+
+
   if( $no_res_available == 1 ){
     session_variable_set('rc-res','no_res_available',0);
 
@@ -1014,7 +1023,29 @@ Graduate Student, Faculty, and Library Staff Reservations
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
-  } else if( $firstAccess4 == 0 ){
+  } else if( $outOfRange == 1 ) {
+    session_variable_set('rc-res','no_res_available',0);
+
+form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)1');
+
+    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul>
+		      <b>Please choose a start time in one of the following time slot(s)</b><br>
+		      <br><b>'
+		      .$zoneRange.'</b>';
+  } else if( $firstAccess4 == 0 ) {
     $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
 <ul>
@@ -1033,9 +1064,9 @@ Graduate Student, Faculty, and Library Staff Reservations
 		      <br>'
 		      .$zoneRange;
   session_variable_set('rc-res','firstAccess4', 1);
-  } else if( $firstAccess4 > 0 ){
+  } else if( $firstAccess4 > 0 ) {
 
-form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)');
+form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)2');
 
     $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Submit'.'&nbsp;&nbsp;&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Undergraduate Student and Staff Reservations
@@ -1823,7 +1854,6 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
   // Values are saved for each page.
   // to carry forward to subsequent pages in the form.
   // The Forms API rebuilds the form.
-
   $form_state['page_values'][4] = $form_state['values'];
   if (!empty($form_state['page_values'][5])) {
     $form_state['values'] = $form_state['page_values'][5];
@@ -1835,80 +1865,48 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
   // get the user's selection
   $userDate = strtotime($form_state['page_values'][4]['date']);
 
-  // get the earliest legal reservation time
-  $earliest_new_reservation = session_variable_get('rc-res','earliest_new_reservation');
+  // save the zones for use in the handler
+  $zone = session_variable_get('rc-res','zone');
 
-  // get the most distant legal reservation time
-  $maxDate = session_variable_get('rc-res','earliest_new_reservation');
+  // print out ranges for the user
+  $zonePoints = sizeof( $zone );
 
-  $too_close_flag = 0;
-  $too_old_flag = 0;
-  $too_new_flag = 0;
-  $no_res_available_flag = 0;
-
-  // read reervations given an UID (currently simulated in drupal)
-  $rows = array();
-  $rows = rc_res_get_resources_for_period_complete($form, $form_state);
-
-if( $rows == 'Not Found' ){
-  $no_res_available_flag = 1;
-} else if( $userDate>$nowDate ){
-
-    $existing_resv = session_variable_get('rc-res','lcnt');
-    $options = session_variable_get('rc-res','options');
-  for ($i=0; $i<$existing_resv; $i++){
-      $resvDate = strtotime($options[$i]['startDate']);
-      $ddate =  ($userDate - $resvDate)/(3600);
-      $addate = abs($ddate);
-
-      // is there an existing reservation with 24 hours of the newly proposed reservation?
-      if($addate < 24 ){ // replace 24 with value from rules if/when the rule becomes group specific
-	$too_close_flag = 1;
-      } else if( $userDate > $maxDate ){
-	$too_new_flag = 1;
+  $i = 0;
+  $outOfRange = 0;
+  $zoneRange = '';
+  while ($i < $zonePoints) {
+    if ( !empty($zone[$i]) ) {
+      if( !($userDate>=$zone[$i] && $userDate<=$zone[$i+1]) ){
+	$outOfRange = 1;
       }
-//      print_r($userDate." ");
-//      print_r(date('g:ia \o\n l jS F Y', $userDate)."||");
-
-//      print_r($resvDate." ");
-//      print_r(date('g:ia \o\n l jS F Y', $resvDate)."||");
-
-//      print_r($addate." ");
-//      print_r(date('g:ia \o\n l jS F Y', $addate)."||"); // converts to hours not a date. hours should be less than max from rules table, currently 24 or 168
-
     }
-
-
-//$userDateTimeDisplay = date('g:ia \o\n l jS F Y', $userDateTime);
-//krumo($userDateTime);
-//krumo($userDateTimeDisplay);
-//krumo($earliest_new_reservationDisplay);
-
-// END - if( $userDate>$nowDate )
-  } else{
-    $too_old_flag = 1;
+    $i+=2;
   }
 
+  $no_res_available = 0;
+  // if the user picked time/date falls within a legal time slot
+  if( $outOfRange == 0 ){
+    session_variable_set('rc-res','outOfRange', $outOfRange);
 
+    // read reervations given an UID (currently simulated in drupal)
+    $rows = array();
+    $rows = rc_res_get_resources_for_period_complete($form, $form_state);
+
+    // if there are no free resources at the time chosen
+    if ( $rows == 'Not Found' ){
+      $no_res_available = 1;
+      session_variable_set('rc-res','no_res_available', $no_res_available);
+    }
+  } else {
+    session_variable_set('rc-res','outOfRange', $outOfRange);
+  }
 
   // OLD is the user's selection time for a new reservation more that 24 hours into the future?
   // is the user's selection time for a new reservation too early or too close to an existing reservation? Is the too early part covered by the new too close test???
-  if( $no_res_available_flag == 1 ){
-    session_variable_set('rc-res','no_res_available',1);
+  if( $outOfRange==1 || $no_res_available==1 ){
     $form_state['page_num'] = 4;
     $form_state['rebuild'] = TRUE;
-  } else if( $too_close_flag == 1 || $too_new_flag == 1 ){
-//  if( $userDate < $earliest_new_reservation || $too_close_flag == 1){
-  // save the user's selection time before looping back and asking for a new selection
-    session_variable_set('rc-res','userDate', $userDate);
-    $form_state['page_num'] = 4;
-    $form_state['rebuild'] = TRUE;
-  }else if( $too_old_flag == 1 ){
-    // the user's selection is ok, continue on to the next step
-    // When form rebuilds in n+2 or so, use this to determine which page to build.
-    $form_state['page_num'] = 4;
-    $form_state['rebuild'] = TRUE;
-  }else{
+  } else {
     // the user's selection is ok, continue on to the next step
     // When form rebuilds in n+2 or so, use this to determine which page to build.
     session_variable_set('rc-res','firstAccess4', 0);
