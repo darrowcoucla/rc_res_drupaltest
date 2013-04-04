@@ -12,8 +12,8 @@
  * @return type 
  */
 function rc_res_form_page_one_validate($form, &$form_state) {
-  $checkboxErrorMsg1 = 'Please select a checkbox before clicking on the Delete button111.';
-  $checkboxErrorMsg2 = 'Please select a checkbox before clicking on the Delete button222.';
+  $checkboxErrorMsg1 = 'Please select a checkbox before clicking on the Delete button.';
+  $checkboxErrorMsg2 = 'Please select a checkbox before clicking on the Delete button.';
   if (!empty($form_state['page_num']) && $form_state['page_num'] == 3) {
     if (!empty($form_state['values']['op']) && $form_state['values']['op'] == 'Delete') {
       if (!empty($form_state['values'][0])) {
@@ -39,6 +39,12 @@ function rc_res_form_page_one_validate($form, &$form_state) {
   } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 6) {
     if (!$form_state['values']['user_email']) {
       form_set_error('user_email', 'Please enter an email address.');
+    }
+    if ($form_state['values']['pnumber'] == 0) {
+      form_set_error('pnumber', 'Please choose the number of persons in your group.');
+    }
+    if ($form_state['values']['res_length'] == 0) {
+      form_set_error('res_length', 'Please the duration of your reservation.');
     }
     if (!$form_state['values']['user_dept']) {
       form_set_error('user_dept', 'Please enter the Department or Major associated with this request.');
