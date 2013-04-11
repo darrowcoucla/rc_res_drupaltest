@@ -1290,7 +1290,7 @@ function rc_res_form_page_five($form, &$form_state) {
   }
 
 
-krumo($options);
+
 
   $demos0 = array();
 
@@ -1401,7 +1401,7 @@ krumo($options);
 
 
 
-krumo($form['table']);
+
 
 
 
@@ -2037,7 +2037,7 @@ function rc_res_form_page_five_handler_submit($form, &$form_state) {
   // The Forms API rebuilds the form.
 
 
-krumo($form_state);
+
 
   $form_state['page_values'][5] = $form_state['values'];
 
