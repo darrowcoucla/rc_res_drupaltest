@@ -1960,11 +1960,14 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
 
   $i = 0;
   $outOfRange = 0;
+  $zoneOk = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
-    if ( !empty($zone[$i]) ) {
-      if( !($userDate>=$zone[$i] && $userDate<=$zone[$i+1]) ){
+    if ( !empty($zone[$i])&&$zoneOk==1 ) {
+      if( !( $userDate>=$zone[$i]&&$userDate<=$zone[$i+1] ) ){
 	$outOfRange = 1;
+      } else {
+      $zoneOk = 1;
       }
     }
     $i+=2;
