@@ -32,7 +32,7 @@ function rc_res_form_page_one_validate($form, &$form_state) {
 	    form_set_error('', $checkboxErrorMsg2);
       }
     }
-  } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 4) {
+  } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 4 && session_variable_get('rc-res','noResources') == 0) {
     if (!$form_state['values']['date']) {
       form_set_error('date', 'Please enter a date and time.');
     }
@@ -103,13 +103,24 @@ function rc_res_form_page_one($form, &$form_state) {
   session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
-print_r($user->uid);
+  // DEVELOPMENT HOST RESOURCE URL
+  //$dev_host_resource = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/';
+  // Production HOST RESOURCE URL
+  $dev_host_resource = 'http://webservices.library.ucla.edu/rcres/availablerooms/complete/startingat/';
+//  $dev_host_resource = 'https://webservices.library.ucla.edu/rcres/availablerooms/complete/startingat/'; // normally use https but https is not currently working
+  session_variable_set('rc-res','dev_host_resource',$dev_host_resource);
 
-  if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
-    print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
-  } else{
-    print_r(': >>>EMPTY $_SERVER[SHIBUCLAUNIVERSITYID]<<<');
-  }
+  // set this below when no resources are available for the user specified time; use it in the form validation above
+  session_variable_set('rc-res','noResources', 0);
+
+
+// debug print for wrong user at top of page
+//print_r($user->uid);
+//if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
+//  print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
+//} else{
+//  print_r(': >>>EMPTY $_SERVER[SHIBUCLAUNIVERSITYID]<<<');
+//}
 //krumo($_SERVER);
 
   // Jump to appropriate page if necessary
@@ -1252,6 +1263,11 @@ function rc_res_form_page_five($form, &$form_state) {
   $rows = array();
   $rows = rc_res_get_resources_for_period_complete($form, $form_state);
 
+
+
+
+
+
 //  rc_res_set_user_reservations($working_uid);
   //rc_res_get_open_resources();
 
@@ -1271,9 +1287,12 @@ function rc_res_form_page_five($form, &$form_state) {
   // Next, loop through the $users array
   $lcnt = 0;
 
-  if ($rows != "Not Found") {
+  if ($rows != "Not Found" && $rows != NULL) {
   foreach($rows as $row)
     {
+
+
+
       $lcnt += 1;
       $o_index = $row['resources'][0]['id'].':::'.$row['start'].':::'.$row['end'].':::'.$row['resources'][0]['capacity'].':::'.$row['resources'][0]['title'].':::'.$row['resources'][0]['description'].':::'.$row['duration'];
       $o_key[$lcnt-1] = $o_index;
@@ -1294,7 +1313,7 @@ function rc_res_form_page_five($form, &$form_state) {
 
   $demos0 = array();
 
-  if ($rows != "Not Found") {
+  if ($rows != "Not Found" && $rows != NULL) {
 
 //print_r("NOT EMPTY");
   $dtimedate = $rows[0]['start']; // get start time from value(s) returned from the web service call
@@ -1411,6 +1430,8 @@ function rc_res_form_page_five($form, &$form_state) {
 
 //print_r("EMPTY");
 
+  session_variable_set('rc-res','noResources', 1);
+
   $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
 
@@ -1431,25 +1452,25 @@ function rc_res_form_page_five($form, &$form_state) {
       '#empty' => t('No available resources found'),
     ),
 
-    $form['back4'] = array(
-      '#type'  => 'submit',
-      '#value' => t('Back'),
-      '#submit' => array('rc_res_form_page_fiveb_handler_submit'),
-    ),
+//    $form['back4'] = array(
+//      '#type'  => 'submit',
+//      '#value' => t('Back'),
+//      '#submit' => array('rc_res_form_page_fiveb_handler_submit'),
+//    ),
 
-    $form['submit0'] = array
-    (
-      '#type' => 'submit',
-      '#value' => t('Find spaces for earlier start times'),
-      '#submit' => array('rc_res_form_page_five_empty_handler_submit'),
-    ),
+//    $form['submit0'] = array
+//    (
+//      '#type' => 'submit',
+//      '#value' => t('Find spaces for earlier start times'),
+//      '#submit' => array('rc_res_form_page_five_empty_handler_submit'),
+//    ),
 
-    $form['submit1'] = array
-    (
-      '#type' => 'submit',
-      '#value' => t('Find spaces for later start times'),
-      '#submit' => array('rc_res_form_page_five_empty_handler_submit_x'),
-    ),
+//    $form['submit1'] = array
+//    (
+//      '#type' => 'submit',
+//      '#value' => t('Find spaces for later start times'),
+//      '#submit' => array('rc_res_form_page_five_empty_handler_submit_x'),
+//    ),
 
     $form['submit2'] = array
     (
@@ -2777,7 +2798,14 @@ function rc_res_get_resources_for_period_complete($form, $form_state) {
 //krumo($rtime12a);
 //krumo($rlength);
 
-$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
+
+// this is set at the top; change at the top when releasing to test/production; needs automation
+$dev_host_resource = session_variable_get('rc-res','dev_host_resource');
+$request_url = "$dev_host_resource"."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
+
+
+
+//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength"; // works
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
 $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
@@ -2787,7 +2815,7 @@ $request_retry = 3;
 // Send the request.
 $response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
 
-//krumo($response_voy);
+
 
   if ($response_voy->data == "[]" ) {
     return "Not Found";
