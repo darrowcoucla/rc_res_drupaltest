@@ -1908,7 +1908,7 @@ function rc_res_form_page_three_delete_handler_submit($form, &$form_state) {
       //  the val is int 0 if not selected, string 0 if selected, the others are autoconverted
       if( ($pid_del == '0' && is_string($pid_del)) || $pid_del > 0 ){
 	$working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
-	$url_stack = "http://lit321v-b.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
+	$url_stack = "http://webservices.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
 	$url = $url_stack;
 	$response = drupal_http_request($url,
 	  array(
@@ -2542,7 +2542,7 @@ global $user;
  */
 function rc_res_get_user_category($working_uid) {
   // get patron status from Voyager
-  $url_stack = "http://lit321v-b.library.ucla.edu/rcres/patron/group/" . "$working_uid";
+  $url_stack = "http://webservices.library.ucla.edu/rcres/patron/group/" . "$working_uid";
   $url = $url_stack . 
   drupal_http_build_query(array());
   $options = array(
@@ -2653,7 +2653,7 @@ global $user;
  */
 function rc_res_get_user_reservations($working_uid) {
   // get patron status from Voyager
-  $url_stack = "http://lit321v-b.library.ucla.edu/rcres/currentreservations/for/" . "$working_uid";
+  $url_stack = "http://webservices.library.ucla.edu/rcres/currentreservations/for/" . "$working_uid";
   $url = $url_stack;
   $test = drupal_http_build_query(array());
   $options = array(
@@ -2680,7 +2680,7 @@ function rc_res_get_open_resources_at_time() {
 
 //  $time_string = "2012-09-07 08:00 AM/length/2";
 //  $resource_string = urlencode($time_string);
-  $url_stack = "http%3A%2F%2Flit321v-b.library.ucla.edu%2Frcres%2Favailablerooms%2Fstartingat%2F2012-09-10+06%3A00%3A00+PM%2Flength%2F2";
+  $url_stack = "http%3A%2F%2Fwebservices.library.ucla.edu%2Frcres%2Favailablerooms%2Fstartingat%2F2012-09-10+06%3A00%3A00+PM%2Flength%2F2";
   $url = $url_stack;
   $test = drupal_http_build_query(array());
   $options = array(
@@ -2733,7 +2733,7 @@ function rc_res_get_resources_for_period($form, $form_state) {
 //krumo($rtime12a);
 //krumo($rlength);
 
-$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
+$request_url = 'http://webservices.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
 $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
@@ -2859,7 +2859,7 @@ function rc_res_form_page_five_empty_handler_submit_x($form, $form_state) {
 //krumo($rlength);
 
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
-$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
+$request_url = 'http://webservices.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
 $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
 $request_method = 'POST';
@@ -2889,7 +2889,7 @@ function rc_res_get_open_resources() {
 
 
 // Set some parameters for sending request.
-$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/startingat/2012-09-11+11%3a00+AM/length/2';
+$request_url = 'http://webservices.library.ucla.edu/rcres/availablerooms/startingat/2012-09-11+11%3a00+AM/length/2';
 $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
 $request_method = 'POST';
 $data = '';
@@ -2920,7 +2920,7 @@ function rc_res_set_user_reservations($rrid, $str_create1) {
   $params = json_encode($str_create1);
 
   // right way to post data - Drupal 7
-  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/'.$rrid, array(
+  $response = drupal_http_request('http://webservices.library.ucla.edu/rcres/reservation/reserveroom/'.$rrid, array(
     'method' => 'POST',
     'data' => $params, // see comments below - you may need to change this
     'headers' => array('Content-Type' => 'application/json')
@@ -2964,7 +2964,7 @@ function rc_res_set_user_reservations_0($working_uid) {
   $params = json_encode($c_array);
 
   // right way to post data - Drupal 7
-  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/118', array(
+  $response = drupal_http_request('http://webservices.library.ucla.edu/rcres/reservation/reserveroom/118', array(
     'method' => 'POST',
     'data' => $params, // see comments below - you may need to change this
     'headers' => array('Content-Type' => 'application/json')
