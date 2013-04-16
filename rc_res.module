@@ -104,9 +104,9 @@ function rc_res_form_page_one($form, &$form_state) {
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
   // DEVELOPMENT HOST RESOURCE URL
-  //$dev_host_resource = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/';
+  $dev_host_resource = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/';
   // Production HOST RESOURCE URL
-  $dev_host_resource = 'http://webservices.library.ucla.edu/rcres/availablerooms/complete/startingat/';
+  //$dev_host_resource = 'http://webservices.library.ucla.edu/rcres/availablerooms/complete/startingat/';
 //  $dev_host_resource = 'https://webservices.library.ucla.edu/rcres/availablerooms/complete/startingat/'; // normally use https but https is not currently working
   session_variable_set('rc-res','dev_host_resource',$dev_host_resource);
 
