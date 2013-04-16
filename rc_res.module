@@ -1,3 +1,4 @@
+
 <?php
 
 /**********************************************************************************************************/
@@ -76,7 +77,7 @@ function rc_res_menu() {
   global $rc_res_get_user_category;
   $items = array();
   $items['libraries/researchlibrary/research-commons-reservation'] = array(
-    'title' => 'RC-Res Reservations',
+    'title' => 'Research Commons Reservations',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('rc_res_form_page_one'),
     'access callback' => TRUE,
@@ -561,7 +562,8 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('<B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+<B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
