@@ -106,9 +106,9 @@ function rc_res_form_page_one($form, &$form_state) {
 
 
   // USE THIS WHILE DEVELOPING: TEST DATA in the Resource Scheduler database
-  $dev_host_resource_base = 'http://lit321v-b.library.ucla.edu';
+//  $dev_host_resource_base = 'http://lit321v-b.library.ucla.edu';
   // USE THIS ON PRODUCTION: PRODUCTION DATA in the Resource Scheduler database
-//  $dev_host_resource_base = 'http://webservices.library.ucla.edu'; // temporarily use this while the https is not working
+  $dev_host_resource_base = 'http://webservices.library.ucla.edu'; // temporarily use this while the https is not working
   //$dev_host_resource_base = 'https//webservices.library.ucla.edu'; // normally use https but https is not currently working
   session_variable_set('rc-res','dev_host_resource_base',$dev_host_resource_base);
 
@@ -826,7 +826,7 @@ Graduate Student, Faculty, and Library Staff Reservations
   $existing_resv = session_variable_get('rc-res','lcnt');
   $options = session_variable_get('rc-res','options');
 
-krumo($existing_resv);
+//krumo($existing_resv);
 
   // if no reservation exists
   if( $existing_resv == 0 ){
@@ -837,7 +837,9 @@ krumo($existing_resv);
   // else if one or more than one reservation exists and they are in the past and future OR just in the future
   } else {
   // calculate zones time within which a reservation can be made
-  $i=-1; // set starting point for zones array
+  $i=-1; // set starting point for zones array // oops, this should start at 3 if one existing resv, 5 if two existing resv, 7 if three existing resv, etc. This number equals (2*$existing_resv)+1 so use that value
+  //$i = (2*$existing_resv)+1; // value is incremented before first use so drop the +1
+  //$i = (2*$existing_resv);
 
     // for 1 reservation
     if( $existing_resv==1 ){
@@ -1011,7 +1013,7 @@ krumo($existing_resv);
     // END - calculate zones time within which a reservation can be made  
   }
 
-krumo($zone);
+//krumo($zone);
 
 
   // save the zones for use in the handler
@@ -1023,6 +1025,15 @@ krumo($zone);
   $i = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
+
+
+
+//krumo($zonePoints);
+//krumo(date('l\, n\/j g:i A', $zone[$i]));
+//krumo(date('l\, n\/j  g:i A', $zone[$i+1]));
+
+
+
     if ( !empty($zone[$i]) ) {
       $zoneRangeNew = date('l\, n\/j g:i A', $zone[$i]).' --- '.date('l\, n\/j  g:i A', $zone[$i+1]).'<br>';
     }
@@ -2002,16 +2013,26 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
   // print out ranges for the user
   $zonePoints = sizeof( $zone );
 
+//krumo($zonePoints);
+//krumo($zone);
+//krumo(date('l\, n\/j g:i A', $userDate));
+
   $i = 0;
   $outOfRange = 0;
   $zoneOk = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
-    if ( !empty($zone[$i])&&$zoneOk==1 ) {
+
+//krumo(date('l\, n\/j g:i A', $zone[$i]));
+//krumo(date('l\, n\/j  g:i A', $zone[$i+1]));
+
+
+    if (  !empty($zone[$i]) && !empty($zone[$i+1]) && $zoneOk==0  ) {
       if( !( $userDate>=$zone[$i]&&$userDate<=$zone[$i+1] ) ){
 	$outOfRange = 1;
       } else {
-      $zoneOk = 1;
+	$outOfRange = 0;
+	$zoneOk = 1;
       }
     }
     $i+=2;
