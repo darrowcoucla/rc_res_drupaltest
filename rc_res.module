@@ -104,6 +104,15 @@ function rc_res_form_page_one($form, &$form_state) {
   session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
+
+  // USE THIS WHILE DEVELOPING: TEST DATA in the Resource Scheduler database
+  $dev_host_resource_base = 'http://lit321v-b.library.ucla.edu';
+  // USE THIS ON PRODUCTION: PRODUCTION DATA in the Resource Scheduler database
+//  $dev_host_resource_base = 'http://webservices.library.ucla.edu'; // temporarily use this while the https is not working
+  //$dev_host_resource_base = 'https//webservices.library.ucla.edu'; // normally use https but https is not currently working
+  session_variable_set('rc-res','dev_host_resource_base',$dev_host_resource_base);
+
+
   // DEVELOPMENT HOST RESOURCE URL
   $dev_host_resource = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/';
   // Production HOST RESOURCE URL
@@ -294,10 +303,6 @@ print_r('page_77');
   } else {
 //    print_r('Unable to login.'); // dhc; error handling needed here
   }
-
-
-
-    
 
 
 //  if ( $user->name == "darrowco" ) {
@@ -748,7 +753,8 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -769,7 +775,8 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -790,7 +797,8 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -818,6 +826,7 @@ Graduate Student, Faculty, and Library Staff Reservations
   $existing_resv = session_variable_get('rc-res','lcnt');
   $options = session_variable_get('rc-res','options');
 
+krumo($existing_resv);
 
   // if no reservation exists
   if( $existing_resv == 0 ){
@@ -949,9 +958,6 @@ Graduate Student, Faculty, and Library Staff Reservations
     }
 
 
-
-
-
 //    // calculate zones time within which a reservation can be made
 //    for ($i=0; $i<$existing_resv; $i++){
 //      $resvDate = strtotime($options[$i]['startDate']);
@@ -1005,6 +1011,9 @@ Graduate Student, Faculty, and Library Staff Reservations
     // END - calculate zones time within which a reservation can be made  
   }
 
+krumo($zone);
+
+
   // save the zones for use in the handler
   session_variable_set('rc-res','zone',$zone);
 
@@ -1034,7 +1043,8 @@ Graduate Student, Faculty, and Library Staff Reservations
 
 form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time');
 
-    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1056,7 +1066,8 @@ Graduate Student, Faculty, and Library Staff Reservations
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)1');
 
-    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1074,7 +1085,8 @@ Graduate Student, Faculty, and Library Staff Reservations
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ) {
-    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1096,7 +1108,8 @@ Graduate Student, Faculty, and Library Staff Reservations
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)2');
 
-    $zones = 'Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1126,7 +1139,8 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1147,7 +1161,8 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
@@ -1300,6 +1315,7 @@ function rc_res_form_page_five($form, &$form_state) {
       $o_key[$lcnt-1] = $o_index;
       $options[$o_index] = array // each element of the array is keyed with the PID
       (
+//	'sorter' => $row['resources'][0]['title'], // 'start_time' was the key used in the header
 	'title' => $row['resources'][0]['title'], // 'start_date' was the key used in the header
 //	'start' => $row['start'], // 'start_date' was the key used in the header
 //	'end' => $row['end'], // 'start_date' was the key used in the header
@@ -1311,7 +1327,7 @@ function rc_res_form_page_five($form, &$form_state) {
   }
 
 
-
+//asort($options); //dhc populate a new 0 column, modify values then sort
 
   $demos0 = array();
 
@@ -1353,7 +1369,8 @@ function rc_res_form_page_five($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t('Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish &nbsp;&nbsp;&nbsp;'),
     ),
 
     $form['description2'] = array
@@ -1604,7 +1621,8 @@ function rc_res_form_page_six($form, &$form_state) {
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a>'),
+    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish &nbsp;&nbsp;&nbsp;'),
   );
 
   $rc_user = session_variable_get('rc-res','rc_user');  
@@ -1815,7 +1833,8 @@ $working_uid = session_variable_get('rc-res','working_uid');
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t('Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;'.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>'.$body),
+    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;<br>'.$body),
   );
 
   $form['submit'] = array(
@@ -1910,7 +1929,9 @@ function rc_res_form_page_three_delete_handler_submit($form, &$form_state) {
       //  the val is int 0 if not selected, string 0 if selected, the others are autoconverted
       if( ($pid_del == '0' && is_string($pid_del)) || $pid_del > 0 ){
 	$working_rid = $form_state['complete form'][1]['rendered'][0]['#options'][$pid_del]['schedID'];
-	$url_stack = "http://webservices.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
+	$dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+	$url_stack = "$dev_host_resource_base"."/rcres/reservation/release/" . "$working_rid";
+	//$url_stack = "http://webservices.library.ucla.edu/rcres/reservation/release/" . "$working_rid";
 	$url = $url_stack;
 	$response = drupal_http_request($url,
 	  array(
@@ -2544,8 +2565,11 @@ global $user;
  */
 function rc_res_get_user_category($working_uid) {
   // get patron status from Voyager
-  $url_stack = "http://webservices.library.ucla.edu/rcres/patron/group/" . "$working_uid";
+
+  $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+  $url_stack = "http://webservices.library.ucla.edu/rcres/patron/group/" . "$working_uid"; // same category source for workstation, drupaltest and production
   $url = $url_stack . 
+
   drupal_http_build_query(array());
   $options = array(
     "headers" => array(
@@ -2655,7 +2679,9 @@ global $user;
  */
 function rc_res_get_user_reservations($working_uid) {
   // get patron status from Voyager
-  $url_stack = "http://webservices.library.ucla.edu/rcres/currentreservations/for/" . "$working_uid";
+  $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+  $url_stack = "$dev_host_resource_base"."/rcres/currentreservations/for/" . "$working_uid";
+  //$url_stack = "http://webservices.library.ucla.edu/rcres/currentreservations/for/" . "$working_uid";
   $url = $url_stack;
   $test = drupal_http_build_query(array());
   $options = array(
@@ -2664,17 +2690,16 @@ function rc_res_get_user_reservations($working_uid) {
         "Cache-Control" => "no-cache",
     ),
   );
-
   $response_voy = drupal_http_request($url, $options);
   $patron_reservations = $response_voy->data;
-
   $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
 
 //dsm($patron_status);
   return $patron_reservations_array;
 }
 
-/**
+
+/** CURRENTLY UNUSED
  * get list of available resources @ a start time
  */
 function rc_res_get_open_resources_at_time() {
@@ -2802,10 +2827,8 @@ function rc_res_get_resources_for_period_complete($form, $form_state) {
 
 
 // this is set at the top; change at the top when releasing to test/production; needs automation
-$dev_host_resource = session_variable_get('rc-res','dev_host_resource');
-$request_url = "$dev_host_resource"."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
-
-
+$dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+$request_url = "$dev_host_resource_base"."/rcres/availablerooms/complete/startingat/"."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
 
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength"; // works
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
@@ -2830,7 +2853,7 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
   }
 }
 
-/**
+/** CURRENTLY UNUSED
  * get list of available resources after starting time given start date/time and period
  */
 function rc_res_form_page_five_empty_handler_submit_x($form, $form_state) {
@@ -2861,7 +2884,9 @@ function rc_res_form_page_five_empty_handler_submit_x($form, $form_state) {
 //krumo($rlength);
 
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
-$request_url = 'http://webservices.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
+
+$dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+$request_url = "$dev_host_resource_base".'/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
 //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
 $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
 $request_method = 'POST';
@@ -2883,7 +2908,7 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
   }
 }
 
-/**
+/** CURRENTLY UNUSED
  * get list of available resources after starting time, half hour increments on same day dhc works
  */
 function rc_res_get_open_resources() {
@@ -2914,15 +2939,13 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
  * set new user reservations
  */
 function rc_res_set_user_reservations($rrid, $str_create1) {
-
-//krumo($str_create1);
-//krumo($rrid);
-
   $params = array();
   $params = json_encode($str_create1);
 
   // right way to post data - Drupal 7
-  $response = drupal_http_request('http://webservices.library.ucla.edu/rcres/reservation/reserveroom/'.$rrid, array(
+  $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+  $response = drupal_http_request($dev_host_resource_base.'/rcres/reservation/reserveroom/'.$rrid, array(
+  //$response = drupal_http_request('http://webservices.library.ucla.edu/rcres/reservation/reserveroom/'.$rrid, array(
     'method' => 'POST',
     'data' => $params, // see comments below - you may need to change this
     'headers' => array('Content-Type' => 'application/json')
@@ -2938,7 +2961,7 @@ function rc_res_set_user_reservations($rrid, $str_create1) {
 
 
 // good 20120919, demo setting reservation
-/**
+/** CURRENTLY UNUSED
  * set new user reservations - good 20120919
  */
 function rc_res_set_user_reservations_0($working_uid) {
