@@ -1816,9 +1816,53 @@ $working_uid = session_variable_get('rc-res','working_uid');
 //    'uid' => '603513612',
   );
 
-  // create the new reservation
-  rc_res_set_user_reservations($rrid, $str_create1);
+// test array for conflicting reservation test
+//  $str_create1 = array(
+//    'description' => 'testing ',
+//    'start' => '2013-04-24 05:30 PM',
+//    'end' => '2013-04-24 06:30 PM',
+//    'pending' => true,
+//    'numberOfAttendees' => '2',
+//    'email' => 'darrowco@library.ucla.edu',
+//    'phone' => '310-206-5565',
+//    'firstName' => 'darrow',
+//    'lastName' => 'cole',
+//    'academicDept' => 'DIIT',
+//    'academicDeptOther' => 'Education',
+//    'division' => 'Staff',
+//    'courseLevel' => 0,
+//    'srs' => '111222333',
+//    'computerUse' => 'No',
+//    'internalNotes' => 'Testing web service, I will delete',
+//    'uid' => '502673598',
+////    'uid' => '603513612',
+//  );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // create the new reservation
+  $response = array();
+  $response = rc_res_set_user_reservations($rrid, $str_create1);
 
   // send a confirmation email
   $dDate = 0;
@@ -1830,8 +1874,15 @@ $working_uid = session_variable_get('rc-res','working_uid');
   if (!empty($rows['reservation'])) {
 
     // set the email content, spacing and cr/lf effect the email layout
-    $body = '
+    if (preg_match("/400/", $response->code)) {
+      $body = '
+<br>Sorry, your reservation could not be completed. Someone may have reserved the space you wanted. Please click on the <i>Change reservation</i> button and try a different date/time and/or resource.<br>
+<br>
+<em>Current Reservation(s)</em><b>:</b>';
+    } else {
+      $body = '
 <br>You have successfully reserved the resource(s) listed below. Please bring your current Bruincard to the CLICC Laptop Lending Desk in the Research Library to claim your reservation. You can only claim your reservation from fifteen minutes before until fifteen minutes after the beginning of your reservation. Unclaimed reservations will be canceled. Laptop display adapters and dry erase markers and erasers are available for check out.';
+    }
     $u_rstart=strtotime($rstart); // use to pick put the new reservation below
     foreach($rows['reservation'] as $row) {
       // each element of the array is keyed with the lcnt
@@ -1887,11 +1938,14 @@ $working_uid = session_variable_get('rc-res','working_uid');
 Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;<br>'.$body),
   );
 
-  $form['submit'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Make a new reservation'),
-    '#submit' => array('rc_res_form_page_seven_handler_submit'),
-  );
+  // Show the change button only whenthe reservation failed on submit
+  if (preg_match("/400/", $response->code)) {
+    $form['submit'] = array(
+      '#type'  => 'submit',
+      '#value' => t('Change reservation'),
+      '#submit' => array('rc_res_form_page_seven_handler_submit'),
+    );
+  }
 
   $form['view'] = array(
     '#type'  => 'submit',
@@ -2268,7 +2322,7 @@ function rc_res_form_page_seven_handler_submit($form, &$form_state) {
 if (preg_match("/View/", $form_state['clicked_button']['#value'])) {
   $form_state['page_num'] = 3;
 } else {
-  $form_state['page_num'] = 1;
+  $form_state['page_num'] = 4;
 }
   $form_state['rebuild'] = TRUE;
  }
@@ -3011,7 +3065,7 @@ function rc_res_set_user_reservations($rrid, $str_create1) {
     'headers' => array('Content-Type' => 'application/json')
   ));
 
-//print_r($response);
+  return $response;
 
 //  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/1', $headers = array('Content-Type' => 'application/json'), $method = 'POST', $data = $params, $retry = 3);
 
