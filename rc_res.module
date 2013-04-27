@@ -754,64 +754,28 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     (
       '#type'  => 'item',
       '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+<br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
-		      <b>Please choose a start time within the next 24 hours</b><br>
-		      (before ').$earliest_new_reservation_time_date.')'
+<b>Please choose a start time within the next 24 hours</b><br>
+(before ').$earliest_new_reservation_time_date.')'
     );
   }else if( $userDateTime < $nowDate){
     $form['description'] = array
     (
       '#type'  => 'item',
       '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+<br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
-		      <b>Please choose a start time within the next 24 hours</b><br>
-		      (between now and ').$earliest_new_reservation_time_date.')'
+<b>Please choose a start time within the next 24 hours</b><br>
+(between now and ').$earliest_new_reservation_time_date.')'
     );
   }else{
     $form['description'] = array
     (
       '#type'  => 'item',
       '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+<br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
 		      <BR>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -1091,88 +1055,36 @@ Graduate Student, Faculty, and Library Staff Reservations
   if( $no_res_available == 1 ){
     session_variable_set('rc-res','no_res_available',0);
 
-form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time');
+form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.');
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $outOfRange == 1 ) {
     session_variable_set('rc-res','no_res_available',0);
 
-form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)1');
+form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.)');
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ) {
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
 		      <em>Please choose a start time in one of the following time slot(s)</em><br>
 		      <br>'
 		      .$zoneRange;
   session_variable_set('rc-res','firstAccess4', 1);
   } else if( $firstAccess4 > 0 ) {
 
-form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations)2');
+form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.)');
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
@@ -1191,19 +1103,6 @@ Graduate Student, Faculty, and Library Staff Reservations
       '#type'  => 'item',
       '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
     );
@@ -1213,19 +1112,6 @@ Graduate Student, Faculty, and Library Staff Reservations
       '#type'  => 'item',
       '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-Undergraduate Student and Staff Reservations
-<ul>
-<li>up to two hours long
-<li>up to twenty-four hours in advance
-<li>all reservation start times must be at least twenty-four hours apart
-</ul>
-Graduate Student, Faculty, and Library Staff Reservations
-<ul>
-<li>up to four hours long
-<li>up to one week in advance
-<li>all reservation start times must be at least twenty-four hours apart
-<li>users who require exceptions may contact yrlrc@library.ucla.edu
-</ul>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
 		      <b>Start before ').$earliest_new_reservation_time.' tomorrow</b> ('.$earliest_new_reservation_time_date.')'
@@ -1414,6 +1300,11 @@ function rc_res_form_page_five($form, &$form_state) {
 
   $ddtime = preg_replace( '/\d\d\d\d-\d\d-\d\d/', '', $dtimedate );  // extract start time from value(s) returned from the web service call
 
+  // display back time chosen by user
+  $available_resources = $ddhourmin.t(' on '.$dddow.', '.$ddmonth2.' '.$ddday);
+  // save for use on subsequent pages
+  session_variable_set('rc-res','available_resources', $available_resources);
+
   $demos0 = array(
 
     $form['description'] = array
@@ -1426,7 +1317,7 @@ Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish 
     $form['description2'] = array
     (
       '#type'  => 'item',
-      '#title' => t('Available Resources at ').$ddhourmin.t(' on '.$dddow.', '.$ddmonth2.' '.$ddday),
+      '#title' => t('Available Resources at ').$available_resources,
     ),
 
     $form['table'] = array
@@ -1675,6 +1566,13 @@ function rc_res_form_page_six($form, &$form_state) {
 Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish &nbsp;&nbsp;&nbsp;'),
   );
 
+  $available_resources = session_variable_get('rc-res','available_resources');
+  $form['description2'] = array
+  (
+    '#type'  => 'item',
+    '#title' => t('Your selected Resource will be reserved at ').$available_resources,
+  );
+
   $rc_user = session_variable_get('rc-res','rc_user');  
   $my_email = $rc_user->mail;
 
@@ -1866,7 +1764,7 @@ $working_uid = session_variable_get('rc-res','working_uid');
 
   // send a confirmation email
   $dDate = 0;
-  $mySpace = '-----';
+  $mySpace = '';
   // re-read the user's reservations to catch anything new
   $rows = rc_res_get_user_reservations($working_uid);
 
@@ -1878,40 +1776,45 @@ $working_uid = session_variable_get('rc-res','working_uid');
       $body = '
 <br>Sorry, your reservation could not be completed. Someone may have reserved the space you wanted. Please click on the <i>Change reservation</i> button and try a different date/time and/or resource.<br>
 <br>
-<em>Current Reservation(s)</em><b>:</b>';
+Current Reservation(s):
+<b></b>';
     } else {
       $body = '
-<br>You have successfully reserved the resource(s) listed below. Please bring your current Bruincard to the CLICC Laptop Lending Desk in the Research Library to claim your reservation. You can only claim your reservation from fifteen minutes before until fifteen minutes after the beginning of your reservation. Unclaimed reservations will be canceled. Laptop display adapters and dry erase markers and erasers are available for check out.';
+<br>You have successfully reserved the resource(s) listed below.<br>
+<br>Please bring your Bruincard to the YRL Laptop Lending Desk to claim your reservation. You may claim your reservation from fifteen minutes before until fifteen minutes after the beginning of your reservation. Unclaimed reservations will be forfeit.<br>
+<br>Laptop display adapters, cables and dry erase markers are available for check out.
+<b></b>';
     }
     $u_rstart=strtotime($rstart); // use to pick put the new reservation below
     foreach($rows['reservation'] as $row) {
       // each element of the array is keyed with the lcnt
-      $roomName = $row['roomName'];
+      $roomName = 'Reservation for: '.$row['title'].'<br>';
+//      $roomName = $row['roomName'];
       $startDate = strtotime($row['startDate']);
       $endDate = strtotime($row['endDate']);
       $schedID = $row['schedID'];
       $dDate = ($endDate-$startDate)/3600;
       if( $u_rstart == $startDate ){
 	$body = $body.'
-'.'<br><br><b>'.$mySpace.'
-'.'> '.$roomName.'
-'.'   Date/Time: '.date('g:ia \o\n l jS F Y',$startDate).'
-'.'   '.$dDate.' hour(s)</b>
-
+'.'<br><br>'.$mySpace.'
+'.'<b>'.$roomName.'
+'.'   Date/Time: '.date('g:ia \o\n l jS F Y',$startDate).'<br>'.'
+'.'   Duration: '.$dDate.' hour(s)</b>
+<b></b>
 ';
       } else {
 	$body = $body.'
 '.'<br><br>'.$mySpace.'
-'.'> '.$roomName.'
-'.'   Date/Time: '.date('g:ia \o\n l jS F Y',$startDate).'
-'.'   '.$dDate.' hour(s)
-
+'.''.$roomName.'
+'.'   Date/Time: '.date('g:ia \o\n l jS F Y',$startDate).'<br>'.'
+'.'   Duration:'.$dDate.' hour(s)
+<b></b>
 ';
       }
     }
   }
 
-  $to = $user->mail;
+  $to = $uemail;
   $from = 'no-reply@library.ucla.edu';
   // If you are using suhosin (the hardened PHP extension) and want to use
   // Cc or Bcc, then make sure that suhosin.mail.protect is not set to 2,
