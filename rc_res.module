@@ -1655,14 +1655,15 @@ $working_uid = session_variable_get('rc-res','working_uid');
   $string = $form_state['page_values'][5]['table'];
   $sub_array = explode ( $delimiter, $string );
   $rrid = $sub_array[0];
+
+  // use this resource id for testing; find a time it is currently reserves to test error return: 400
+  // $rrid = '225';
+
   $rstart = $sub_array[1];
   $rend_oem = $sub_array[2]; // use later to compare $rend with $rstart+$res_length???
   $rcapacity = $sub_array[3];
   $rtitle = $sub_array[4];
   $rdescription = $sub_array[5];
-
-//krumo($form_state['page_values']);
-
   // get the length of the reservation //dhc this needs to be generic for any length
   $res_length = $form_state['page_values'][6]['res_length'];
   if ( $res_length == 60 ) {
@@ -1770,9 +1771,8 @@ $working_uid = session_variable_get('rc-res','working_uid');
 
   // if at least one row was returned, loop through each row  
   if (!empty($rows['reservation'])) {
-
     // set the email content, spacing and cr/lf effect the email layout
-    if (preg_match("/400/", $response->code)) {
+    if( $preg_match_ret = preg_match("/400/", $response->code) ){
       $body = '
 <br>Sorry, your reservation could not be completed. Someone may have reserved the space you wanted. Please click on the <i>Change reservation</i> button and try a different date/time and/or resource.<br>
 <br>
@@ -1812,6 +1812,13 @@ Current Reservation(s):
 ';
       }
     }
+  } else if( $preg_match_ret = preg_match("/400/", $response->code) ){
+      $body = '
+<br>Sorry, your reservation could not be completed. Someone may have reserved the space you wanted. Please click on the <i>Change reservation</i> button and try a different date/time and/or resource.<br>
+<br>
+Current Reservation(s):<br>
+No existing reservations
+<b></b>';
   }
 
   $to = $uemail;
@@ -1848,13 +1855,14 @@ Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> 
       '#value' => t('Change reservation'),
       '#submit' => array('rc_res_form_page_seven_handler_submit'),
     );
+  } else {
+    $form['view'] = array(
+      '#type'  => 'submit',
+      '#value' => t('View Reservation(s)'),
+      '#submit' => array('rc_res_form_page_seven_handler_submit'),
+    );
   }
 
-  $form['view'] = array(
-    '#type'  => 'submit',
-    '#value' => t('View Reservation(s)'),
-    '#submit' => array('rc_res_form_page_seven_handler_submit'),
-  );
   return $form;
 
 }
