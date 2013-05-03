@@ -364,7 +364,7 @@ print_r('page_77');
   // set header for the form
   $header = array
   (
-    'roomName' => t('Name'),
+    'title' => t('Name'),
     'startDate' => t('Start'),
     'endDate' => t('End'),
   );
@@ -397,7 +397,8 @@ print_r('page_77');
   if (!empty($rows['reservation'])) {
     foreach($rows['reservation'] as $row) {
       // each element of the array is keyed with the lcnt
-      $options[$lcnt]['roomName'] = $row['roomName'];
+      $options[$lcnt]['title'] = $row['title'];
+      $options[$lcnt]['roomName'] = $row['roomName']; // longer more detailed description
 
       // dhc; complete date is needed for the zones calc to work (around line 800-900)
       $rowStartDate = date('D\, g:ia n/j/Y',strtotime($row['startDate'])); // format date
@@ -535,7 +536,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     '#options' => $options,
     '#default_value' => $values,
 //    '#values' => $values,
-    '#empty' => t('No existing reservations'),
+    '#empty' => t('<center>No existing reservations</center>'),
   );
 
   // if the business rules indicate that the user is not allowed to make a new reservation, or delete an old reservation, at this time, remove the option to delete any old reservations
@@ -561,6 +562,8 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   
   // build the main part of the form
   $form_p3_main = array();
+
+  if( $rc_res_get_user_category == 'UCLA Undergraduate'){
   $form_p3_main = array(
 
     // breadcrumbs (hardcoded for now)
@@ -569,12 +572,15 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
       '#type'  => 'item',
       '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 <B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
-Undergraduate Student and Staff Reservations
+<br><br>
+<b>Reservation Policies</b><br>
+<br>
+<b>Undergraduate Student and Staff Reservations
 <ul>
 <li>up to two hours long
 <li>up to twenty-four hours in advance
 <li>all reservation start times must be at least twenty-four hours apart
-</ul>
+</ul></b>
 Graduate Student, Faculty, and Library Staff Reservations
 <ul>
 <li>up to four hours long
@@ -589,6 +595,43 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['myselector12'],
     $form['submit'],
   );
+  } else {
+  $form_p3_main = array(
+
+    // breadcrumbs (hardcoded for now)
+    $form['description'] = array
+    (
+      '#type'  => 'item',
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+<B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
+<br><br>
+<b>Reservation Policies</b><br>
+<br>
+<b>Graduate Student, Faculty, and Library Staff Reservations
+<ul>
+<li>up to four hours long
+<li>up to one week in advance
+<li>all reservation start times must be at least twenty-four hours apart
+<li>users who require exceptions may contact yrlrc@library.ucla.edu
+</ul></b>
+Undergraduate Student and Staff Reservations
+<ul>
+<li>up to two hours long
+<li>up to twenty-four hours in advance
+<li>all reservation start times must be at least twenty-four hours apart
+</ul>
+'),
+    ),
+
+    // main array
+    $form['myselector12'],
+    $form['submit'],
+  );
+  }
+
+
+
+
 
   // check for maxed out reservations, add a "reservations are at a max" message to the form if necessary
   if (!empty($options)){
@@ -1029,16 +1072,23 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
   $zoneRange = '';
   while ($i < $zonePoints) {
 
-
-
-
-
-
-
-
-
     if ( !empty($zone[$i]) ) {
+      // round the zone times up to the next 1/2 hour
+      $mod_minute = $zone[$i] % 3600;
+      if( $mod_minute < 1800 ){
+	$zone[$i] = $zone[$i] - $mod_minute + 1800;
+      } else {
+	$zone[$i] = $zone[$i] - $mod_minute + 3600;
+      }
+      $mod_minute = $zone[$i+1] % 3600;
+      if( $mod_minute < 1800 ){
+	$zone[$i+1] = $zone[$i+1] - $mod_minute + 1800;
+      } else {
+	$zone[$i+1] = $zone[$i+1] - $mod_minute + 3600;
+      }
+
       $zoneRangeNew = date('l\, n\/j g:i A', $zone[$i]).' --- '.date('l\, n\/j  g:i A', $zone[$i+1]).'<br>';
+
     }
 //    $zoneRangeNew = date('g:ia D m/d/y', $zone[$i]).' --- '.date('g:ia D m/d/y', $zone[$i+1]).'<br>';
     $zoneRange = $zoneRange.$zoneRangeNew;
@@ -1055,7 +1105,8 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
   if( $no_res_available == 1 ){
     session_variable_set('rc-res','no_res_available',0);
 
-form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.');
+form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time.)<br>
+Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.');
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
@@ -1065,7 +1116,8 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
   } else if( $outOfRange == 1 ) {
     session_variable_set('rc-res','no_res_available',0);
 
-form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.)');
+form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations.)<br>
+Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.');
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
@@ -1081,7 +1133,8 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
   session_variable_set('rc-res','firstAccess4', 1);
   } else if( $firstAccess4 > 0 ) {
 
-form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.)');
+form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations.)<br>
+Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.)');
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
@@ -1327,7 +1380,7 @@ Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish 
       '#header' => $header,
       '#options' => $options,
       '#multiple' => FALSE,
-      '#empty' => t('No available resources found'),
+      '#empty' => t('<center>No available resources found</center>'),
       '#default_value' => isset($form_state['values']['table']) ? $form_state['values']['table'] : NULL,
     ),
 
@@ -1409,7 +1462,7 @@ Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish 
       '#header' => $header,
       '#options' => $options,
       '#multiple' => FALSE,
-      '#empty' => t('No available resources found'),
+      '#empty' => t('<center>No available resources found</center>'),
     ),
 
 //    $form['back4'] = array(
@@ -2017,22 +2070,17 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
   // print out ranges for the user
   $zonePoints = sizeof( $zone );
 
-
-
-
-
   $i = 0;
   $outOfRange = 0;
   $zoneOk = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
-
-
-
-
-
     if (  !empty($zone[$i]) && !empty($zone[$i+1]) && $zoneOk==0  ) {
+      // is the user specified date/time within a zone?
       if( !( $userDate>=$zone[$i]&&$userDate<=$zone[$i+1] ) ){
+	$outOfRange = 1;
+      // is the user specified date/time during operating hours? (simplified for now, need to pull actual hours in the future)
+      } else if( !(( date('G', $userDate)>='8' && date('i', $userDate)>='30' )  ||  ( date('G', $userDate)<='21' && date('i', $userDate)<='30' )) ) {
 	$outOfRange = 1;
       } else {
 	$outOfRange = 0;
