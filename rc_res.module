@@ -328,6 +328,41 @@ print_r('page_77');
 
   // get user category here
   $rc_res_get_user_category = rc_res_get_user_category($working_uid);
+
+
+
+
+  // TEMP FOR TESTING
+//  $rc_res_get_user_category = 'UCLA Undergraduate';
+//  $rc_res_get_user_category = 'undergraduate';
+  // TEMP FOR TESTING
+
+
+
+
+  // translate Voyager terms to match local terms
+  if( preg_match("/undergraduate/i", $rc_res_get_user_category) ) {
+    $rc_res_get_user_category = 'Undergraduate';
+  } else if( preg_match("/graduate/i", $rc_res_get_user_category) ) {
+    $rc_res_get_user_category = 'Graduate';
+  } else if( preg_match("/staff/i", $rc_res_get_user_category) ) {
+    $rc_res_get_user_category = 'UCLA Staff';
+  } else if( preg_match("/faculty/i", $rc_res_get_user_category) ) {
+    $rc_res_get_user_category = 'UCLA Staff';
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
   session_variable_set('rc-res','rc_res_get_user_category', $rc_res_get_user_category);
 
   // get category rules here
@@ -388,6 +423,8 @@ print_r('page_77');
   $myDelete = 1;
   $myNext = 1;
   $myMax = 0;
+  $myMaxFuture = 0;
+  $myMaxPast = 0;
 
 
 
@@ -428,7 +465,15 @@ if(1){
 	  $startDateFutureCnt += 1;
 	  if( $startDatePastCnt > 0 ){
 	    if( $my_resv_lim == 1 ){
+	      if( $startDatePastCnt > 1 ){
 		print_r('ERROR - call Darrow Cole at Library IT 310-206-5565');
+	      } else {
+//		$myRow = 1;
+		$myDelete = 1;
+		$myNext = 0;
+		$myMaxFuture = 1;
+		$earliest_new_reservation_lim1 = $curRowDate;
+	      }
 	    } else if( $lcnt < $my_resv_lim ){
 	      $myRow = 0; // note: build $myRow[] array if the rules change so that more than one item can be in the expired list
 	      $myDelete = 1;
@@ -441,9 +486,12 @@ if(1){
 	    }
 	  } else {
 	    if( $my_resv_lim == 1 ){
-	      $myRow = 0;
-	      $myDelete = 0;
+	      $myRow = 1;
+	      $myDelete = 1;
 	      $myNext = 0;
+	      $myMaxFuture = 1;
+	      $earliest_new_reservation_lim1 = $curRowDate;
+//	      $earliest_new_reservation_lim1 = $curRowDate + $my_advance_seconds;
 	    } else if( $lcnt < $my_resv_lim ){
 //	      $myRow = 1;
 	      $myDelete = 1;
@@ -474,9 +522,9 @@ if(1){
 	    if( $my_resv_lim == 1 ){
 	      $myRow = 0;
 	      $myDelete = 0;
-	      $myNext = 0;
-	      $myMax = 1;
-	      $earliest_new_reservation_lim1 = $curRowDate + $my_advance_seconds;
+	      $myNext = 1;
+	      $myMax = 0;
+	      $earliest_new_reservation_lim1 = $nowDate + $my_advance_seconds;
 	    } else if( $lcnt < $my_resv_lim ){
 	      $myRow = 0;
 	      $myDelete = 0;
@@ -539,6 +587,10 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
     '#empty' => t('<center>No existing reservations</center>'),
   );
 
+
+
+
+
   // if the business rules indicate that the user is not allowed to make a new reservation, or delete an old reservation, at this time, remove the option to delete any old reservations
   if( $myRow == 0 ){
     $form['myselector12'][0]['#disabled'] = true; // disable the row
@@ -563,7 +615,7 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
   // build the main part of the form
   $form_p3_main = array();
 
-  if( $rc_res_get_user_category == 'UCLA Undergraduate'){
+  if( $rc_res_get_user_category == 'Undergraduate'){
   $form_p3_main = array(
 
     // breadcrumbs (hardcoded for now)
@@ -647,12 +699,13 @@ Undergraduate Student and Staff Reservations
 	'#title' => t('Only '.$my_resv_lim.' Reservation(s) allowed per '.$my_advance_days.' days - To make a new reservation please first delete an existing reservation or try again after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim_gt_1)),
       ),
     );
-  }else  if( ($myMax==1) && ($my_resv_lim==1) ){ // NOTE: this is currently hardcoded for the undergraduate case, it needs to be expanded to handle all cases; dhc_change; fixed now?
+  }else  if( ($myMaxFuture==1) && ($my_resv_lim==1) ){ // NOTE: this is currently hardcoded for the undergraduate case, it needs to be expanded to handle all cases; dhc_change; fixed now?
     $form_p3_maxed = array(
       $form['description'] = array
       (
 	'#type'  => 'item',
-	'#title' => t('Only '.$my_resv_lim.' Reservation(s) allowed per 24 hours - To make a new reservation please try again after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim1)),
+	'#title' => t('Only '.$my_resv_lim.' Reservation(s) allowed per 24 hours - You may create a new reservation on or after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim1)),
+//old	'#title' => t('Only '.$my_resv_lim.' Reservation(s) allowed per 24 hours - To make a new reservation please try again after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim1)),
       ),
     );
   }
@@ -670,13 +723,22 @@ Undergraduate Student and Staff Reservations
 	  '#disabled' => TRUE,
 	),
       );
-    } else if (sizeof($options) >0 ) {
+    } else if( sizeof($options)>0 && $myDelete==1 ) {
       $form_p3_submit = array(
 	$form['description'] = array(
 	  '#type'  => 'item',
 	  '#title' => t('&nbsp;&nbsp;or'),
 	),
 
+	$form['submit'] = array(
+	  '#type' => 'submit',
+	  '#value' => t('Create a new reservation'),
+	  '#submit' => array('rc_res_form_page_three_handler_submit'),
+	  '#disabled' => FALSE,
+	),
+      );
+    } else if( sizeof($options)>0 && $myDelete==0 ) {
+      $form_p3_submit = array(
 	$form['submit'] = array(
 	  '#type' => 'submit',
 	  '#value' => t('Create a new reservation'),
@@ -763,7 +825,16 @@ function rc_res_form_page_four($form, &$form_state) {
   $userDateTime = $userDate;
   $earliest_new_reservation = session_variable_get('rc-res','earliest_new_reservation');
 
-//krumo($earliest_new_reservation);
+  // round up to the nearest 1/2/hour
+  if ( !empty($earliest_new_reservation) ) {
+    // round the zone times up to the next 1/2 hour
+    $mod_minute = $earliest_new_reservation % 3600;
+    if( $mod_minute < 1800 ){
+      $earliest_new_reservation = $earliest_new_reservation - $mod_minute + 1800;
+    } else {
+      $earliest_new_reservation = $earliest_new_reservation - $mod_minute + 3600;
+    }
+  }
 
   // convert to old style to work under php 5.2.x
   $old_date_timestamp = strtotime($earliest_new_reservation);
@@ -788,7 +859,12 @@ $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_rese
 //krumo($userDateTimeDisplay);
 //krumo($earliest_new_reservationDisplay);
 
-  if ( $my_resv_lim == 1 ){
+
+// dhc here: check undergrad pulling $my_resv_lim from business rules
+// dhc here: check undergrad pulling $my_resv_lim from business rules
+// dhc here: check undergrad pulling $my_resv_lim from business rules
+
+  if ( $my_resv_lim == 111 ){
     $maxDate = strtotime("now".' +1 day');
 
 
@@ -825,7 +901,8 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 		      <b>Start before ').$earliest_new_reservation_time.' tomorrow</b> ('.$earliest_new_reservation_time_date.')'
     );
   }
-  } else if ( $my_resv_lim > 1 ){
+  } else {
+//  } else if ( $my_resv_lim > 1 ){
 
   // calculate legal reservation zones based on any existing reservations in the n-24 to n+168 interval
   $nm1 = 0;
@@ -838,7 +915,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
   // if no reservation exists
   if( $existing_resv == 0 ){
     $zone[0] = strtotime("now");
-    $zone[1] = strtotime("now".' +7 day');
+    $zone[1] = strtotime("now".' +'.$my_resv_lim.' day');
     $maxDate = $zone[1];
 
   // else if one or more than one reservation exists and they are in the past and future OR just in the future
@@ -847,9 +924,6 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
   $j=-1; // set starting point for zones array // oops, this should start at 3 if one existing resv, 5 if two existing resv, 7 if three existing resv, etc. This number equals (2*$existing_resv)+1 so use that value
   //$i = (2*$existing_resv)+1; // value is incremented before first use so drop the +1
   //$i = (2*$existing_resv);
-
-
-
 
 
 
@@ -871,14 +945,18 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 	}
       }
 
-      if( (strtotime($options[$i]['startDate'])+(24*3600)) <= (strtotime("now".' +7 day')) ) {
+      if( (strtotime($options[$i]['startDate'])+(24*3600)) <= (strtotime("now".' +'.$my_resv_lim.' day')) ) {
 	if ( strtotime("now") <= (strtotime($options[$i]['startDate'])+(24*3600)) ){
+
+
+
+
 	  $zone[$j+=1] = strtotime($options[$i]['startDate'])+(24*3600);
-	  $zone[$j+=1] = strtotime("now".' +7 day');
+	  $zone[$j+=1] = strtotime("now".' +'.$my_resv_lim.' day');
 	}
-	else if( (strtotime("now")) <= (strtotime("now".' +7 day')) ) {
+	else if( (strtotime("now")) <= (strtotime("now".' +'.$my_resv_lim.' day')) ) {
 	  $zone[$j+=1] = strtotime("now");
-	  $zone[$j+=1] = strtotime("now".' +7 day');
+	  $zone[$j+=1] = strtotime("now".' +'.$my_resv_lim.' day');
 	}
       }
 
@@ -1072,18 +1150,23 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
   $zoneRange = '';
   while ($i < $zonePoints) {
 
+
+
+
+
     if ( !empty($zone[$i]) ) {
       // round the zone times up to the next 1/2 hour
       $mod_minute = $zone[$i] % 3600;
-      if( $mod_minute < 1800 ){
+      if( $mod_minute < 1800 && $mod_minute > 0 ){
 	$zone[$i] = $zone[$i] - $mod_minute + 1800;
-      } else {
+      } else if( $mod_minute < 3600 && $mod_minute >= 1800 ) {
 	$zone[$i] = $zone[$i] - $mod_minute + 3600;
       }
+
       $mod_minute = $zone[$i+1] % 3600;
-      if( $mod_minute < 1800 ){
+      if( $mod_minute < 1800 && $mod_minute > 0 ){
 	$zone[$i+1] = $zone[$i+1] - $mod_minute + 1800;
-      } else {
+      } else if( $mod_minute < 3600 && $mod_minute >= 1800 ) {
 	$zone[$i+1] = $zone[$i+1] - $mod_minute + 3600;
       }
 
@@ -1110,35 +1193,35 @@ Also, please make the reservation during hours of operation. See <a href="http:/
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-		      <b>Please choose a start time in one of the following time slot(s)</b><br>
+		      <b>Please choose a start time in one of the following time slot(s)1</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $outOfRange == 1 ) {
     session_variable_set('rc-res','no_res_available',0);
 
-form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations.)<br>
+form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than '.$my_resv_lim.' day(s) into the future and must be at least 24 hours from any existing reservations.)<br>
 Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.');
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-		      <b>Please choose a start time in one of the following time slot(s)</b><br>
+		      <b>Please choose a start time in one of the following time slot(s)2</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ) {
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-		      <em>Please choose a start time in one of the following time slot(s)</em><br>
+		      <em>Please choose a start time in one of the following time slot(s)3</em><br>
 		      <br>'
 		      .$zoneRange;
   session_variable_set('rc-res','firstAccess4', 1);
   } else if( $firstAccess4 > 0 ) {
 
-form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than 7 days into the future and must be at least 24 hours from any existing reservations.)<br>
+form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than '.$my_resv_lim.' day(s) into the future and must be at least 24 hours from any existing reservations.)<br>
 Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.)');
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-		      <b>Please choose a start time in one of the following time slot(s)</b><br>
+		      <b>Please choose a start time in one of the following time slot(s)4</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   }
@@ -2075,9 +2158,15 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
   $zoneOk = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
+
+
+
+
+
+
     if (  !empty($zone[$i]) && !empty($zone[$i+1]) && $zoneOk==0  ) {
-      // is the user specified date/time within a zone?
-      if( !( $userDate>=$zone[$i]&&$userDate<=$zone[$i+1] ) ){
+      // is the user specified date/time within a zone? Pad the upper limit by 30 minutes because of earlier rounding; eg choosing a 3:30pm resv would fail if the realtime is between 3:00 and 3:30
+      if( !( $userDate>=$zone[$i]&&$userDate<=$zone[$i+1]+1800 ) ){
 	$outOfRange = 1;
       // is the user specified date/time during operating hours? (simplified for now, need to pull actual hours in the future)
       } else if( !(( date('G', $userDate)>='8' && date('i', $userDate)>='30' )  ||  ( date('G', $userDate)<='21' && date('i', $userDate)<='30' )) ) {
@@ -2654,12 +2743,12 @@ function rc_res_get_user_category($working_uid) {
   $response_voy = drupal_http_request($url, $options);
   $patron_status = $response_voy->data;
 //dsm($patron_status);
-  if (preg_match("/\bundergraduate\b/ii", $patron_status)) {
-    $patron_status = "undergraduate";
-  } elseif (preg_match("/\bgraduate\b/ii", $patron_status)) {
-    $patron_status = "graduate";
-  } elseif (preg_match("/\bfaculty\b/ii", $patron_status)) {
-    $patron_status = "faculty";
+  if (preg_match("/\bUndergraduate\b/ii", $patron_status)) {
+    $patron_status = "Undergraduate";
+  } elseif (preg_match("/\bGraduate\b/ii", $patron_status)) {
+    $patron_status = "Graduate";
+  } elseif (preg_match("/\bFaculty\b/ii", $patron_status)) {
+    $patron_status = "Faculty";
   }
 //dsm($patron_status);
   return $patron_status;
