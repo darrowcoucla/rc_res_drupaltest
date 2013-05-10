@@ -1193,7 +1193,7 @@ Also, please make the reservation during hours of operation. See <a href="http:/
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-		      <b>Please choose a start time in one of the following time slot(s)1</b><br>
+		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $outOfRange == 1 ) {
@@ -1204,13 +1204,13 @@ Also, please make the reservation during hours of operation. See <a href="http:/
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-		      <b>Please choose a start time in one of the following time slot(s)2</b><br>
+		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ) {
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-		      <em>Please choose a start time in one of the following time slot(s)3</em><br>
+		      <em>Please choose a start time in one of the following time slot(s)</em><br>
 		      <br>'
 		      .$zoneRange;
   session_variable_set('rc-res','firstAccess4', 1);
@@ -1221,7 +1221,7 @@ Also, please make the reservation during hours of operation. See <a href="http:/
 
     $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
-		      <b>Please choose a start time in one of the following time slot(s)4</b><br>
+		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   }
