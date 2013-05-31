@@ -40,7 +40,7 @@ function rc_res_form_page_one_validate($form, &$form_state) {
     if (!$form_state['values']['table']) {
       form_set_error('date', 'Please choose a resource.');
     }
-  } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 6) {
+  } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 6 && $form_state['values']['op'] != 'Back') { // allow back even if missing values
     if (!$form_state['values']['user_email']) {
       form_set_error('user_email', 'Please enter an email address.');
     }
@@ -48,7 +48,7 @@ function rc_res_form_page_one_validate($form, &$form_state) {
       form_set_error('pnumber', 'Please choose the number of persons in your group.');
     }
     if ($form_state['values']['res_length'] == 0) {
-      form_set_error('res_length', 'Please the duration of your reservation.');
+      form_set_error('res_length', 'Please enter the duration of your reservation.');
     }
     if (!$form_state['values']['user_dept']) {
       form_set_error('user_dept', 'Please enter the Department or Major associated with this request.');
