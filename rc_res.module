@@ -122,7 +122,7 @@ function rc_res_form_page_one($form, &$form_state) {
   session_variable_set('rc-res','noResources', 0);
 
 
-// debug print for wrong user at top of page
+// debug print for wrong user at top of page. save until we are sure the wrong user problem is solved
 //print_r($user->uid);
 //if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
 //  print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
@@ -256,7 +256,7 @@ function rc_res_form_page_three($form, &$form_state) {
   // Jump to appropriate page if necessary
   // Jump to appropriate page if necessary
 
-  //dhc_change: improve this to work on a shibboleth system with a matching user. ie both shib user and drupal user, possibly with same username
+  // Improvement needed: improve this to work on a shibboleth system with a matching user. ie both shib user and drupal user, possibly with same username
   // retrieve the UCLA UID (not drupal uid)
 
   if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
@@ -268,7 +268,7 @@ function rc_res_form_page_three($form, &$form_state) {
       //print_r($_SERVER['HTTP_HOST']);
     }
   } else {
-      //print_r('Unable to login.'); // dhc; error handling needed here
+      //print_r('Unable to login.'); // Improvement needed; error handling needed here
   }
 
 //  if ( $user->name == "darrowco" ) {
@@ -384,14 +384,12 @@ function rc_res_form_page_three($form, &$form_state) {
       // save any expired reservation; only one should exist and it should be within the last 24 hours (detection of expired reservation and period in which to detect is set in the web services call)
       $curRowDate = strtotime($row['startDate']);
 
-  //dhc - temp if temp checkbox is checked, disregard rules
+  // dhc - temp if temp checkbox on first page is checked, disregard rules
   if (empty($form_state['input']['test']['Test - checking this checkbox allows deletion of an expired reservation before 24 hours has passed'])){
 
-//dhc - temp disable with if(0) for development  
-if(1){
-	///// START: business rules
-	///// START: business rules
-	///// START: business rules
+	///// START: business rule processing
+	///// START: business rule processing
+	///// START: business rule processing
 	if( $curRowDate > $nowDate){
 	  $startDateFuture = $curRowDate;
 	  $startDateFutureCnt += 1;
@@ -469,12 +467,9 @@ if(1){
 	    }
 	  }
 	}
-	// END: business rules
-	// END: business rules
-	// END: business rules
-}
-//dhc - END: temp disable with if(0) for development  
-
+	// END: business rules processing
+	// END: business rules processing
+	// END: business rules processing
       }
   //dhc - END: development checkbox
     }
@@ -497,16 +492,13 @@ if(1){
   }
 
   session_variable_set('rc-res','lcnt', $lcnt);
-// dhc: cannot seem to pass a hidden variable to the delete handler?? use global for now
+// Improvement needed: cannot seem to pass a hidden variable to the delete handler?? use global for now
 //  // save number of items on reserve to use later in delete handler; see bug http://qa.drupal.org/pifr/test/281743
 //  $form['myHidden']['lcnt'] = array(
 //    '#type' => 'hidden',
 //    '#value' => $lcnt,
 //  );
 
-
-  // this builds the rows with checkboxes
-  // this builds the rows with checkboxes
   // this builds the rows with checkboxes
   $form['myselector12'] = array
   (
@@ -520,8 +512,6 @@ if(1){
     '#empty' => t('<center>No existing reservations</center>'),
   );
 
-  // this disables row(s)
-  // this disables row(s)
   // this disables row(s)
   // if the business rules indicate that the user is not allowed to make a new reservation, or delete an old reservation, at this time, remove the option to delete any old reservations
   if( $myRow == 0 ){
@@ -543,7 +533,7 @@ if(1){
   // build the main part of the form
   $form_p3_main = array();
 
-  //dhc - what is a better way to dothis??? Repeating most of an array for just a text difference seems wasteful; DRUPALCON
+  // Improvement needed: what is a better way to dothis??? Repeating most of an array for just a text difference seems wasteful
   if( $rc_res_get_user_category == 'Undergraduate'){
   $form_p3_main = array(
 
@@ -624,13 +614,12 @@ Undergraduate Student and Staff Reservations
 	'#title' => t('Only '.$my_resv_lim.' Reservation(s) allowed per '.$my_advance_days.' days - To make a new reservation please first delete an existing reservation or try again after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim_gt_1)),
       ),
     );
-  }else  if( ($myMaxFuture==1) && ($my_resv_lim==1) ){ // NOTE: this is currently hardcoded for the undergraduate case, it needs to be expanded to handle all cases; dhc_change; fixed now?
+  }else  if( ($myMaxFuture==1) && ($my_resv_lim==1) ){ // NOTE: this is currently hardcoded for the undergraduate case, it needs to be expanded to handle all cases; fixed now?
     $form_p3_maxed = array(
       $form['description'] = array
       (
 	'#type'  => 'item',
 	'#title' => t('Only '.$my_resv_lim.' Reservation(s) allowed per 24 hours - You may create a new reservation on or after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim1)),
-//old	'#title' => t('Only '.$my_resv_lim.' Reservation(s) allowed per 24 hours - To make a new reservation please try again after '.date('g:ia \o\n l jS F Y',$earliest_new_reservation_lim1)),
       ),
     );
   }
@@ -654,7 +643,6 @@ Undergraduate Student and Staff Reservations
 	  '#type'  => 'item',
 	  '#title' => t('&nbsp;&nbsp;or'),
 	),
-
 	$form['submit'] = array(
 	  '#type' => 'submit',
 	  '#value' => t('Create a new reservation'),
@@ -762,8 +750,6 @@ function rc_res_form_page_four($form, &$form_state) {
 
   $earliest_new_reservationDisplay = date('g:ia \o\n l jS F Y', $earliest_new_reservation);
 
-  // dhc here: check undergrad pulling $my_resv_lim from business rules
-  // dhc here: check undergrad pulling $my_resv_lim from business rules
   // dhc here: check undergrad pulling $my_resv_lim from business rules
 
   // UNDERGRAD SECTION
@@ -995,41 +981,20 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 } 
 
 /**
- * page 5 ......................................................................................................................
- * page 5 ......................................................................................................................
- * page 5 ......................................................................................................................
+ * page 5 - Available Resources ......................................................................................................................
+ * page 5 - Available Resources ......................................................................................................................
+ * page 5 - Available Resources ......................................................................................................................
  */
 function rc_res_form_page_five($form, &$form_state) {
-  // Build page 5.
-  // Build page 5.
-  // Build page 5.
-
-// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
-// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
-
-//krumo($form_state['values']);
-
   if (!empty($form_state['page_values'][5])) {
     $form_state['values'] = $form_state['page_values'][5];
   }
-
-//krumo($form_state['values']);
 
   $form = array();
 
   // read reervations given an UID (currently simulated in drupal)
   $rows = array();
   $rows = rc_res_get_resources_for_period_complete($form, $form_state);
-
-
-
-
-
-
-//  rc_res_set_user_reservations($working_uid);
-  //rc_res_get_open_resources();
-
-
   $header = array
   (
     'title' => t('Name'),
@@ -1048,9 +1013,6 @@ function rc_res_form_page_five($form, &$form_state) {
   if ($rows != "Not Found" && $rows != NULL) {
   foreach($rows as $row)
     {
-
-
-
       $lcnt += 1;
       $o_index = $row['resources'][0]['id'].':::'.$row['start'].':::'.$row['end'].':::'.$row['resources'][0]['capacity'].':::'.$row['resources'][0]['title'].':::'.$row['resources'][0]['description'].':::'.$row['duration'];
       $o_key[$lcnt-1] = $o_index;
@@ -1067,48 +1029,38 @@ function rc_res_form_page_five($form, &$form_state) {
     }
   }
 
-
-//asort($options); //dhc populate a new 0 column, modify values then sort
-
   $demos0 = array();
 
   if ($rows != "Not Found" && $rows != NULL) {
-
-//print_r("NOT EMPTY");
-  $dtimedate = $rows[0]['start']; // get start time from value(s) returned from the web service call
-
-//krumo($form_state['page_values'][4]['date']);
-
-  $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear ); // extract the numerical year
-  $dtime = preg_match( '/-\d\d-/', $dtimedate, $tmonth ); // extract the numerical month
-  $dtime = preg_match( '/\d\d/', $tmonth[0], $tmonth );
-  $dtime = preg_match( '/-\d\d /', $dtimedate, $tday ); // extract the numerical day
-  $dtime = preg_match( '/\d\d/', $tday[0], $tday );
-  $dtime = preg_match( '/\d\d:/', $dtimedate, $thour ); // extract the numerical hour
-  $dtime = preg_match( '/\d\d/', $thour[0], $thour );
-  $dtime = preg_match( '/:\d\d/', $dtimedate, $tminute ); // extract the numerical minute
-  $dtime = preg_match( '/\d\d/', $tminute[0], $tminute );
-  $dtime = preg_match( '/.M/', $dtimedate, $apm ); // extract AM or PM
-
-  // Convert to 24hr time for the date()
-  $apms = strtolower($apm[0]);
-  if( $apms == 'pm'){
-    $thour[0] = $thour[0] + 12;
-  }
+    $dtimedate = $rows[0]['start']; // get start time from value(s) returned from the web service call
+    $dtime = preg_match( '/\d\d\d\d/', $dtimedate, $tyear ); // extract the numerical year
+    $dtime = preg_match( '/-\d\d-/', $dtimedate, $tmonth ); // extract the numerical month
+    $dtime = preg_match( '/\d\d/', $tmonth[0], $tmonth );
+    $dtime = preg_match( '/-\d\d /', $dtimedate, $tday ); // extract the numerical day
+    $dtime = preg_match( '/\d\d/', $tday[0], $tday );
+    $dtime = preg_match( '/\d\d:/', $dtimedate, $thour ); // extract the numerical hour
+    $dtime = preg_match( '/\d\d/', $thour[0], $thour );
+    $dtime = preg_match( '/:\d\d/', $dtimedate, $tminute ); // extract the numerical minute
+    $dtime = preg_match( '/\d\d/', $tminute[0], $tminute );
+    $dtime = preg_match( '/.M/', $dtimedate, $apm ); // extract AM or PM
+    // Convert to 24hr time for the date()
+    $apms = strtolower($apm[0]);
+    if( $apms == 'pm'){
+      $thour[0] = $thour[0] + 12;
+    }
   
-  $ddyear = date("Y", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of year. "Y" yields 2012
-  $ddmonth = date("M", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of month. "M" yields Jan through Dec
-  $ddmonth2 = date("F", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of month. "M" yields Jan through Dec
-  $ddday = date("jS", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of day. "j" yields 1 through 31 with no leading 0
-  $dddow = date("l", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of Day of Week. "D" Monday through Sunday
-  $ddhourmin = date("g:ia", mktime($thour[0], $tminute[0], 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of Day of Week. "D" Monday through Sunday
+    $ddyear = date("Y", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of year. "Y" yields 2012
+    $ddmonth = date("M", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of month. "M" yields Jan through Dec
+    $ddmonth2 = date("F", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of month. "M" yields Jan through Dec
+    $ddday = date("jS", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of day. "j" yields 1 through 31 with no leading 0
+    $dddow = date("l", mktime(0, 0, 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of Day of Week. "D" Monday through Sunday
+    $ddhourmin = date("g:ia", mktime($thour[0], $tminute[0], 0, $tmonth[0], $tday[0], $tyear[0]));  // use date() to allow formatting of Day of Week. "D" Monday through Sunday
+    $ddtime = preg_replace( '/\d\d\d\d-\d\d-\d\d/', '', $dtimedate );  // extract start time from value(s) returned from the web service call
 
-  $ddtime = preg_replace( '/\d\d\d\d-\d\d-\d\d/', '', $dtimedate );  // extract start time from value(s) returned from the web service call
-
-  // display back time chosen by user
-  $available_resources = $ddhourmin.t(' on '.$dddow.', '.$ddmonth2.' '.$ddday);
-  // save for use on subsequent pages
-  session_variable_set('rc-res','available_resources', $available_resources);
+    // display back time chosen by user
+    $available_resources = $ddhourmin.t(' on '.$dddow.', '.$ddmonth2.' '.$ddday);
+    // save for use on subsequent pages
+    session_variable_set('rc-res','available_resources', $available_resources);
 
   $demos0 = array(
 
@@ -1142,61 +1094,17 @@ Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish 
       '#submit' => array('rc_res_form_page_fiveb_handler_submit'),
     ),
 
-//  $form['save'] = array (
-//   '#type' => 'submit',
-//   '#value' => t ('Save field'),
-//   '#states' => array(
-//     'disabled' => array(
-//       ':input[name="type"]' => array('value' => 0),
-//      )
-//    )
-//  );
-
     $form['submit'] = array
     (
       '#type' => 'submit',
       '#value' => t('Reserve selected resource'),
       '#submit' => array('rc_res_form_page_five_handler_submit'),
-
-//      '#states' => array(
-//	'visible' => array(
-//	  ':input[name="table"]' => array(
-//	    array('value' => $o_key[0]),
-//            array('value' => $o_key[1])
-//	  ),
-//	),
-//      ),
-//      '#disabled' => TRUE,
     ),
   );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  } else {
-
-//print_r("EMPTY");
+  } else { // else there are no rows
 
   session_variable_set('rc-res','noResources', 1);
-
   $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
 
@@ -1217,50 +1125,23 @@ Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish 
       '#empty' => t('<center>No available resources found</center>'),
     ),
 
-//    $form['back4'] = array(
-//      '#type'  => 'submit',
-//      '#value' => t('Back'),
-//      '#submit' => array('rc_res_form_page_fiveb_handler_submit'),
-//    ),
-
-//    $form['submit0'] = array
-//    (
-//      '#type' => 'submit',
-//      '#value' => t('Find spaces for earlier start times'),
-//      '#submit' => array('rc_res_form_page_five_empty_handler_submit'),
-//    ),
-
-//    $form['submit1'] = array
-//    (
-//      '#type' => 'submit',
-//      '#value' => t('Find spaces for later start times'),
-//      '#submit' => array('rc_res_form_page_five_empty_handler_submit_x'),
-//    ),
-
     $form['submit2'] = array
     (
       '#type' => 'submit',
       '#value' => t('Change Date and Time'),
       '#submit' => array('rc_res_form_page_five_empty_handler_submit'),
     ),
-
   );
   }
   return $form;
 }
 
 /**
- * page 6 ......................................................................................................................
- * page 6 ......................................................................................................................
- * page 6 ......................................................................................................................
+ * page 6 - Details ......................................................................................................................
+ * page 6 - Details ......................................................................................................................
+ * page 6 - Details ......................................................................................................................
  */
 function rc_res_form_page_six($form, &$form_state) {
-
-// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
-// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
-
-//krumo($form_state['values']);
-
   if (!empty($form_state['page_values'][6])) {
     $form_state['values'] = $form_state['page_values'][6];
   }
@@ -1287,7 +1168,6 @@ function rc_res_form_page_six($form, &$form_state) {
   }
 
   // build the hours available numbers for the dropdown menu based on max available and user category
-
   // retrieve user details
   $my_kvar = session_variable_get('rc-res','rc_res_get_user_rules');
 
@@ -1299,11 +1179,8 @@ function rc_res_form_page_six($form, &$form_state) {
   // convert limit from Resource Scheduler into minutes
   $rhours_available = $rhours_available * 60;
 
-
   if (preg_match("/Group/i", $rtitle)) {
-
   } else if (preg_match("/Classroom/i", $rtitle)) {
-
   } else  { // use pod if nothing else matches
     if( $my_pod_lim < $rhours_available ){
       $myLim = $my_pod_lim;
@@ -1312,7 +1189,7 @@ function rc_res_form_page_six($form, &$form_state) {
     }
   }
 
-  // dhc change this to an unlimited list using mod and ?
+  // Improvement needed: change this to an unlimited list using mod and ?
   if( $myLim >= 240 ){
     $resLength[0] = 'Choose';
     $resLength[60] = '1 hours';
@@ -1363,7 +1240,6 @@ function rc_res_form_page_six($form, &$form_state) {
   }
 
   $form = array();
-
   $form['description'] = array
   (
     '#type'  => 'item',
@@ -1425,16 +1301,12 @@ Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish 
 }
 
 /**
- * page 7 ......................................................................................................................
- * page 7 ......................................................................................................................
- * page 7 ......................................................................................................................
+ * page 7 - Finish ......................................................................................................................
+ * page 7 - Finish ......................................................................................................................
+ * page 7 - Finish ......................................................................................................................
  */
 function rc_res_form_page_seven($form, &$form_state) {
-
 global $user;
-
-// drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
-// drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
 $working_uid = session_variable_get('rc-res','working_uid');
   $str_create = array(
     'description' => 'testing ',
@@ -1498,9 +1370,9 @@ $working_uid = session_variable_get('rc-res','working_uid');
   $udept = $form_state['page_values'][6]['user_dept'];
   $course_level = 0;
 
-
+  // Improvement needed: 
   $str_create1 = array(
-    'description' => 'testing ',
+    'description' => 'RC Reservation',
     'start' => $rstart,
     'end' => $rend,
     'pending' => true,
@@ -1515,9 +1387,8 @@ $working_uid = session_variable_get('rc-res','working_uid');
     'courseLevel' => $course_level,
     'srs' => '111222333',
     'computerUse' => 'No',
-    'internalNotes' => 'Testing web service, I will delete',
+    'internalNotes' => 'RC Reservation',
     'uid' => $working_uid,
-//    'uid' => '603513612',
   );
 
 // test array for conflicting reservation test
@@ -1541,28 +1412,6 @@ $working_uid = session_variable_get('rc-res','working_uid');
 //    'uid' => '502673598',
 ////    'uid' => '603513612',
 //  );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // create the new reservation
   $response = array();
@@ -1643,9 +1492,7 @@ No existing reservations
   // by just setting the Content-Type.
   $message = drupal_mail('rc_res', 'message_key', $to, user_preferred_language($user), array('body' => $body, 'subject' => $subject, 'headers' => array('Cc' => $header_cc, 'Bcc' => $header_bcc)), $from, TRUE);
   // You can check $message['result'] to see if the message sent successfully.
-
   $form = array();
-
   $form['description'] = array
   (
     '#type'  => 'item',
@@ -1667,19 +1514,25 @@ Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> 
       '#submit' => array('rc_res_form_page_seven_handler_submit'),
     );
   }
-
   return $form;
-
 }
-
+/**
+ * End of form -------------------------------------------------------------------------------------------------------
+ * End of form -------------------------------------------------------------------------------------------------------
+ * End of form -------------------------------------------------------------------------------------------------------
+ */
 
 /**
+ * Page 1 submit handler.
+ * Page 1 submit handler.
  * Page 1 submit handler.
  *
  * Save the vals from page one for a later final submit.
  */
+  // Values are saved for each page.
+  // to carry forward to subsequent pages in the form.
+  // The Forms API rebuilds the form.
 function rc_res_form_page_one_handler_submit($form, &$form_state) {
-
   $form_state['page_values'][1] = $form_state['values'];
 
   // set page num if it does not yet exist, ie this is the first pass
@@ -1694,13 +1547,12 @@ function rc_res_form_page_one_handler_submit($form, &$form_state) {
 
 /**
  * Page 2 submit handler.
+ * Page 2 submit handler.
+ * Page 2 submit handler.
  *
  * Save the vals from page two for a later final submit.
  */
 function rc_res_form_page_two_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
   $form_state['page_values'][2] = $form_state['values'];
 
   if (!empty($form_state['page_values'][3])) {
@@ -1714,13 +1566,12 @@ function rc_res_form_page_two_handler_submit($form, &$form_state) {
 
 /**
  * Page 3 submit handler.
+ * Page 3 submit handler.
+ * Page 3 submit handler.
  *
  * Save the vals from page three for a later final submit.
  */
 function rc_res_form_page_three_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
   $form_state['page_values'][3] = $form_state['values'];
 
   // zero out any previous choice by the user
@@ -1737,6 +1588,8 @@ function rc_res_form_page_three_handler_submit($form, &$form_state) {
 }
 
 /**
+ * Page 3 delete handler.
+ * Page 3 delete handler.
  * Page 3 delete handler.
  *
  * Save the vals from page three for a later final submit.
@@ -1764,35 +1617,16 @@ function rc_res_form_page_three_delete_handler_submit($form, &$form_state) {
       }
     }
 
-
     $llcnt = 5;
-//    $llcnt = session_variable_get('rc-res','lcnt');
 
     for ($i=0; $i<$llcnt; $i++){
-//      if (!empty($form_state['values'][0][$i])) {
-//krumo($i);
-	$form_state['values'][0][$i] = 0;
-//	unset($form_state['values'][0][$i]);
-//      }
+      $form_state['values'][0][$i] = 0;
     }
 
-//$form_state['complete form']['values']['und'][0]['value']['#value'] = NULL;
-//$form_state['complete form'][0]['rendered'][0][1]['#value'] = NULL;
-//$form_state['complete form'][0]['rendered'][0][1]['#checked'] = FALSE;
-//$form_state['complete form'][1]['rendered'][0][1]['#value'] = NULL;
-//$form_state['complete form'][1]['rendered'][0][1]['#checked'] = FALSE;
-//$form_state['complete form'][2]['rendered'][0][1]['#value'] = NULL;
-//$form_state['complete form'][2]['rendered'][0][1]['#checked'] = FALSE;
-
-$form_state['input'][0][0] = NULL;
-$form_state['input'][0][1] = NULL;
-$form_state['input'][0][2] = NULL;
-
-
-  $form_state['page_values'][3] = $form_state['values']; // no reaseon to save, it only makes the check box sticky which is no desireable when the rows shift up after a deletion
-
-
-
+  $form_state['input'][0][0] = NULL;
+  $form_state['input'][0][1] = NULL;
+  $form_state['input'][0][2] = NULL;
+  $form_state['page_values'][3] = $form_state['values']; // no reaseon to save, it only makes the check box sticky which is not desireable when the rows shift up after a deletion
   // When form rebuilds in n+2 or so, use this to determine which page to build.
   $form_state['page_num'] = 3;
   $form_state['rebuild'] = TRUE;
@@ -1800,13 +1634,12 @@ $form_state['input'][0][2] = NULL;
 
 /**
  * Page 4 submit handler.
+ * Page 4 submit handler.
+ * Page 4 submit handler.
  *
  * Save the vals from page two for a later final submit.
  */
 function rc_res_form_page_four_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
   $form_state['page_values'][4] = $form_state['values'];
   if (!empty($form_state['page_values'][5])) {
     $form_state['values'] = $form_state['page_values'][5];
@@ -1829,12 +1662,6 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
   $zoneOk = 0;
   $zoneRange = '';
   while ($i < $zonePoints) {
-
-
-
-
-
-
     if (  !empty($zone[$i]) && !empty($zone[$i+1]) && $zoneOk==0  ) {
       // is the user specified date/time within a zone? Pad the upper limit by 30 minutes because of earlier rounding; eg choosing a 3:30pm resv would fail if the realtime is between 3:00 and 3:30
       if( !( $userDate>=$zone[$i]&&$userDate<=$zone[$i+1]+1800 ) ){
@@ -1868,7 +1695,6 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
     session_variable_set('rc-res','outOfRange', $outOfRange);
   }
 
-  // OLD is the user's selection time for a new reservation more that 24 hours into the future?
   // is the user's selection time for a new reservation too early or too close to an existing reservation? Is the too early part covered by the new too close test???
   if( $outOfRange==1 || $no_res_available==1 ){
     $form_state['page_num'] = 4;
@@ -1884,14 +1710,12 @@ function rc_res_form_page_four_handler_submit($form, &$form_state) {
 
 /**
  * Page 4 back submit handler.
+ * Page 4 back submit handler.
+ * Page 4 back submit handler.
  *
  * Save the vals from page two for a later final submit.
  */
 function rc_res_form_page_fourb_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
-
   $form_state['page_values'][4] = $form_state['values'];
 
   if (!empty($form_state['page_values'][3])) {
@@ -1901,24 +1725,16 @@ function rc_res_form_page_fourb_handler_submit($form, &$form_state) {
   // When form rebuilds in n+2 or so, use this to determine which page to build.
   $form_state['page_num'] = 3;
   $form_state['rebuild'] = TRUE;
-
-//krumo($form_state['values']);
-
  }
 
 /**
+ * Page 5 submit handler.
+ * Page 5 submit handler.
  * Page 5 submit handler.
  *
  * Save the vals from page five for a later final submit.
  */
 function rc_res_form_page_five_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
-
-
-
-
   $form_state['page_values'][5] = $form_state['values'];
 
   if (!empty($form_state['page_values'][5]['table'])) {
@@ -1937,16 +1753,12 @@ function rc_res_form_page_five_handler_submit($form, &$form_state) {
 
 /**
  * Page 5 back submit handler.
+ * Page 5 back submit handler.
+ * Page 5 back submit handler.
  *
  * Save the vals from page two for a later final submit.
  */
 function rc_res_form_page_fiveb_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
-
-//krumo($form_state['values']);
-
   $form_state['page_values'][5] = $form_state['values'];
 
   if (!empty($form_state['page_values'][4])) {
@@ -1956,21 +1768,16 @@ function rc_res_form_page_fiveb_handler_submit($form, &$form_state) {
   // When form rebuilds in n+2 or so, use this to determine which page to build.
   $form_state['page_num'] = 4;
   $form_state['rebuild'] = TRUE;
-
-//krumo($form_state['values']);
-
  }
 
 /**
+ * Page 5 empty submit handler.
+ * Page 5 empty submit handler.
  * Page 5 empty submit handler.
  *
  * Save the vals from page two for a later final submit.
  */
 function rc_res_form_page_five_empty_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
-
   if (!empty($form_state['page_values'][6])) {
     $form_state['values'] = $form_state['page_values'][6];
   }
@@ -1982,17 +1789,13 @@ function rc_res_form_page_five_empty_handler_submit($form, &$form_state) {
 
 /**
  * Page 6 submit handler.
+ * Page 6 submit handler.
+ * Page 6 submit handler.
  *
  * Save the vals from page two for a later final submit.
  */
 function rc_res_form_page_six_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
-
   $form_state['page_values'][6] = $form_state['values'];
-
-//krumo($form_state);
 
   if (!empty($form_state['page_values'][7])) {
     $form_state['values'] = $form_state['page_values'][7];
@@ -2005,17 +1808,13 @@ function rc_res_form_page_six_handler_submit($form, &$form_state) {
 
 /**
  * Page 6 back submit handler.
+ * Page 6 back submit handler.
+ * Page 6 back submit handler.
  *
  * Save the vals from page two for a later final submit.
  */
 function rc_res_form_page_sixb_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
-
   $form_state['page_values'][6] = $form_state['values'];
-
-//krumo($form_state);
 
   if (!empty($form_state['page_values'][5])) {
     $form_state['values'] = $form_state['page_values'][5];
@@ -2028,372 +1827,25 @@ function rc_res_form_page_sixb_handler_submit($form, &$form_state) {
 
 /**
  * Page 7 submit handler.
+ * Page 7 submit handler.
+ * Page 7 submit handler.
  *
  * Save the vals from page two for a later final submit.
  */
 function rc_res_form_page_seven_handler_submit($form, &$form_state) {
-  // Values are saved for each page.
-  // to carry forward to subsequent pages in the form.
-  // The Forms API rebuilds the form.
-
   $form_state['page_values'][7] = $form_state['values'];
 
-if (preg_match("/View/", $form_state['clicked_button']['#value'])) {
-  $form_state['page_num'] = 3;
-} else {
-  $form_state['page_num'] = 4;
-}
-  $form_state['rebuild'] = TRUE;
- }
-
-
-
-
-
-
+  if (preg_match("/View/", $form_state['clicked_button']['#value'])) {
+    $form_state['page_num'] = 3;
+  } else {
+    $form_state['page_num'] = 4;
+  }
+    $form_state['rebuild'] = TRUE;
+  }
 
 /**
- * Page X submit handler. //not used
- *
- * This is the final submit handler. Gather all the data together and save it to the db.
- * Also display it in a drupal_set_message() for development.
- */
-function rc_res_form_page_X_handler_submit($form, &$form_state) {
-  // Normally, some code would go here to alter the database with the data
-  // collected from the form. Instead sets a message with drupal_set_message()
-  // to validate that the code worked.
-  $page_one_values = $form_state['page_values'][1];
-  drupal_set_message(t('The form has been submitted. User Name = @user_name, User Password = @user_pwd',
-  array('@user_name' => $page_one_values['user_name'], '@user_pwd' => $page_one_values['user_pwd'])));
-
-  if (!empty($page_one_values['user_name2'])) {
-    drupal_set_message(t('Second name: name="@user_name @user_pwd", year of birth=@year_of_birth',
-    array('@user_name' => $page_one_values['first2'], '@user_pwd' => $page_one_values['last2'], '@year_of_birth' => $page_one_values['year_of_birth2'])));
-  }
-  drupal_set_message(t('Reservation type is @reservation_type', array('@reservation_type' => $form_state['values']['reservation_type'])));
-
-  // If we wanted to redirect on submission, set $form_state['redirect']
-  // $form_state['redirect'] = 'node'; // Redirects the user to /node.
-
-  global $user;
-  // Save the submitted entry.
-  $entry = array(
-    'user_name'    => $page_one_values['user_name'],
-    'user_pwd' => $page_one_values['user_pwd'],
-    'uid'     => $user->uid,
-  );
-  $return = rc_res_entry_insert($entry);
-  if ($return) {
-    drupal_set_message(t("Using UID = @entry", array('@entry' => print_r($entry['uid'], TRUE))));
-  }
-  $form_state['redirect'] = '';
-}
-
-
-/**
- * Submit handler for 'add entry' form.
- */
-function rc_res_form_submit($form, &$form_state) {
-  global $user;
-  // Save the submitted entry.
-  $entry = array(
-    'uid'     => $user->uid,
-  );
-  $return = rc_res_entry_insert($entry);
-  if ($return) {
-    drupal_set_message(t("Using UID = @entry", array('@entry' => print_r($entry['uid'], TRUE))));
-  }
-  $form_state['redirect'] = '';
-}
-
-/**
- * add a rc-res user //not used
- */
-function rc_res_add_user($form, &$form_state) {
-  global $user;
-  // Save the submitted entry.
-  $entry = array(
-    'user_name'    => $form_state['values']['user_name'],
-    'user_pwd' => $form_state['values']['user_pwd'],
-    'uid'     => $form_state['values']['user_uid'],
-  );
-  $return = rc_res_entry_insert($entry);
-  if ($return) {
-    drupal_set_message(t("Using UID = @entry", array('@entry' => print_r($entry['uid'], TRUE))));
-  }
-  $form_state['redirect'] = '';
-  return 1;
-}
-
-/**
- * Sample UI to update a record. //not used
- */
-function rc_res_form_update($form, &$form_state) {
-  $form = array(
-    '#prefix' => '<div id="updateform">',
-    '#suffix' => '</div>',
-  );
-
-  $entries = rc_res_entry_load();
-  $keyed_entries = array();
-  if (empty($entries)) {
-    $form['no_values'] = array(
-      '#value' => t("No entries exist in the table rc_res table."),
-    );
-    return $form;
-  }
-
-  foreach ($entries as $entry) {
-    $options[$entry->pid] = t("@pid: @user_name @user_pwd", array('@pid' => $entry->pid, '@user_name' => $entry->user_name, '@user_pwd' => $entry->user_pwd));
-    $keyed_entries[$entry->pid] = $entry;
-  }
-  $default_entry = !empty($form_state['values']['pid']) ? $keyed_entries[$form_state['values']['pid']] : $entries[0];
-
-  $form_state['entries'] = $keyed_entries;
-
-  $form['pid'] = array(
-    '#type' => 'select',
-    '#options' => $options,
-    '#title' => t('Choose entry to update'),
-    '#default_value' => $default_entry->pid,
-    '#ajax' => array(
-      'wrapper' => 'updateform',
-      'callback' => 'rc_res_form_update_callback',
-    ),
-  );
-
-  $form['user_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('User Name'),
-    '#size' => 15,
-    '#default_value' => $default_entry->user_name,
-  );
-
-  $form['user_pwd'] = array(
-    '#type' => 'textfield',
-    '#title' => t('User Pwd'),
-    '#size' => 15,
-    '#default_value' => $default_entry->cls_pwd,
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Update'),
-  );
-  return $form;
-}
-
-/**
- * AJAX callback handler for the pid select. //not used
- *
- * When the pid changes, populates the defaults from the database in the form.f
- */
-function rc_res_form_update_callback($form, $form_state) {
-  $entry = $form_state['entries'][$form_state['values']['pid']];
-  // Setting the #value of items is the only way I was able to figure out
-  // to get replaced defaults on these items. #default_value will not do it
-  // and shouldn't.
-  foreach (array('user_name', 'user_name') as $item) {
-    $form[$item]['#value'] = $entry->$item;
-  }
-  return $form;
-}
-
-/**
- * Submit handler for 'update entry' form. //not used
- */
-function rc_res_form_update_submit($form, &$form_state) {
-  global $user;
-
-  // Save the submitted entry.
-  $entry = array(
-    'pid' => $form_state['values']['pid'],
-    'user_name' => $form_state['values']['user_name'],
-    'user_pwd' => $form_state['values']['user_pwd'],
-    'uid' => $user->uid,
-  );
-  $count = rc_res_entry_update($entry);
-  drupal_set_message(t("Updated"));
-}
-
-/**
- * get the UID from shib based on user login values //not used
- */
-function get_uid_from_shib($user_name, $user_pwd, $user_uid_temp) {
-
-global $user;
-
-// print_r("fffff");
-
-// dhc - temp passes UID in username, version 1 is below: function get_uid_from_shib($user_name, $user_pwd) {
-// dhc - need to make version 3 after shib works
-  $uid_from_shib = 0;
-  $uid_from_shib = $user_uid_temp;
-  return $uid_from_shib;
-}
-
-/**
- * get the UID from shib based on user login values //not used
- */
-function get_uid_from_shib_old($user_name, $user_pwd) {
-
-global $user;
-//print_r("fffff");
-
-// dhc - get preset, temp UID from table, must set first???
-// test for values at or before this point, validation?
-  $uid_from_shib = 0;
-
-  // read reervations given an UID (currently simulated in drupal)
-  $entries = array();
-  // select table
-  $select = db_select('rc_res', 'e');
-  // fields to read
-  $select->addField('e', 'pid');
-  $select->addField('e', 'uid');
-  // read in only records that match te he current users uid
-  $select->condition('e.user_name', $user_name);
-  $select->condition('e.user_pwd', $user_pwd);
-  // Now, loop all these entries and show them in a table. Note that there is no
-  // db_fetch_* object or array function being called here. Also note that the
-  // following line could have been written as
-  // $entries = $select->execute()->fetchAll() which would return each selected
-  // record as an object instead of an array.
-  $entries = $select->execute()->fetchAll(PDO::FETCH_ASSOC);
-  if (!empty($entries)) {
-    $rows = array();
-    foreach ($entries as $entry) {
-      // Sanitize the data before handing it off to the theme layer.
-      $rows[] = array_map('check_plain', $entry);
-    }
-  // temp: drupal is taking place of shib
-  $uid_from_shib = $rows[0]['uid'];
-  }
-  else {
-    //drupal_set_message(t('No entries available for uid = ' . $user->uid));
-    $uid_from_shib = -1;
-  }
-  return $uid_from_shib;
-}
-
-/**
- * get the UID from drupal because shib failed (using on user login values) //not used
- */
-function get_uid_from_drupal($user_name, $user_pwd) {
-
-global $user;
-//print_r("ggggg");
-
-  $uid_from_drupal = 0;
-
-  // read reervations given an UID (currently simulated in drupal)
-  $entries = array();
-  // select table
-  $select = db_select('rc_res', 'e');
-  // fields to read
-  $select->addField('e', 'pid');
-  $select->addField('e', 'uid');
-  // read in only records that match te he current users uid
-  $select->condition('e.user_name', $user_name);
-  $select->condition('e.user_pwd', $user_pwd);
-  // Now, loop all these entries and show them in a table. Note that there is no
-  // db_fetch_* object or array function being called here. Also note that the
-  // following line could have been written as
-  // $entries = $select->execute()->fetchAll() which would return each selected
-  // record as an object instead of an array.
-  $entries = $select->execute()->fetchAll(PDO::FETCH_ASSOC);
-  if (!empty($entries)) {
-    $rows = array();
-    foreach ($entries as $entry) {
-      // Sanitize the data before handing it off to the theme layer.
-      $rows[] = array_map('check_plain', $entry);
-    }
-  // temp: drupa; is taking place of shib
-  $uid_from_drupal = $rows[0]['uid'];
-  }
-  else {
-    //drupal_set_message(t('No entries available for uid = ' . $user->uid));
-    $uid_from_drupal = -1;
-  }
-  return $uid_from_drupal;
-}
-
-/**
- * get the UID from drupal because shib failed (using on user login values) //not used
- */
-function is_user_in_rc_res($user_name) {
-
-global $user;
-//print_r("hhhhh");
-
-  $uid_from_drupal = 0;
-
-  // read reervations given an UID (currently simulated in drupal)
-  $entries = array();
-  // select table
-  $select = db_select('rc_res', 'e');
-  // fields to read
-  $select->addField('e', 'pid');
-  $select->addField('e', 'uid');
-  // read in only records that match te he current users uid
-  $select->condition('e.user_name', $user_name);
-  // Now, loop all these entries and show them in a table. Note that there is no
-  // db_fetch_* object or array function being called here. Also note that the
-  // following line could have been written as
-  // $entries = $select->execute()->fetchAll() which would return each selected
-  // record as an object instead of an array.
-  $entries = $select->execute()->fetchAll(PDO::FETCH_ASSOC);
-  if (!empty($entries)) {
-    $is_user_in_drupal = 1;
-  }
-  else {
-    $is_user_in_drupal = -1;
-  }
-  return $is_user_in_drupal;
-}
-
-/**
- * check to find if pwd from form matches the pwd in the rc_res table
- */
-function is_pwd_ok($user_pwd) {
-
-global $user;
-  // compare pwds (temporary)
-  $entries = array();
-  // select table
-  $select = db_select('rc_res', 'e');
-  // fields to read
-  $select->addField('e', 'user_pwd');
-  $select->addField('e', 'uid');  
-// read in only records that match te he current users uid
-  $select->condition('e.user_pwd', $user_pwd);
-  // Now, loop all these entries and show them in a table. Note that there is no
-  // db_fetch_* object or array function being called here. Also note that the
-  // following line could have been written as
-  // $entries = $select->execute()->fetchAll() which would return each selected
-  // record as an object instead of an array.
-  $entries = $select->execute()->fetchAll(PDO::FETCH_ASSOC);
-  if (!empty($entries)) {
-    $rows = array();
-    foreach ($entries as $entry) {
-      // Sanitize the data before handing it off to the theme layer.
-      $rows[] = array_map('check_plain', $entry);
-    }
-  // temp: drupa; is taking place of shib
-  $uid_from_drupal = $rows[0]['uid'];
-  }
-  else {
-    //drupal_set_message(t('No entries available for uid = ' . $user->uid));
-    $uid_from_drupal = -1;
-  }
-  return $uid_from_drupal;
-}
-
-/**
- * @} End of "defgroup rc_res".
- */
-
-/**
+ * get user category from Voyager
+ * get user category from Voyager
  * get user category from Voyager
  */
 function rc_res_get_user_category($working_uid) {
@@ -2426,6 +1878,8 @@ function rc_res_get_user_category($working_uid) {
 }
 
 /**
+ * get user rules from rules table
+ * get user rules from rules table
  * get user rules from rules table
  */
 function rc_res_get_user_rules($user_category) {
@@ -2462,59 +1916,17 @@ global $user;
     $user_rules = -1;
   }
   return $user_rules;
-
 }
 
-
-// /**
-//  * Read from the database using a filter array.
-//  *
-//  */
-// function rc_res_entry_load($entry = array()) {
-//   // Read all fields from the rc_res table.
-//   $select = db_select('rc_res', 'example');
-//   $select->condition('user_group', 'Graduate');
-//   $select->fields('example');
-// 
-//   // Add each field and value as a condition to this query.
-//   foreach ($entry as $field => $value) {
-//     $select->condition($field, $value);
-//   }
-//   // Return the result in object format.
-//   return $select->execute()->fetchAll();
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
+ * get list of user reservations
+ * get list of user reservations
  * get list of user reservations
  */
 function rc_res_get_user_reservations($working_uid) {
   // get patron status from Voyager
   $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
   $url_stack = "$dev_host_resource_base"."/rcres/currentreservations/for/" . "$working_uid";
-  //$url_stack = "http://webservices.library.ucla.edu/rcres/currentreservations/for/" . "$working_uid";
   $url = $url_stack;
   $test = drupal_http_build_query(array());
   $options = array(
@@ -2526,53 +1938,17 @@ function rc_res_get_user_reservations($working_uid) {
   $response_voy = drupal_http_request($url, $options);
   $patron_reservations = $response_voy->data;
   $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
-
-//dsm($patron_status);
-  return $patron_reservations_array;
-}
-
-
-/** CURRENTLY UNUSED
- * get list of available resources @ a start time
- */
-function rc_res_get_open_resources_at_time() {
-  // get patron status from Voyager
-
-//  $time_string = "2012-09-07 08:00 AM/length/2";
-//  $resource_string = urlencode($time_string);
-  $url_stack = "http%3A%2F%2Fwebservices.library.ucla.edu%2Frcres%2Favailablerooms%2Fstartingat%2F2012-09-10+06%3A00%3A00+PM%2Flength%2F2";
-  $url = $url_stack;
-  $test = drupal_http_build_query(array());
-  $options = array(
-    "headers" => array(
-        "Pragma" => "no-cache",
-        "Cache-Control" => "no-cache",
-    ),
-  );
-
-  $response_voy = drupal_http_request($url, $options);
-
-//krumo($url);
-//krumo($response_voy);
-
-  $patron_reservations = $response_voy->data;
-
-  $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
-
-//dsm($patron_status);
   return $patron_reservations_array;
 }
 
 /**
+ * get list of available resources at starting time given start date/time
+ * get list of available resources at starting time given start date/time
  * get list of available resources at starting time given start date/time
  */
 function rc_res_get_resources_for_period($form, $form_state) {
-
-// Set some parameters for sending request.
-
-// test and setup string
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2013-01-17+07%3a00+PM/until/96/length/1';
-
+  // test and setup string
+  //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2013-01-17+07%3a00+PM/until/96/length/1';
   $delimiter = ' ';
   $string = $form_state['page_values'][4]['date'];
   $sub_array = explode ( $delimiter, $string );
@@ -2584,26 +1960,15 @@ function rc_res_get_resources_for_period($form, $form_state) {
   $rtime12a = date("a", strtotime($rtime));
 
   $rlength = 30; // temp, get from rules
-//  $rlength = $form_state['page_values'][4]['res_length']; ===> now, 6: $rlength = $form_state['page_values'][6]['res_length'];
   $rlength =   $rlength/30;
 
-//krumo($rdate);
-//krumo($rtime12h);
-//krumo($rtime12m);
-//krumo($rtime12a);
-//krumo($rlength);
-
-$request_url = 'http://webservices.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
-$request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
-$request_method = 'POST';
-$data = '';
-$request_retry = 3;
-// Send the request.
-$response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
-
-//krumo($response_voy);
+  $request_url = 'http://webservices.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
+  $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
+  $request_method = 'POST';
+  $data = '';
+  $request_retry = 3;
+  // Send the request.
+  $response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
 
   if ($response_voy->data == "[]" ) {
     return "Not Found";
@@ -2618,14 +1983,12 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
 
 /**
  * get list of available resources at starting time given start date/time
+ * get list of available resources at starting time given start date/time
+ * get list of available resources at starting time given start date/time
  */
 function rc_res_get_resources_for_period_complete($form, $form_state) {
-
-// Set some parameters for sending request.
-
-// test and setup string
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2013-01-17+07%3a00+PM/until/96/length/1';
-
+  // test and setup string
+  //$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2013-01-17+07%3a00+PM/until/96/length/1';
   $delimiter = ' ';
   $string = $form_state['page_values'][4]['date'];
   $sub_array = explode ( $delimiter, $string );
@@ -2636,44 +1999,19 @@ function rc_res_get_resources_for_period_complete($form, $form_state) {
   $rtime12m = date("i", strtotime($rtime));
   $rtime12a = date("a", strtotime($rtime));
 
-
-
   $my_kvar = session_variable_get('rc-res','rc_res_get_user_rules');
-
-//krumo($my_kvar);
-
   $my_kvar = $my_kvar[0]['pod_lim'];
   $rlength = $my_kvar/30;
 
-
-
-
-//  $rlength = 120; // temp, get from rules
-//  $rlength = $form_state['page_values'][4]['res_length']; ===> now, 6: $rlength = $form_state['page_values'][6]['res_length'];
-//  $rlength =   $rlength/30;
-
-//krumo($rdate);
-//krumo($rtime12h);
-//krumo($rtime12m);
-//krumo($rtime12a);
-//krumo($rlength);
-
-
-// this is set at the top; change at the top when releasing to test/production; needs automation
-$dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
-$request_url = "$dev_host_resource_base"."/rcres/availablerooms/complete/startingat/"."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
-
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/complete/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength"; // works
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
-$request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
-$request_method = 'POST';
-$data = '';
-$request_retry = 3;
-// Send the request.
-$response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
-
-
+  // this is set at the top; change at the top when releasing to test/production; needs automation
+  $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+  $request_url = "$dev_host_resource_base"."/rcres/availablerooms/complete/startingat/"."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
+  $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
+  $request_method = 'POST';
+  $data = '';
+  $request_retry = 3;
+  // Send the request.
+  $response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
 
   if ($response_voy->data == "[]" ) {
     return "Not Found";
@@ -2682,88 +2020,8 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
     $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
 
   //dsm($patron_status);
-    return $patron_reservations_array;
-  }
-}
-
-/** CURRENTLY UNUSED
- * get list of available resources after starting time given start date/time and period
- */
-function rc_res_form_page_five_empty_handler_submit_x($form, $form_state) {
-
-// Set some parameters for sending request.
-
-// test and setup string
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2013-01-17+07%3a00+PM/until/96/length/1';
-
-  $delimiter = ' ';
-  $string = $form_state['page_values'][4]['date'];
-  $sub_array = explode ( $delimiter, $string );
-  $rdate = $sub_array[0];
-
-  $rtime = $sub_array[1];
-  $rtime12h = date("h", strtotime($rtime));
-  $rtime12m = date("i", strtotime($rtime));
-  $rtime12a = date("a", strtotime($rtime));
-
-  $rlength = 30; // temp, get from rules
-//  $rlength = $form_state['page_values'][4]['res_length']; ===> now, 6: $rlength = $form_state['page_values'][6]['res_length'];
-  $rlength =   $rlength/30;
-
-//krumo($rdate);
-//krumo($rtime12h);
-//krumo($rtime12m);
-//krumo($rtime12a);
-//krumo($rlength);
-
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
-
-$dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
-$request_url = "$dev_host_resource_base".'/rcres/availablerooms/after/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/until/48/length/'."$rlength";
-//$request_url = 'http://lit321v-b.library.ucla.edu/rcres/availablerooms/after/2012-09-18+08%3a00+AM/until/48/length/3';
-$request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
-$request_method = 'POST';
-$data = '';
-$request_retry = 3;
-// Send the request.
-$response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
-
-//krumo($response_voy);
-
-  if ($response_voy->data == "[]" ) {
-    return "Not Found";
-  } else {
-    $patron_reservations = $response_voy->data;
-    $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
-
-  //dsm($patron_status);
-    return $patron_reservations_array;
-  }
-}
-
-/** CURRENTLY UNUSED
- * get list of available resources after starting time, half hour increments on same day dhc works
- */
-function rc_res_get_open_resources() {
-  // get patron status from Voyager
-
-
-// Set some parameters for sending request.
-$request_url = 'http://webservices.library.ucla.edu/rcres/availablerooms/startingat/2012-09-11+11%3a00+AM/length/2';
-$request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
-$request_method = 'POST';
-$data = '';
-$request_retry = 3;
-// Send the request.
-$response_voy = drupal_http_request($request_url, $request_headers, $request_method, $data, $request_retry);
-
-//krumo($response_voy);
-
-  $patron_reservations = $response_voy->data;
-  $patron_reservations_array = drupal_json_decode($patron_reservations, TRUE);
-
-//dsm($patron_status);
   return $patron_reservations_array;
+  }
 }
 
 /**
@@ -2774,28 +2032,19 @@ $response_voy = drupal_http_request($request_url, $request_headers, $request_met
 function rc_res_set_user_reservations($rrid, $str_create1) {
   $params = array();
   $params = json_encode($str_create1);
-
-  // right way to post data - Drupal 7
   $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
   $response = drupal_http_request($dev_host_resource_base.'/rcres/reservation/reserveroom/'.$rrid, array(
-  //$response = drupal_http_request('http://webservices.library.ucla.edu/rcres/reservation/reserveroom/'.$rrid, array(
     'method' => 'POST',
     'data' => $params, // see comments below - you may need to change this
     'headers' => array('Content-Type' => 'application/json')
   ));
-
   return $response;
-
-//  $response = drupal_http_request('http://lit321v-b.library.ucla.edu/rcres/reservation/reserveroom/1', $headers = array('Content-Type' => 'application/json'), $method = 'POST', $data = $params, $retry = 3);
-
-//krumo($response);
-
 }
 
-
-// good 20120919, demo setting reservation
-/** CURRENTLY UNUSED
- * set new user reservations - good 20120919
+/**
+ * used for testing of reservation setting
+ * used for testing of reservation setting
+ * used for testing of reservation setting
  */
 function rc_res_set_user_reservations_0($working_uid) {
 
@@ -2820,84 +2069,20 @@ function rc_res_set_user_reservations_0($working_uid) {
   );
 
   $params = json_encode($c_array);
-
-  // right way to post data - Drupal 7
   $response = drupal_http_request('http://webservices.library.ucla.edu/rcres/reservation/reserveroom/118', array(
     'method' => 'POST',
     'data' => $params, // see comments below - you may need to change this
     'headers' => array('Content-Type' => 'application/json')
   ));
-
-//krumo($response);
-
-}
-// good 20120919
-
-
-
-// store here temporarily
-//  get go / no go from RS (resource scheduler
-
-
-
-function send_data_form_submit($form, &$form_state) {
-
-    $name = $form_state['values']['name'];
-    $email = $form_state['values']['email'];
-
-    $attendee = array(
-        'name' => urlencode($name),
-        'email' => urlencode($email)
-    );
-
-    $attendee = http_build_query($attendee, '', '&');
-
-    $url_login = 'http://[ip]/eventmobile/users/sign_in';
-    $url_target = 'http://[ip]/eventmobile/attendee_management/attendee';
-
-    $use  = array(
-      'email' => 'root@root.com',
-      'password' => '123456'
-    );
-    $user = http_build_query($use, '', '&');
-
-    $headers = array('Content-Type' => 'application/x-www-form-urlencoded');
-
-    $method = 'POST';
-
-    $result_1 = drupal_http_request(url($url_login, array(absolute => true)), $headers, $method, $user); //I get a http_code = 200. OK
-    $result_2 = drupal_http_request(url($url_target,array(absolute => true)), $headers, $method, $attendee); // I get a http_code = 500. Internal Server Error
 }
 
-
-function rc_res_block_info() {
-  $blocks['recent444'] = array(
-    'info' => t('Recent conten444'),
-    'region' => 'content',
-
-
-
-    // DRUPAL_CACHE_PER_ROLE will be assumed.
-  );
-
-  return $blocks;
-}
-
-
-function rc_res_mail($key, &$message, $params) {
-  if (isset($params['subject'])) {
-    $message['subject'] = $params['subject'];
-  }
-  if (isset($params['body'])) {
-    $message['body'][] = $params['body'];
-  }
-  if (isset($params['headers']) && is_array($params['headers'])) {
-    $message['headers'] += $params['headers'];
-  }
-}
-  
-
-// session variable functions
+/**
+ * session variable functions
+ * session variable functions
+ * session variable functions
+ *
+ * Based on code from Peter Moulding http://petermoulding.com/session_variable
+ */
 function session_variable_check_session()
 	{
 	return session_id() != '';
