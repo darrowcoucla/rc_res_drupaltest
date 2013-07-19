@@ -283,9 +283,9 @@ function rc_res_form_page_three($form, &$form_state) {
   $rc_res_get_user_category = rc_res_get_user_category($working_uid);
 
   // TEMP FOR TESTING
-  //$rc_res_get_user_category = 'UCLA Undergraduate';
-  //$rc_res_get_user_category = 'UCLA Staff';
   //$rc_res_get_user_category = 'undergraduate';
+  //$rc_res_get_user_category = 'graduate';
+  //$rc_res_get_user_category = 'staff';
   // END TEMP FOR TESTING
 
   // translate Voyager terms to match local terms
@@ -1309,7 +1309,7 @@ function rc_res_form_page_seven($form, &$form_state) {
 global $user;
 $working_uid = session_variable_get('rc-res','working_uid');
   $str_create = array(
-    'description' => 'testing ',
+    'description' => 'RC-Res',
     'start' => '2012-12-25 02:00 PM',
     'end' => '2012-12-25 02:30 PM',
     'pending' => true,
@@ -1372,7 +1372,7 @@ $working_uid = session_variable_get('rc-res','working_uid');
 
   // Improvement needed: 
   $str_create1 = array(
-    'description' => 'RC Reservation',
+    'description' => 'RC-Res',
     'start' => $rstart,
     'end' => $rend,
     'pending' => true,
@@ -2049,7 +2049,7 @@ function rc_res_set_user_reservations($rrid, $str_create1) {
 function rc_res_set_user_reservations_0($working_uid) {
 
   $c_array = array(
-    'description' => 'testing ',
+    'description' => 'RC-Res',
     'start' => '2012-09-20 08:00 AM',
     'end' => '2012-09-20 10:00 AM',
     'pending' => true,
