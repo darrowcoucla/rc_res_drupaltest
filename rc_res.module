@@ -168,20 +168,22 @@ function rc_res_form_page_one($form, &$form_state) {
 
   session_variable_set('rc-res','no_res_available',0);
 
-  //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
-  if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
-    if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
-      $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
-      session_variable_set('rc-res','name_first', $names[0]);
-      session_variable_set('rc-res','name_last', $names[1]);
-    }else{
-      $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
-      session_variable_set('rc-res','name_last', $names[0]);
-      session_variable_set('rc-res','name_first', $names[1]);
-    }
-  }else{
-    $names = explode("|||", "Name|||unavailable");
-  }
+//  // moved to page 3
+//  //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
+//  if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
+//    if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
+//      $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
+//      session_variable_set('rc-res','name_first', $names[0]);
+//      session_variable_set('rc-res','name_last', $names[1]);
+//    }else{
+//      $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
+//      session_variable_set('rc-res','name_last', $names[0]);
+//      session_variable_set('rc-res','name_first', $names[1]);
+//    }
+//  }else{
+//    $names = explode("|||", "Name|||unavailable");
+//  }
+//  // moved to page 3
 
   // build form for page
   //  $form_state['page_num'] = 1;
@@ -195,8 +197,8 @@ function rc_res_form_page_one($form, &$form_state) {
     '#value' => t('logout'),
     '#submit' => array('rc_res_logout_handler_submit'),
     '#button_type' => 'submiter',
-    '#prefix' => 'Wecome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')),
-    '#suffix' => '<br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.',
+    '#prefix' => 'Wecome ',
+    '#suffix' => '<br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.<br>',
   );
 
 //  Save this, it is usefull when testing
@@ -265,6 +267,23 @@ function rc_res_form_page_three($form, &$form_state) {
 
   // Improvement needed: improve this to work on a shibboleth system with a matching user. ie both shib user and drupal user, possibly with same username
   // retrieve the UCLA UID (not drupal uid)
+
+  // from page 1
+  //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
+  if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
+    if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
+      $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
+      session_variable_set('rc-res','name_first', $names[0]);
+      session_variable_set('rc-res','name_last', $names[1]);
+    }else{
+      $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
+      session_variable_set('rc-res','name_last', $names[0]);
+      session_variable_set('rc-res','name_first', $names[1]);
+    }
+  }else{
+    $names = explode("|||", "Name|||unavailable");
+  }
+  // from page 1
 
   if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
     $working_uid = $_SERVER['SHIBUCLAUNIVERSITYID'];
