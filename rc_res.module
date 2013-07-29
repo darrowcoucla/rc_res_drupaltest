@@ -98,10 +98,10 @@ function rc_res_menu() {
 * page 1 - Welcome ......................................................................................................................
  */
 function rc_res_form_page_one($form, &$form_state) {
-  global $user;
-  $rc_user = user_load($user->uid, $reset = TRUE);
-  session_variable_set('rc-res','rc_user',$rc_user);  
-  session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
+//  global $user;
+//  $rc_user = user_load($user->uid, $reset = TRUE);
+//  session_variable_set('rc-res','rc_user',$rc_user);  
+//  session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
   // save for debugging shibboleth
   //drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
@@ -255,7 +255,10 @@ function rc_res_form_page_two($form, &$form_state) {
 function rc_res_form_page_three($form, &$form_state) {
   $GLOBALS['conf']['cache']=FALSE;
   global $user;
+  $rc_user = user_load($user->uid, $reset = TRUE);
+  session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','firstAccess4', 0);
+  session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
   // save for debugging shibboleth
   //drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
