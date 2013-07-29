@@ -189,8 +189,8 @@ function rc_res_form_page_one($form, &$form_state) {
   //  $form_state['page_num'] = 1;
   $form = array();
 
-  // session_variable_set('rc-res','name_first', "Darrow"); // for testing on workstation
-  // session_variable_set('rc-res','name_last', "Cole"); // for testing on workstation
+//   session_variable_set('rc-res','name_first', "Darrow"); // for testing on workstation
+//   session_variable_set('rc-res','name_last', "Cole"); // for testing on workstation
 
   $form['logout_button2link'] = array(
     '#type'  => 'submit',
@@ -599,6 +599,19 @@ Graduate Student, Faculty, and Library Staff Reservations
   $form_p3_main = array(
 
     // breadcrumbs (hardcoded for now)
+  $form['logout_button2link'] = array(
+    '#type'  => 'submit',
+    '#value' => t('logout'),
+    '#submit' => array('rc_res_logout_handler_submit'),
+    '#button_type' => 'submiter',
+    '#prefix' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last'))),
+    '#suffix' => '<br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.<br>',
+  ),
+
+
+
+
+
     $form['description'] = array
     (
       '#type'  => 'item',
