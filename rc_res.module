@@ -187,8 +187,8 @@ function rc_res_form_page_one($form, &$form_state) {
   //  $form_state['page_num'] = 1;
   $form = array();
 
-session_variable_set('rc-res','name_first', "Darrow");
-session_variable_set('rc-res','name_last', "Cole");
+  // session_variable_set('rc-res','name_first', "Darrow"); // for testing on workstation
+  // session_variable_set('rc-res','name_last', "Cole"); // for testing on workstation
 
   $form['logout_button2link'] = array(
     '#type'  => 'submit',
