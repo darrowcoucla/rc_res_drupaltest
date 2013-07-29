@@ -199,12 +199,6 @@ session_variable_set('rc-res','name_last', "Cole");
     '#suffix' => '<br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.',
   );
 
-  $form['description'] = array(
-    '#type'  => 'item',
-    '#no-cache'  => TRUE,
-    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'" class="submiter">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
-  );
-
 //  Save this, it is usefull when testing
 //  $form['test'] = array(
 //    '#type'  => 'checkboxes',
