@@ -187,10 +187,22 @@ function rc_res_form_page_one($form, &$form_state) {
   //  $form_state['page_num'] = 1;
   $form = array();
 
+session_variable_set('rc-res','name_first', "Darrow");
+session_variable_set('rc-res','name_last', "Cole");
+
+  $form['logout_button2link'] = array(
+    '#type'  => 'submit',
+    '#value' => t('logout'),
+    '#submit' => array('rc_res_logout_handler_submit'),
+    '#button_type' => 'submiter',
+    '#prefix' => 'Wecome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')),
+    '#suffix' => '<br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.',
+  );
+
   $form['description'] = array(
     '#type'  => 'item',
     '#no-cache'  => TRUE,
-    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
+    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'" class="submiter">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
   );
 
 //  Save this, it is usefull when testing
@@ -204,6 +216,7 @@ function rc_res_form_page_one($form, &$form_state) {
     '#value' => t('Start'),
     '#submit' => array('rc_res_form_page_one_handler_submit'),
   );
+
   return $form;
 }
 
@@ -1521,6 +1534,26 @@ Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> 
  * End of form -------------------------------------------------------------------------------------------------------
  * End of form -------------------------------------------------------------------------------------------------------
  */
+
+/**
+ * Logout submit handler.
+ * Logout submit handler.
+ * Logout submit handler.
+ *
+ * Logout from both Drupal and Shibboleth
+ */
+  // Values are saved for each page.
+  // to carry forward to subsequent pages in the form.
+  // The Forms API rebuilds the form.
+function rc_res_logout_handler_submit($form, &$form_state) {
+  $form_state['page_values'][1] = $form_state['values'];
+  session_destroy();
+  drupal_goto(variable_get('shib_auth_full_logout_url'));
+
+// '&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'" class="submiter">logout</a>
+
+  $form_state['rebuild'] = TRUE;
+}
 
 /**
  * Page 1 submit handler.

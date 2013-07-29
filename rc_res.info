@@ -10,3 +10,4 @@ core = "7.x"
 project = "rc_res"
 datestamp = "1342830256"
 
+stylesheets[all][] = rc_res.css
