@@ -82,6 +82,13 @@ function rc_res_menu() {
     'access callback' => TRUE,
     'menu_name' => 'navigation',
   );
+  $items['libraries/researchlibrary/research-commons-logout'] = array(
+    'title' => 'Research Commons Reservations Logout',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('rc_res_logout_handler_submit'),
+    'access callback' => TRUE,
+    'menu_name' => 'navigation',
+  );
   return $items;
 }
 
@@ -98,10 +105,10 @@ function rc_res_menu() {
 * page 1 - Welcome ......................................................................................................................
  */
 function rc_res_form_page_one($form, &$form_state) {
-//  global $user;
-//  $rc_user = user_load($user->uid, $reset = TRUE);
-//  session_variable_set('rc-res','rc_user',$rc_user);  
-//  session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
+  global $user;
+  $rc_user = user_load($user->uid, $reset = TRUE);
+  session_variable_set('rc-res','rc_user',$rc_user);  
+  session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
   // save for debugging shibboleth
   //drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
@@ -168,37 +175,29 @@ function rc_res_form_page_one($form, &$form_state) {
 
   session_variable_set('rc-res','no_res_available',0);
 
-//  // moved to page 3
-//  //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
-//  if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
-//    if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
-//      $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
-//      session_variable_set('rc-res','name_first', $names[0]);
-//      session_variable_set('rc-res','name_last', $names[1]);
-//    }else{
-//      $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
-//      session_variable_set('rc-res','name_last', $names[0]);
-//      session_variable_set('rc-res','name_first', $names[1]);
-//    }
-//  }else{
-//    $names = explode("|||", "Name|||unavailable");
-//  }
-//  // moved to page 3
+  //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
+  if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
+    if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
+      $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
+      session_variable_set('rc-res','name_first', $names[0]);
+      session_variable_set('rc-res','name_last', $names[1]);
+    }else{
+      $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
+      session_variable_set('rc-res','name_last', $names[0]);
+      session_variable_set('rc-res','name_first', $names[1]);
+    }
+  }else{
+    $names = explode("|||", "Name|||unavailable");
+  }
 
   // build form for page
   //  $form_state['page_num'] = 1;
   $form = array();
 
-//   session_variable_set('rc-res','name_first', "Darrow"); // for testing on workstation
-//   session_variable_set('rc-res','name_last', "Cole"); // for testing on workstation
-
-  $form['logout_button2link'] = array(
-    '#type'  => 'submit',
-    '#value' => t('logout'),
-    '#submit' => array('rc_res_logout_handler_submit'),
-    '#button_type' => 'submiter',
-    '#prefix' => 'Wecome ',
-    '#suffix' => '<br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.<br>',
+  $form['description'] = array(
+    '#type'  => 'item',
+    '#no-cache'  => TRUE,
+    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
   );
 
 //  Save this, it is usefull when testing
@@ -212,7 +211,6 @@ function rc_res_form_page_one($form, &$form_state) {
     '#value' => t('Start'),
     '#submit' => array('rc_res_form_page_one_handler_submit'),
   );
-
   return $form;
 }
 
@@ -255,10 +253,7 @@ function rc_res_form_page_two($form, &$form_state) {
 function rc_res_form_page_three($form, &$form_state) {
   $GLOBALS['conf']['cache']=FALSE;
   global $user;
-  $rc_user = user_load($user->uid, $reset = TRUE);
-  session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','firstAccess4', 0);
-  session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
   // save for debugging shibboleth
   //drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
@@ -270,23 +265,6 @@ function rc_res_form_page_three($form, &$form_state) {
 
   // Improvement needed: improve this to work on a shibboleth system with a matching user. ie both shib user and drupal user, possibly with same username
   // retrieve the UCLA UID (not drupal uid)
-
-  // from page 1
-  //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
-  if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
-    if (preg_match("/\|\|\|/", $rc_user->field_user_full_name['und'][0]['value'])) {
-      $names = explode("|||", $rc_user->field_user_full_name['und'][0]['value']);
-      session_variable_set('rc-res','name_first', $names[0]);
-      session_variable_set('rc-res','name_last', $names[1]);
-    }else{
-      $names = explode(", ", $rc_user->field_user_full_name['und'][0]['value']);
-      session_variable_set('rc-res','name_last', $names[0]);
-      session_variable_set('rc-res','name_first', $names[1]);
-    }
-  }else{
-    $names = explode("|||", "Name|||unavailable");
-  }
-  // from page 1
 
   if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
     $working_uid = $_SERVER['SHIBUCLAUNIVERSITYID'];
@@ -570,7 +548,9 @@ function rc_res_form_page_three($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;
+<a href="research-commons-logout">logout</a>
+<br>
 <B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
 <br><br>
 <b>Reservation Policies</b><br>
@@ -599,23 +579,10 @@ Graduate Student, Faculty, and Library Staff Reservations
   $form_p3_main = array(
 
     // breadcrumbs (hardcoded for now)
-  $form['logout_button2link'] = array(
-    '#type'  => 'submit',
-    '#value' => t('logout'),
-    '#submit' => array('rc_res_logout_handler_submit'),
-    '#button_type' => 'submiter',
-    '#prefix' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last'))),
-    '#suffix' => '<br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.<br>',
-  ),
-
-
-
-
-
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 <B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
 <br><br>
 <b>Reservation Policies</b><br>
@@ -802,7 +769,7 @@ function rc_res_form_page_four($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 <b>Please choose a start time within the next 24 hours</b><br>
@@ -812,7 +779,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 <b>Please choose a start time within the next 24 hours</b><br>
@@ -822,7 +789,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <BR>
@@ -928,7 +895,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time.)<br>
 Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
@@ -939,13 +906,13 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than '.$my_resv_lim.' day(s) into the future and must be at least 24 hours from any existing reservations.)<br>
 Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
 		      .$zoneRange.'</b>';
   } else if( $firstAccess4 == 0 ) {
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <em>Please choose a start time in one of the following time slot(s)</em><br>
 		      <br>'
@@ -956,7 +923,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than '.$my_resv_lim.' day(s) into the future and must be at least 24 hours from any existing reservations.)<br>
 Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours">Research Library Building Hours</a>.)');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <b>Please choose a start time in one of the following time slot(s)</b><br>
 		      <br><b>'
@@ -974,7 +941,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
@@ -983,7 +950,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -1109,7 +1076,7 @@ function rc_res_form_page_five($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish &nbsp;&nbsp;&nbsp;'),
     ),
 
@@ -1285,7 +1252,7 @@ function rc_res_form_page_six($form, &$form_state) {
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
+    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish &nbsp;&nbsp;&nbsp;'),
   );
 
@@ -1464,7 +1431,6 @@ $working_uid = session_variable_get('rc-res','working_uid');
   $mySpace = '';
   // re-read the user's reservations to catch anything new
   $rows = rc_res_get_user_reservations($working_uid);
-
   // if at least one row was returned, loop through each row  
   if (!empty($rows['reservation'])) {
     // set the email content, spacing and cr/lf effect the email layout
@@ -1516,7 +1482,6 @@ Current Reservation(s):<br>
 No existing reservations
 <b></b>';
   }
-
   $to = $uemail;
   $from = 'no-reply@library.ucla.edu';
   // If you are using suhosin (the hardened PHP extension) and want to use
@@ -1532,14 +1497,52 @@ No existing reservations
   // are trying to send an HTML formatted email, please use either
   // the MIME Mail or HTMLMail modules, rather than doing it
   // by just setting the Content-Type.
-  $message = drupal_mail('rc_res', 'message_key', $to, user_preferred_language($user), array('body' => $body, 'subject' => $subject, 'headers' => array('Cc' => $header_cc, 'Bcc' => $header_bcc)), $from, TRUE);
+
+
+  // If you are using suhosin (the hardened PHP extension) and want to use
+  // Cc or Bcc, then make sure that suhosin.mail.protect is not set to 2,
+  // or the mail will be rejected as an attack.
+  $header_bcc = '';
+  $header_cc = '';
+  // you can set 'message_key' to any key you want, and process
+  // that in the hook_mail as shown in the commented out code.
+  // Or, just set it to some string and ignore it as we are here.
+  // You can add extra headers into the headers array here.  If you
+  // are trying to send an HTML formatted email, please use either
+  // the MIME Mail or HTMLMail modules, rather than doing it
+  // by just setting the Content-Type.
+
+$email_body = $body;
+$module = 'rc_res';
+$key = 'message_key';
+$lang = user_preferred_language($user);
+$params = array(
+  'body' => $body,
+  'subject' => $subject,
+  );
+
+$body = array();
+$body[] = $email_body;
+$mail_message = drupal_mail($module, $key, $to, $lang, $params, $from, FALSE);
+$mail_message['subject'] = $subject;
+$mail_message['body'] = $body;
+
+$mail_system = drupal_mail_system($module, $key);
+$mail_message = $mail_system->format($mail_message);
+
+$mail_message['result'] = $mail_system->mail($mail_message);
+
+
+
+//  $message = drupal_mail('rc_res', 'message_key', $to, user_preferred_language($user), array('body' => $body, 'subject' => $subject, 'headers' => array('Cc' => $header_cc, 'Bcc' => $header_bcc)), $from, TRUE);
   // You can check $message['result'] to see if the message sent successfully.
+
   $form = array();
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'">logout</a><br>
-Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;<br>'.$body),
+    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
+Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;<br>'.$email_body),
   );
 
   // Show the change button only whenthe reservation failed on submit
@@ -1565,9 +1568,9 @@ Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> 
  */
 
 /**
- * Logout submit handler.
- * Logout submit handler.
- * Logout submit handler.
+ * Logout submit handler
+ * Logout submit handler
+ * Logout submit handler
  *
  * Logout from both Drupal and Shibboleth
  */
@@ -1578,9 +1581,6 @@ function rc_res_logout_handler_submit($form, &$form_state) {
   $form_state['page_values'][1] = $form_state['values'];
   session_destroy();
   drupal_goto(variable_get('shib_auth_full_logout_url'));
-
-// '&nbsp;<a href="'.variable_get('shib_auth_full_logout_url').'" class="submiter">logout</a>
-
   $form_state['rebuild'] = TRUE;
 }
 
