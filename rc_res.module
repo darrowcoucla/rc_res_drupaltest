@@ -73,7 +73,7 @@ function rc_res_form_page_one_validate($form, &$form_state) {
  * Set up calls to drupal_get_form() for all our example cases.
  */
 function rc_res_menu() {
-  global $rc_res_get_user_category;
+////  global $rc_res_get_user_category;
   $items = array();
   $items['libraries/researchlibrary/research-commons-reservation'] = array(
     'title' => 'Research Commons Reservations',
@@ -120,8 +120,8 @@ function rc_res_form_page_one($form, &$form_state) {
   // or
 
   // this reads PRODUCTION DATA in the Resource Scheduler database; USE THIS ON PRODUCTION
-  $dev_host_resource_base = 'http://webservices.library.ucla.edu'; // temporarily use this while the https (next line) is not working
-  //$dev_host_resource_base = 'https//webservices.library.ucla.edu'; // normally use https (this line) but https is not currently working (20130401, 20130514, )
+  //$dev_host_resource_base = 'http://webservices.library.ucla.edu'; // temporarily use this while the https (next line) is not working
+  $dev_host_resource_base = 'https://webservices.library.ucla.edu'; // normally use https (this line) but https is not currently working (20130401, 20130514, )
 
   session_variable_set('rc-res','dev_host_resource_base',$dev_host_resource_base);
 
@@ -188,6 +188,8 @@ function rc_res_form_page_one($form, &$form_state) {
     }
   }else{
     $names = explode("|||", "Name|||unavailable");
+    session_variable_set('rc-res','name_first', $names[0]);
+    session_variable_set('rc-res','name_last', $names[1]);
   }
 
   // build form for page
@@ -254,6 +256,7 @@ function rc_res_form_page_three($form, &$form_state) {
   $GLOBALS['conf']['cache']=FALSE;
   global $user;
   session_variable_set('rc-res','firstAccess4', 0);
+  session_variable_set('rc-res','rc_res_get_user_category', 'undergraduate'); // default
 
   // save for debugging shibboleth
   //drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
@@ -288,11 +291,12 @@ function rc_res_form_page_three($form, &$form_state) {
 
   // get user category here
   $rc_res_get_user_category = rc_res_get_user_category($working_uid);
+  session_variable_set('rc-res','rc_res_get_user_category', $rc_res_get_user_category);
 
   // TEMP FOR TESTING
-  //$rc_res_get_user_category = 'undergraduate';
-  //$rc_res_get_user_category = 'graduate';
-  //$rc_res_get_user_category = 'staff';
+  // session_variable_set('rc-res','rc_res_get_user_category', 'undergraduate');
+  // session_variable_set('rc-res','rc_res_get_user_category', 'graduate');
+  // session_variable_set('rc-res','rc_res_get_user_category', 'staff');
   // END TEMP FOR TESTING
 
   // translate Voyager terms to match local terms
@@ -1441,13 +1445,23 @@ $working_uid = session_variable_get('rc-res','working_uid');
 Current Reservation(s):
 <b></b>';
     } else {
+      $u_rstart=strtotime($rstart); // use to pick put the new reservation below
+      foreach($rows['reservation'] as $row) {
+	// each element of the array is keyed with the lcnt
+	$startDate = strtotime($row['startDate']);
+	if( $u_rstart == $startDate ){
+	  $endDate = strtotime($row['endDate']);
+	  $newRoomName = $row['title'];
+	  $newStartDate = date('l, F j \a\t g:ia',$startDate);
+	  $newEndDate = date('l, F j \a\t g:ia',$endDate);
+	}
+      }
       $body = '
-<br>You have successfully reserved the resource(s) listed below.<br>
-<br>Please bring your Bruincard to the YRL Laptop Lending Desk to claim your reservation. You may claim your reservation from fifteen minutes before until fifteen minutes after the beginning of your reservation. Unclaimed reservations will be forfeit.<br>
-<br>Laptop display adapters, cables and dry erase markers are available for check out.
+<br>You have successfully reserved <em>'.$newRoomName.'</em> from <em>'.$newStartDate.'</em> to <em>'.$newEndDate.'</em>. Please bring your current Bruincard to the CLICC Laptop Lending Desk in the Research Library to claim your reservation. You can only claim your reservation from fifteen minutes before until fifteen minutes after the beginning of your reservation. Unclaimed reservations will be canceled. Laptop display adapters and dry erase markers and erasers are available for check out.
 <b></b>';
     }
-    $u_rstart=strtotime($rstart); // use to pick put the new reservation below
+
+
     foreach($rows['reservation'] as $row) {
       // each element of the array is keyed with the lcnt
       $roomName = 'Reservation for: '.$row['title'].'<br>';
@@ -1914,7 +1928,7 @@ function rc_res_get_user_category($working_uid) {
   // get patron status from Voyager
 
   $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
-  $url_stack = "http://webservices.library.ucla.edu/rcres/patron/group/" . "$working_uid"; // same category source for workstation, drupaltest and production
+  $url_stack = "$dev_host_resource_base"."/rcres/patron/group/" . "$working_uid"; // same category source for workstation, drupaltest and production
   $url = $url_stack . 
 
   drupal_http_build_query(array());
@@ -1924,7 +1938,6 @@ function rc_res_get_user_category($working_uid) {
         "Cache-Control" => "no-cache",
     ),
   );
-
   $response_voy = drupal_http_request($url, $options);
   $patron_status = $response_voy->data;
 //dsm($patron_status);
@@ -2024,7 +2037,9 @@ function rc_res_get_resources_for_period($form, $form_state) {
   $rlength = 30; // temp, get from rules
   $rlength =   $rlength/30;
 
-  $request_url = 'http://webservices.library.ucla.edu/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
+
+  $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+  $request_url = '$dev_host_resource_base'.'/rcres/availablerooms/startingat/'."$rdate"."+"."$rtime12h".'%3a'."$rtime12m".'+'."$rtime12a".'/length/'."$rlength";
   $request_headers = array('Content-Type' => 'application/x-www-form-urlencoded');
   $request_method = 'POST';
   $data = '';
@@ -2131,7 +2146,11 @@ function rc_res_set_user_reservations_0($working_uid) {
   );
 
   $params = json_encode($c_array);
-  $response = drupal_http_request('http://webservices.library.ucla.edu/rcres/reservation/reserveroom/118', array(
+
+  $dev_host_resource_base = session_variable_get('rc-res','dev_host_resource_base');
+  $url_stack = "$dev_host_resource_base"."/rcres/reservation/reserveroom/118"; // same category source for workstation, drupaltest and production
+  $url = $url_stack;
+  $response = drupal_http_request($url, array(
     'method' => 'POST',
     'data' => $params, // see comments below - you may need to change this
     'headers' => array('Content-Type' => 'application/json')
