@@ -105,11 +105,8 @@ function rc_res_menu() {
 * page 1 - Welcome ......................................................................................................................
  */
 function rc_res_form_page_one($form, &$form_state) {
-krumo($user);
   global $user;
-krumo($user);
   $rc_user = user_load($user->uid, $reset = TRUE);
-krumo($rc_user);
   session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
@@ -133,12 +130,12 @@ krumo($rc_user);
 
 
 // debug print for wrong user at top of page. save until we are sure the wrong user problem is solved
-print_r($user->uid);
-if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
-  print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
-} else{
-  print_r(': >>>EMPTY $_SERVER[SHIBUCLAUNIVERSITYID]<<<');
-}
+//print_r($user->uid);
+//if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
+//  print_r(': >>>'.$_SERVER['SHIBUCLAUNIVERSITYID'].'<<<');
+//} else{
+//  print_r(': >>>EMPTY $_SERVER[SHIBUCLAUNIVERSITYID]<<<');
+//}
 //krumo($_SERVER);
 
 
