@@ -110,12 +110,11 @@ function rc_res_form_page_one($form, &$form_state) {
   session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
-
+krumo($rc_user);
+krumo($rc_user->uid);
 
 //watchdog('TYPE', t('DHC MESSAGE'), WATCHDOG_WARNING);
 watchdog('my_module', 'my error message');
-
-krumo($user);
 
 watchdog('my_module',"Message %number: %message", 
     array("number"=>10, "message"=>"The message to display")); 
