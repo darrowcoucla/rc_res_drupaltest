@@ -113,6 +113,7 @@ function rc_res_form_page_one($form, &$form_state) {
 
 
 //watchdog('TYPE', t('DHC MESSAGE'), WATCHDOG_WARNING);
+watchdog('my_module', 'my error message');
 
 
   // save for debugging shibboleth
