@@ -110,6 +110,11 @@ function rc_res_form_page_one($form, &$form_state) {
   session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
+
+
+watchdog('TYPE', t('DHC MESSAGE'), WATCHDOG_WARNING);
+
+
   // save for debugging shibboleth
   //drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
   //drupal_set_message(t("User ID: " . session_variable_get('rc-res','working_uid') ));
@@ -276,6 +281,7 @@ function rc_res_form_page_three($form, &$form_state) {
     if ( $_SERVER['HTTP_HOST']=='localhost' ) {
       $working_uid = '502673598';
       //print_r($_SERVER['HTTP_HOST']);
+      //print_r($working_uid);
     }
   } else {
       //print_r('Unable to login.'); // Improvement needed; error handling needed here
