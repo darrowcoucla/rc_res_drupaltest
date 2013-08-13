@@ -110,21 +110,8 @@ function rc_res_form_page_one($form, &$form_state) {
   session_variable_set('rc-res','rc_user',$rc_user);  
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
-
-
 watchdog('user', 'uid: %old   Name: %new   Full Name: %fname', array('%old' => $user->uid, '%new' => $user->name, '%fname' => $user->field_user_full_name, WATCHDOG_ERROR));
 watchdog('rc_user', 'uid: %old   Name: %new   Full Name: %fname', array('%old' => $rc_user->uid, '%new' => $rc_user->name, '%fname' => $rc_user->field_user_full_name, WATCHDOG_ERROR));
-
-//watchdog('user', 'New user: %name (%email).', array('%name' => $name, '%email' => $mail), WATCHDOG_NOTICE, l(t('edit'), 'user/'. $account->uid .'/edit'));
-
-//watchdog('example', 'Current user @userx.', array('@userx' => $user), WATCHDOG_ERROR);
-
-//watchdog('TYPE', t('DHC MESSAGE'), WATCHDOG_WARNING);
-//watchdog('my_module', 'my error message');
-
-//watchdog('my_module',"Message %number: %message", 
-//    array("number"=>10, "message"=>"The message to display")); 
-
 
   // save for debugging shibboleth
   //drupal_set_message(t("User category: " . session_variable_get('rc-res','rc_res_get_user_category') ));
