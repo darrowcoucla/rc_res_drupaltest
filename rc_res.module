@@ -112,7 +112,8 @@ function rc_res_form_page_one($form, &$form_state) {
 
 
 
-watchdog('workflow', 'uid: %old   Name: %new   Full Name: %fname', array('%old' => $user->uid, '%new' => $user->name, '%fname' => $user->field_user_full_name, WATCHDOG_ERROR));
+watchdog('user', 'uid: %old   Name: %new   Full Name: %fname', array('%old' => $user->uid, '%new' => $user->name, '%fname' => $user->field_user_full_name, WATCHDOG_ERROR));
+watchdog('rc_user', 'uid: %old   Name: %new   Full Name: %fname', array('%old' => $user->uid, '%new' => $user->name, '%fname' => $user->field_user_full_name, WATCHDOG_ERROR));
 
 //watchdog('user', 'New user: %name (%email).', array('%name' => $name, '%email' => $mail), WATCHDOG_NOTICE, l(t('edit'), 'user/'. $account->uid .'/edit'));
 
