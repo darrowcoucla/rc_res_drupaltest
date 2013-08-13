@@ -111,14 +111,17 @@ function rc_res_form_page_one($form, &$form_state) {
   session_variable_set('rc-res','outOfRange', 0); // this is used in page 4 and set in the page 4 handler
 
 
+watchdog('workflow', 'Attempt to go to nonexistent transition (from %old to %new)', array('%old' => $user->uid, '%new' => $user->username, WATCHDOG_ERROR));
 
-watchdog('example', 'Current user @userx.', array('@userx' => $user), WATCHDOG_ERROR);
+//watchdog('user', 'New user: %name (%email).', array('%name' => $name, '%email' => $mail), WATCHDOG_NOTICE, l(t('edit'), 'user/'. $account->uid .'/edit'));
+
+//watchdog('example', 'Current user @userx.', array('@userx' => $user), WATCHDOG_ERROR);
 
 //watchdog('TYPE', t('DHC MESSAGE'), WATCHDOG_WARNING);
-watchdog('my_module', 'my error message');
+//watchdog('my_module', 'my error message');
 
-watchdog('my_module',"Message %number: %message", 
-    array("number"=>10, "message"=>"The message to display")); 
+//watchdog('my_module',"Message %number: %message", 
+//    array("number"=>10, "message"=>"The message to display")); 
 
 
   // save for debugging shibboleth
