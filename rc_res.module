@@ -112,7 +112,7 @@ function rc_res_form_page_one($form, &$form_state) {
 
 
 
-watchdog('example', 'Current user @userx.', array('@userx' => $rc_user), WATCHDOG_ERROR);
+watchdog('example', 'Current user @userx.', array('@userx' => $user), WATCHDOG_ERROR);
 
 //watchdog('TYPE', t('DHC MESSAGE'), WATCHDOG_WARNING);
 watchdog('my_module', 'my error message');
