@@ -201,7 +201,7 @@ function rc_res_form_page_one($form, &$form_state) {
   $form['description'] = array(
     '#type'  => 'item',
     '#no-cache'  => TRUE,
-    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
+    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
   );
 
 //  Save this, it is usefull when testing
@@ -567,7 +567,7 @@ function rc_res_form_page_three($form, &$form_state) {
     (
       '#type'  => 'item',
       '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;
-( <a href="research-commons-logout"> logout)</a> )
+( <a href="research-commons-logout">logout</a> )
 <br>
 <B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
 <br><br>
@@ -601,7 +601,7 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 <B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
 <br><br>
 <b>Reservation Policies</b><br>
@@ -789,7 +789,7 @@ function rc_res_form_page_four($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 <b>Please choose a start time within the next 24 hours</b><br>
@@ -799,7 +799,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 <b>Please choose a start time within the next 24 hours</b><br>
@@ -809,7 +809,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <BR>
@@ -915,7 +915,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time.<br>
 Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a>.');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <br>
 		      Start date/time must fall within this range:<br>
@@ -930,7 +930,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than '.$my_resv_lim.' day(s) into the future and must be at least 24 hours from any existing reservations.)<br>
 Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a>.');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <br>
 		      Start date/time must fall within this range:<br>
@@ -940,7 +940,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
 		      <br><br>
 		      <b>Enter start date/time:</b>';
   } else if( $firstAccess4 == 0 ) {
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <br>
 		      Start date/time must fall within this range:<br>
@@ -956,7 +956,7 @@ session_variable_set('rc-res','firstAccess4', 1);
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than '.$my_resv_lim.' day(s) into the future and must be at least 24 hours from any existing reservations.)<br>
 Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a>.)');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <br>
 		      Start date/time must fall within this range:<br>
@@ -978,7 +978,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
@@ -987,7 +987,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -1114,7 +1114,7 @@ function rc_res_form_page_five($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish &nbsp;&nbsp;&nbsp;'),
     ),
 
@@ -1290,7 +1290,7 @@ function rc_res_form_page_six($form, &$form_state) {
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish &nbsp;&nbsp;&nbsp;'),
   );
 
@@ -1595,7 +1595,7 @@ $mail_message['result'] = $mail_system->mail($mail_message);
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout"> logout)</a> )<br><br>
+    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;( <a href="research-commons-logout">logout</a> )<br><br>
 Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;<br>'.$email_body),
   );
 
