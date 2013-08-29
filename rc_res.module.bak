@@ -50,9 +50,9 @@ function rc_res_form_page_one_validate($form, &$form_state) {
     if ($form_state['values']['res_length'] == 0) {
       form_set_error('res_length', 'Please enter the duration of your reservation.');
     }
-//    if (!$form_state['values']['user_dept']) {
-//      form_set_error('user_dept', 'Please enter the Department or Major associated with this request.');
-//    }
+    if (!$form_state['values']['user_dept']) {
+      form_set_error('user_dept', 'Please enter the Department or Major associated with this request.');
+    }
 
   }
 }
@@ -175,7 +175,6 @@ function rc_res_form_page_one($form, &$form_state) {
   // Otherwise we build page 1.
 
   session_variable_set('rc-res','no_res_available',0);
-  session_variable_set('rc-res','reservation_was_deleted', 0); // this is used in page 3 and set in the page 3 delete handler
 
   //retrieve user first and last name from the $user->field_user_full_name that was set on Shibboleth login
   if (!empty($rc_user->field_user_full_name['und'][0]['value'])){
@@ -201,7 +200,7 @@ function rc_res_form_page_one($form, &$form_state) {
   $form['description'] = array(
     '#type'  => 'item',
     '#no-cache'  => TRUE,
-    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.'),
+    '#title' => t('Welcome '.ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>UCLA students, faculty and staff may reserve group study spaces for groups of two or more people. UCLA Bruincard must be presented in order to claim a reservation.<br><br>An email confirmation will be sent to you after you complete the final step.'),
   );
 
 //  Save this, it is usefull when testing
@@ -533,17 +532,6 @@ function rc_res_form_page_three($form, &$form_state) {
     $form['submit'] = array(); // remove delete button array to prevent display of the delete button
   }
 
-  $reservation_was_deleted = session_variable_get('rc-res','reservation_was_deleted'); // this is used in page 3 and set in the page 3 delete handler
-  if( $reservation_was_deleted == 1 ){
-    $form['description4'] = array
-    (
-      '#type'  => 'item',
-      '#markup' => t('<font color=red>Reservation(s) deleted</font>'),
-    );
-  } else {
-    $form['description4'] = array();
-  }
-
   if( $myDelete == 1 ){
     // create delete button to delete existing reservation(s) from Resource Scheduler by calling a web service from the handler
     $form['submit'] = array
@@ -567,7 +555,7 @@ function rc_res_form_page_three($form, &$form_state) {
     (
       '#type'  => 'item',
       '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;
-<a href="research-commons-logout"> ( logout )</a>
+<a href="research-commons-logout">logout</a>
 <br>
 <B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
 <br><br>
@@ -591,7 +579,6 @@ Graduate Student, Faculty, and Library Staff Reservations
 
     // main array
     $form['myselector12'],
-    $form['description4'],
     $form['submit'],
   );
   } else {
@@ -601,7 +588,7 @@ Graduate Student, Faculty, and Library Staff Reservations
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 <B>Your Reservations</B> > Date & Time > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;
 <br><br>
 <b>Reservation Policies</b><br>
@@ -624,7 +611,6 @@ Undergraduate Student and Staff Reservations
 
     // main array
     $form['myselector12'],
-    $form['description4'],
     $form['submit'],
   );
   }
@@ -699,7 +685,7 @@ Undergraduate Student and Staff Reservations
       );
     }
 
-  // assemble the various form arrays into one array
+  // assemble the various for arrays into one array
   $form_p3 = array();
   $form_p3 = $form_p3_main;
   $form_p3[] = $form_p3_maxed;
@@ -789,7 +775,7 @@ function rc_res_form_page_four($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 <b>Please choose a start time within the next 24 hours</b><br>
@@ -799,7 +785,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 <b>Please choose a start time within the next 24 hours</b><br>
@@ -809,7 +795,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 <br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <BR>
@@ -913,58 +899,64 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     session_variable_set('rc-res','no_res_available',0);
 
 form_set_error('', 'There are no reservations available at the time you chose, please choose a different start time.<br>
-Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a>.');
+Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">Research Library Building Hours</a>.');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <br>
-		      Start date/time must fall within this range:<br>
+		      <font size=+1>1. Choose a desired date/time in one range:</font><br>
 		      <b>'
-		      .$zoneRange.'</b>
-		      <br>and occur during building hours: <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a><br>
-		      <br><br>
-		      <b>Enter start date/time:</b>';
+		      .$zoneRange.'</b><br>
+		      <font size=+1>2. Make sure that the Library is open:</font><br>
+		      <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">Research Library Building Hours</a><br>
+		      <br>
+		      <font size=+1>3. Enter your desired date/time:</font>
+';
   } else if( $outOfRange == 1 ) {
     session_variable_set('rc-res','no_res_available',0);
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than '.$my_resv_lim.' day(s) into the future and must be at least 24 hours from any existing reservations.)<br>
-Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a>.');
+Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">Research Library Building Hours</a>.');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <br>
-		      Start date/time must fall within this range:<br>
+		      <font size=+1>1. Choose a desired date/time in one range:</font><br>
 		      <b>'
-		      .$zoneRange.'</b>
-		      <br>and occur during building hours: <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a><br>
-		      <br><br>
-		      <b>Enter start date/time:</b>';
+		      .$zoneRange.'</b><br>
+		      <font size=+1>2. Make sure that the Library is open:</font><br>
+		      <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">Research Library Building Hours</a><br>
+		      <br>
+		      <font size=+1>3. Enter your desired date/time:</font>
+';
   } else if( $firstAccess4 == 0 ) {
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <br>
-		      Start date/time must fall within this range:<br>
+		      <font size=+1>1. Choose a desired date/time in one range:</font><br>
 		      <b>'
-		      .$zoneRange.'</b>
-		      <br>and occur during building hours:<br>
-		      <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a><br>
-		      <br><br>
-		      <b>Enter start date/time:</b>';
-session_variable_set('rc-res','firstAccess4', 1);
+		      .$zoneRange.'</b><br>
+		      <font size=+1>2. Make sure that the Library is open:</font><br>
+		      <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">Research Library Building Hours</a><br>
+		      <br>
+		      <font size=+1>3. Enter your desired date/time:</font>
+';session_variable_set('rc-res','firstAccess4', 1);
   } else if( $firstAccess4 > 0 ) {
 
 form_set_error('', 'Please choose a start time in one of the following time slot(s)<br>(reservations can be no more than '.$my_resv_lim.' day(s) into the future and must be at least 24 hours from any existing reservations.)<br>
-Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a>.)');
+Also, please make the reservation during hours of operation. See <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">Research Library Building Hours</a>.)');
 
-    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+    $zones = ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <br>
-		      Start date/time must fall within this range:<br>
+		      <font size=+1>1. Choose a desired date/time in one range:</font><br>
 		      <b>'
-		      .$zoneRange.'</b>
-		      <br>and occur during building hours: <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">YRL hours</a><br>
-		      <br><br>
-		      <b>Enter start date/time:</b>';
+		      .$zoneRange.'</b><br>
+		      <font size=+1>2. Make sure that the Library is open:</font><br>
+		      <a href="http://www.library.ucla.edu/about/research-library-hours" target="_new">Research Library Building Hours</a><br>
+		      <br>
+		      <font size=+1>3. Enter your desired date/time:</font>
+';
   }
 
   if (!empty($zoneRange)) {
@@ -978,7 +970,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      <b>Please choose a start time within the next 24 hours</b><br>
 		      (between now and ').$earliest_new_reservation_time_date.')'
@@ -987,7 +979,7 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish &nbsp;&nbsp;&nbsp;<br>
 		      Start your reservation within the next 24 hours<BR>
 		      <BR>
@@ -1011,7 +1003,6 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
     '#required' => TRUE,
     '#date_label_position' => 'above',
   );
-
 
   $form['back3'] = array(
     '#type'  => 'submit',
@@ -1114,7 +1105,7 @@ function rc_res_form_page_five($form, &$form_state) {
     $form['description'] = array
     (
       '#type'  => 'item',
-      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+      '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > Date & Time > <B>Available Resources</B> > Details > Finish &nbsp;&nbsp;&nbsp;'),
     ),
 
@@ -1290,7 +1281,7 @@ function rc_res_form_page_six($form, &$form_state) {
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish &nbsp;&nbsp;&nbsp;'),
   );
 
@@ -1299,7 +1290,7 @@ Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish 
   (
     '#type'  => 'item',
     '#title' => t('Your selected Resource --- <em>'.session_variable_get('rc-res','rtitle').'</em> --- will be reserved at ').$available_resources,
-    '#markup' => t('<br>An email confirmation containing all details will be sent to you after you confirm this page.'),
+    '#markup' => t('<br>An email confirmation containing all details will be sent to you after you complete the final step.'),
   );
 
   $rc_user = session_variable_get('rc-res','rc_user');  
@@ -1326,12 +1317,12 @@ Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish 
     '#default_value' => 'Choose',
   );
 
-//  $form['user_dept'] = array(
-//    '#type'  => 'textfield',
-//    '#title' => t('Department / Major'),
-//    '#size'  => 45,
+  $form['user_dept'] = array(
+    '#type'  => 'textfield',
+    '#title' => t('Department / Major'),
+    '#size'  => 45,
 //    '#default_value' => isset($form_state['values']['user_dept']) ? $form_state['values']['user_dept'] : NULL,
-//  );
+  );
 
   $form['back5'] = array(
     '#type'  => 'submit',
@@ -1355,11 +1346,6 @@ Your Reservations > Date & Time > Available Resources > <B>Details</B> > Finish 
  */
 function rc_res_form_page_seven($form, &$form_state) {
 global $user;
-
-  // email must exist to get to this point
-  $rc_user = session_variable_get('rc-res','rc_user');  
-  $my_email = $rc_user->mail;
-
 $working_uid = session_variable_get('rc-res','working_uid');
   $str_create = array(
     'description' => 'RC-Res',
@@ -1420,7 +1406,7 @@ $working_uid = session_variable_get('rc-res','working_uid');
 //  $ufname = $form_state['page_values'][1]['user_name'];
 //  $ulname = $form_state['page_values'][1]['user_pwd'];
   $uemail = $form_state['page_values'][6]['user_email'];
-//  $udept = $form_state['page_values'][6]['user_dept'];
+  $udept = $form_state['page_values'][6]['user_dept'];
   $course_level = 0;
 
   // Improvement needed: 
@@ -1434,7 +1420,7 @@ $working_uid = session_variable_get('rc-res','working_uid');
     'phone' => '310-206-5565',
     'firstName' => session_variable_get('rc-res','name_first'),
     'lastName' => session_variable_get('rc-res','name_last'),
-//    'academicDept' => $udept,
+    'academicDept' => $udept,
     'academicDeptOther' => 'Education',
     'division' => 'Staff',
     'courseLevel' => $course_level,
@@ -1595,7 +1581,7 @@ $mail_message['result'] = $mail_system->mail($mail_message);
   $form['description'] = array
   (
     '#type'  => 'item',
-    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout"> ( logout )</a><br><br>
+    '#markup' => t(ucfirst(session_variable_get('rc-res','name_first')).' '.ucfirst(session_variable_get('rc-res','name_last')).'&nbsp;<a href="research-commons-logout">logout</a><br>
 Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> &nbsp;&nbsp;&nbsp;<br>'.$email_body),
   );
 
@@ -1613,14 +1599,10 @@ Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> 
       '#submit' => array('rc_res_form_page_seven_handler_submit'),
     );
 
-
-  $email_sent_to = '<br>An email confirmation containing all details has been sent to: '.$my_email.'.';
-
-
   $form['description3'] = array
   (
     '#type'  => 'item',
-    '#markup' => t($email_sent_to),
+    '#markup' => t('<br>An email confirmation containing all details has been sent to you.'),
   );
 
   }
@@ -1741,11 +1723,6 @@ function rc_res_form_page_three_delete_handler_submit($form, &$form_state) {
 	    'headers' => array('Pragma" => "no-cache', 'Cache-Control' => 'no-cache'),
 	  )
 	);
-	if( $response->status_message == 'OK' ){
-	  session_variable_set('rc-res','reservation_was_deleted', 1); // this is used in page 3 and set in the page 3 delete handler
-	} else {
-	  session_variable_set('rc-res','reservation_was_deleted', 0); // this is used in page 3 and set in the page 3 delete handler
-	}
       }
     }
 
