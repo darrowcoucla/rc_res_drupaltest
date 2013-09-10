@@ -311,6 +311,8 @@ function rc_res_form_page_three($form, &$form_state) {
     $rc_res_get_user_category = 'UCLA Staff';
   } else if( preg_match("/faculty/i", $rc_res_get_user_category) ) {
     $rc_res_get_user_category = 'UCLA Staff';
+  } else if( preg_match("/academic/i", $rc_res_get_user_category) ) {
+    $rc_res_get_user_category = 'UCLA Staff';
   }
   session_variable_set('rc-res','rc_res_get_user_category', $rc_res_get_user_category);
 
