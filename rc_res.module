@@ -107,14 +107,7 @@ function rc_res_menu() {
  */
 function rc_res_form_page_one($form, &$form_state) {
 
-$myglobal = $GLOBALS['conf']['cache'];
-krumo($myglobal);
-
-  $GLOBALS['conf']['cache'] = FALSE;
-
-$myglobal = $GLOBALS['conf']['cache'];
-krumo($myglobal);
-
+  $GLOBALS['conf']['cache'] = FALSE; // keep pages out of cache for Shibboleth to work
   global $user;
   $rc_user = user_load($user->uid, $reset = TRUE);
   session_variable_set('rc-res','rc_user',$rc_user);
