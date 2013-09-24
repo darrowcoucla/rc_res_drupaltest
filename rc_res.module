@@ -76,14 +76,14 @@ function rc_res_menu() {
 
 ////  global $rc_res_get_user_category;
   $items = array();
-  $items['libraries/researchlibrary/research-commons-reservation'] = array(
+  $items['reservations/research-commons'] = array(
     'title' => 'Research Commons Reservations',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('rc_res_form_page_one'),
     'access callback' => TRUE,
     'menu_name' => 'navigation',
   );
-  $items['libraries/researchlibrary/research-commons-logout'] = array(
+  $items['reservations/research-commons-logout'] = array(
     'title' => 'Research Commons Reservations Logout',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('rc_res_logout_handler_submit'),
@@ -545,7 +545,7 @@ function rc_res_form_page_three($form, &$form_state) {
       '#type'  => 'item',
       '#markup' => t('<font color=red>Reservation(s) deleted</font>'),
     );
-  rc_session_variable_set('rc-res','reservation_was_deleted', 0);
+  rc_session_variable_set('rc-res','reservation_was_deleted', 0); // this prevents the error message from being sticky
   } else {
     $form['description4'] = array();
   }
