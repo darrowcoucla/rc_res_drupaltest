@@ -793,6 +793,10 @@ function rc_res_form_page_four($form, &$form_state) {
   if ( $my_resv_lim == 1 ){
     $maxDate = strtotime("now".' +1 day');
 
+    $zone[0] = strtotime("now");
+    $zone[1] = strtotime("now".' +1 day');
+    rc_session_variable_set('rc-res','zone',$zone);
+
   if( $userDateTime > $earliest_new_reservation){
     $form['description'] = array
     (
@@ -836,8 +840,6 @@ Your Reservations > <b>Date & Time</b> > Available Resources > Details > Finish 
   $zcnt = 0;
   $existing_resv = rc_session_variable_get('rc-res','lcnt');
   $options = rc_session_variable_get('rc-res','options');
-
-
 
   // if no reservation exists
   if( $existing_resv == 0 ){
