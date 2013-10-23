@@ -36,7 +36,7 @@ function rc_res_form_page_one_validate($form, &$form_state) {
     if (!$form_state['values']['date']) {
       form_set_error('date', 'Please enter a date and time.');
     }
-  } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 5) {
+  } else if (!empty($form_state['page_num']) && $form_state['page_num'] == 5 && $form_state['values']['op'] != 'Back') { // allow back even if missing values
     if (!$form_state['values']['table']) {
       form_set_error('date', 'Please choose a resource.');
     }
