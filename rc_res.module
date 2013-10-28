@@ -1653,7 +1653,6 @@ Your Reservations > Date & Time > Available Resources > Details > <B>Finish</B> 
   // to carry forward to subsequent pages in the form.
   // The Forms API rebuilds the form.
 function yrl_logout_handler_submit($form, &$form_state) {
-  $form_state['page_values'][1] = $form_state['values'];
   session_destroy();
   drupal_goto(variable_get('shib_auth_full_logout_url'));
   $form_state['rebuild'] = TRUE;
