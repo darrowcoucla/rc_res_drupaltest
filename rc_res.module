@@ -14,7 +14,12 @@
 function rc_res_form_page_one_validate($form, &$form_state) {
   $checkboxErrorMsg1 = 'Please select a checkbox before clicking on the Delete button.';
   $checkboxErrorMsg2 = 'Please select a checkbox before clicking on the Delete button.';
+  $checkboxErrorMsg3 = 'The login was lost. Please <A href=>try again</a> or contact a staff member for assistance.';
   if (!empty($form_state['page_num']) && $form_state['page_num'] == 3) {
+    $login_ok = rc_session_variable_get('rc-res','login_ok');
+    if( $login_ok == 0 ){
+      form_set_error('', $checkboxErrorMsg3);
+    }
     if (!empty($form_state['values']['op']) && $form_state['values']['op'] == 'Delete') {
       if (!empty($form_state['values'][0])) {
 	$oneChecked = 0;
@@ -126,9 +131,12 @@ function rc_res_form_page_one($form, &$form_state) {
   // web services development server
 //  $dev_host_resource_base = 'http://webservices-dev.library.ucla.edu'; // normally use https (this line) but https is not currently working (20130401, 20130514, )
 
+  // web site base
+  $host_www_base = 'http://www.library.ucla.edu/reservations/yrl';
+  rc_session_variable_set('rc-res','host_www_base',$host_www_base);
+
   // web services production server
   $dev_host_resource_base = 'https://webservices.library.ucla.edu'; // normally use https (this line) but https is not currently working (20130401, 20130514, )
-
   rc_session_variable_set('rc-res','dev_host_resource_base',$dev_host_resource_base);
 
   // set this below when no resources are available for the user specified time; use it in the form validation above
@@ -276,18 +284,26 @@ function rc_res_form_page_three($form, &$form_state) {
   // Improvement needed: improve this to work on a shibboleth system with a matching user. ie both shib user and drupal user, possibly with same username
   // retrieve the UCLA UID (not drupal uid)
 
+  $login_ok = 0;
   if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
     $working_uid = $_SERVER['SHIBUCLAUNIVERSITYID'];
     //print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
+      $login_ok = 1;
   } else if ( !empty($_SERVER['HTTP_HOST']) ) { //dhc: temporary to allow operation on non-shib workstation
     if ( $_SERVER['HTTP_HOST']=='localhost' ) {
       $working_uid = '502673598';
       //print_r($_SERVER['HTTP_HOST']);
       //print_r($working_uid);
+      $login_ok = 1;
     }
   } else {
-      //print_r('Unable to login.'); // Improvement needed; error handling needed here
+	// login failed, pick up in validation routine
+//	krumo("Unable to login.");
+//      print_r('Unable to login.');
+//      $host_www_base = rc_session_variable_get('rc-res','host_www_base');
+//      drupal_goto($host_www_base);
   }
+  rc_session_variable_set('rc-res','login_ok', $login_ok);
 
 //  if ( $user->name == "darrowco" ) {
 //     $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
@@ -295,11 +311,15 @@ function rc_res_form_page_three($form, &$form_state) {
 //     $working_uid = $user->name;
 //   }
 
+if ( !empty( $working_uid )) {
   rc_session_variable_set('rc-res','working_uid', $working_uid);
-
   // get user category here
   $rc_res_get_user_category = rc_res_get_user_category($working_uid);
   rc_session_variable_set('rc-res','rc_res_get_user_category', $rc_res_get_user_category);
+} else {
+  $rc_res_get_user_category = 'undergraduate';
+  rc_session_variable_set('rc-res','rc_res_get_user_category', $rc_res_get_user_category);
+}
 
   // TEMP FOR TESTING
   // rc_session_variable_set('rc-res','rc_res_get_user_category', 'undergraduate');
@@ -350,7 +370,11 @@ function rc_res_form_page_three($form, &$form_state) {
 
   // read any reservations given a UID
   $rows = array();
-  $rows = rc_res_get_user_reservations($working_uid);
+  if ( !empty( $working_uid )) {
+    $rows = rc_res_get_user_reservations($working_uid);
+  } else {
+    $rows = '';
+  }
 
   // set header for the form
   $header = array
