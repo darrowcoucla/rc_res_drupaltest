@@ -14,7 +14,7 @@
 function rc_res_form_page_one_validate($form, &$form_state) {
   $checkboxErrorMsg1 = 'Please select a checkbox before clicking on the Delete button.';
   $checkboxErrorMsg2 = 'Please select a checkbox before clicking on the Delete button.';
-  $checkboxErrorMsg3 = 'The login was lost. Please <A href=>try again</a> or contact a staff member for assistance.';
+  $checkboxErrorMsg3 = 'A login mismatch has occurred. Please <A href=>try again</a> or contact a staff member for assistance.';
   if (!empty($form_state['page_num']) && $form_state['page_num'] == 3) {
     $login_ok = rc_session_variable_get('rc-res','login_ok');
     if( $login_ok == 0 ){
@@ -288,20 +288,22 @@ function rc_res_form_page_three($form, &$form_state) {
   if ( !empty($_SERVER['SHIBUCLAUNIVERSITYID']) ) {
     $working_uid = $_SERVER['SHIBUCLAUNIVERSITYID'];
     //print_r($_SERVER['SHIBUCLAUNIVERSITYID']);
-      $login_ok = 1;
-  } else if ( !empty($_SERVER['HTTP_HOST']) ) { //dhc: temporary to allow operation on non-shib workstation
-    if ( $_SERVER['HTTP_HOST']=='localhost' ) {
-      $working_uid = '502673598';
-      //print_r($_SERVER['HTTP_HOST']);
-      //print_r($working_uid);
-      $login_ok = 1;
-    }
+    $login_ok = 1;
+//  } else if ( !empty($_SERVER['HTTP_HOST']) ) { //dhc: temporary to allow operation on non-shib workstation // comment ou this section before putting onto DrupalTest and/or Production
+//    if ( $_SERVER['HTTP_HOST']=='localhost' ) {
+//      $working_uid = '502673598';
+//      //print_r($_SERVER['HTTP_HOST']);
+//      //print_r($working_uid);
+//      $login_ok = 1;
+//    }
   } else {
 	// login failed, pick up in validation routine
-//	krumo("Unable to login.");
-//      print_r('Unable to login.');
-//      $host_www_base = rc_session_variable_get('rc-res','host_www_base');
-//      drupal_goto($host_www_base);
+      $working_uid = '';
+      //print_r($_SERVER['HTTP_HOST']);
+      //print_r('working_uid');
+      //print_r($working_uid);
+      $login_ok = 0;
+      //print_r('Unable to login.');
   }
   rc_session_variable_set('rc-res','login_ok', $login_ok);
 
@@ -315,10 +317,12 @@ if ( !empty( $working_uid )) {
   rc_session_variable_set('rc-res','working_uid', $working_uid);
   // get user category here
   $rc_res_get_user_category = rc_res_get_user_category($working_uid);
+  //print_r($rc_res_get_user_category);
   rc_session_variable_set('rc-res','rc_res_get_user_category', $rc_res_get_user_category);
 } else {
-  $rc_res_get_user_category = 'undergraduate';
-  rc_session_variable_set('rc-res','rc_res_get_user_category', $rc_res_get_user_category);
+  $rc_res_get_user_category = '';
+  rc_session_variable_set('rc-res','rc_res_get_user_category', '');
+  $login_ok = 0;
 }
 
   // TEMP FOR TESTING
