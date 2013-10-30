@@ -304,7 +304,6 @@ function rc_res_form_page_three($form, &$form_state) {
       //print_r('working_uid');
       //print_r('Unable to login.');
   }
-  rc_session_variable_set('rc-res','login_ok', $login_ok);
 
 //  if ( $user->name == "darrowco" ) {
 //     $working_uid = '502673598'; // insert darrowco's uid if drupal user darrowco is running this code on a non-shibboleth workstation
@@ -350,6 +349,7 @@ if ( !empty( $working_uid )) {
   $login_ok = 0;
   }
   rc_session_variable_set('rc-res','rc_res_get_user_category', $rc_res_get_user_category);
+  rc_session_variable_set('rc-res','login_ok', $login_ok); // use this to trigger error message after form submission
 
   // get category rules here
   $rc_res_get_user_rules = rc_res_get_user_rules($rc_res_get_user_category);
