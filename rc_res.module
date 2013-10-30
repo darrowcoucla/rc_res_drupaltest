@@ -299,10 +299,9 @@ function rc_res_form_page_three($form, &$form_state) {
   } else {
 	// login failed, pick up in validation routine
       $working_uid = '';
+      $login_ok = 0;
       //print_r($_SERVER['HTTP_HOST']);
       //print_r('working_uid');
-      //print_r($working_uid);
-      $login_ok = 0;
       //print_r('Unable to login.');
   }
   rc_session_variable_set('rc-res','login_ok', $login_ok);
