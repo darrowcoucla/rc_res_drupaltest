@@ -330,6 +330,7 @@ if ( !empty( $working_uid )) {
   // rc_session_variable_set('rc-res','rc_res_get_user_category', 'staff');
   $rc_res_get_user_category = 'extension';
   rc_session_variable_set('rc-res','rc_res_get_user_category', 'extension');
+  print_r($rc_res_get_user_category);
   // END TEMP FOR TESTING
 
   // translate Voyager terms to match local terms
